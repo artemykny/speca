@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mockup</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: light; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    html, body { height: 100%; overflow: hidden; }
+    body { margin: 0; color: #222; background: white; }
+    button, input, textarea, select { font: inherit; color: inherit; }
+    button, select { cursor: pointer; }
+    button { background: white; border: 1px solid #ccc; padding: 4px 10px; }
+    button:hover { background: #eee; }
+    button:disabled { cursor: default; color: #888; background: white; }
+    button[aria-current="page"] { background: #eee; border-color: #888; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid #777; outline-offset: 3px; }
+    input, textarea, select { background: white; border: 1px solid #ccc; padding: 5px 8px; min-width: 0; }
+    textarea { width: 100%; resize: vertical; }
+    h1 { font-size: 21px; font-weight: normal; margin: 0; }
+    h2 { font-size: 15px; font-weight: normal; margin: 0 0 12px; }
+    p { margin: 0; }
+    small, .muted { color: #666; font-size: 12px; }
+    hr { border: 0; border-top: 1px solid #aaa; margin: 18px 0; }
+    [hidden] { display: none !important; }
+    .workspace { display: grid; grid-template-columns: 205px minmax(0, 1fr) 235px; grid-template-rows: minmax(0, 1fr); width: 100%; height: 100vh; height: 100dvh; overflow: hidden; }
+    .sidebar, .inspector { padding: 14px; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+    .sidebar { padding: 8px 6px; border-right: 1px solid #ccc; }
+    .brand { padding: 2px 8px; margin-bottom: 6px; }
+    .brand strong { font-size: 14px; font-weight: 500; }
+    .explorer, .explorer ul { list-style: none; margin: 0; padding: 0; }
+    .explorer { color: #555; font-size: 13px; line-height: 22px; }
+    .explorer ul { padding-left: 12px; }
+    .explorer #model-tree { padding-left: 0; }
+    .explorer li { margin: 0; }
+    .explorer button, .explorer .tree-label { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; width: 100%; height: 22px; padding: 0 4px; border: 0; border-radius: 4px; text-align: left; white-space: nowrap; overflow: hidden; }
+    .explorer button:hover, .explorer summary:hover { background: #f5f5f5; }
+    .explorer summary > button { background: transparent; }
+    .explorer button[aria-current="page"], .explorer summary:has(> button[aria-current="page"]) { background: #eee; color: #222; }
+    .explorer summary { display: flex; align-items: center; height: 22px; border-radius: 4px; list-style: none; cursor: pointer; }
+    .explorer summary::-webkit-details-marker { display: none; }
+    .explorer summary::before { content: ""; box-sizing: border-box; width: 5px; height: 5px; border-right: 1px solid #666; border-bottom: 1px solid #666; transform: rotate(-45deg); margin: 0 3.5px; flex-shrink: 0; }
+    .explorer details[open] > summary::before { transform: rotate(45deg); }
+    .explorer .leaf { margin-left: 12px; width: calc(100% - 12px); }
+    .tree-icon { display: inline-block; width: 10px; height: 10px; border: 1px solid #777; flex-shrink: 0; }
+    .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+    .tabs { display: flex; align-items: stretch; flex-shrink: 0; min-height: 40px; overflow-x: auto; border-bottom: 1px solid #ccc; background: #f3f3f3; }
+    .workspace-tab { display: flex; align-items: stretch; flex-shrink: 0; min-width: 125px; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-bottom: -1px; }
+    .workspace-tab.active { background: white; border-bottom-color: white; }
+    .workspace-tab > button { border: 0; background: transparent; }
+    .workspace-tab > .tab-label { flex: 1; padding: 8px 14px; text-align: left; }
+    .workspace-tab > .tab-close { padding: 4px 9px; color: #666; }
+    .workspace-tab > .tab-close:hover { background: #ddd; color: #222; }
+    .content { padding: 24px; flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+    .heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .placeholder { min-height: 155px; display: grid; place-items: center; border: 1px solid #ddd; }
+    .placeholder span { background: white; padding: 5px 12px; color: #666; }
+    .lines { display: grid; gap: 10px; margin: 16px 0; }
+    .lines span { display: block; height: 1px; background: #bbb; width: 88%; }
+    .lines span:nth-child(2) { width: 65%; }
+    .lines span:nth-child(3) { width: 76%; }
+    .box { border: 1px solid #ccc; padding: 16px; margin-bottom: 16px; }
+    .row, .composer-actions, .question { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .preview-controls { display: flex; align-items: center; gap: 7px; margin-left: auto; }
+    .question label { display: flex; align-items: center; gap: 5px; }
+    .question-item + .question-item { margin-top: 16px; padding-top: 16px; border-top: 1px solid #ddd; }
+    .question-item > p { margin-bottom: 8px; }
+    .variant-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .variant { display: block; padding: 12px; border: 1px solid #ccc; cursor: pointer; }
+    .variant:has(input:checked) { border-color: #222; outline: 1px solid #222; }
+    .variant-title { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+    .variant-title input { margin: 0; }
+    .variant-selection { display: none; margin-left: auto; }
+    .variant:has(input:checked) .variant-selection { display: inline; }
+    .variant-preview { display: grid; grid-template-rows: 12px minmax(0, 1fr); gap: 8px; height: 110px; margin-top: 12px; padding: 8px; border: 1px solid #ddd; }
+    .variant-bar { display: block; border: 1px solid #ccc; }
+    .variant-body { display: grid; grid-template-columns: 1fr 3fr; gap: 8px; }
+    .variant-body.stacked { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    .variant-body > span { display: block; border: 1px solid #ccc; }
+    .plan-element { position: relative; width: 160px; min-height: 70px; display: grid; place-items: center; border: 1px solid #aaa; }
+    .comment-marker { position: absolute; top: -10px; right: -10px; width: 25px; height: 25px; padding: 0; border: 1px solid #777; border-radius: 50%; background: white; font-size: 12px; }
+    .comment-thread { margin-top: 14px; padding: 12px; border-left: 2px solid #aaa; }
+    .comment-thread .row, .composer .row { justify-content: space-between; }
+    .comment-thread p { margin: 10px 0; }
+    .composer { margin-top: 16px; }
+    .attachments { margin: 8px 0 12px; padding-left: 18px; }
+    .attachments li { padding: 2px 0; overflow-wrap: anywhere; }
+    .attachments button { border: 0; padding: 0; background: transparent; }
+    .attachments .attachment-label:hover { text-decoration: underline; }
+    .attachments .attachment-remove { margin-left: 8px; padding: 0 3px; color: #777; }
+    .composer textarea { min-height: 64px; }
+    .composer .row { margin-top: 6px; }
+    .comment-list { list-style: none; margin: 0; padding: 0; }
+    .comment-list button { display: grid; gap: 6px; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid #ddd; text-align: left; }
+    .inspector { border-left: 1px solid #ccc; }
+    .inspector label { display: block; margin-bottom: 7px; }
+    .inspector select { width: 100%; }
+    .entity-version { margin: -6px 0 14px; }
+    .dependency-list { list-style: disc; margin: 0; padding-left: 18px; }
+    .dependency-list li { padding: 2px 0; }
+    .dependency-list a { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; color: inherit; text-underline-offset: 2px; white-space: nowrap; vertical-align: top; }
+    .dependency-tooltip { position: fixed; z-index: 10; width: max-content; max-width: min(280px, calc(100vw - 16px)); padding: 5px 8px; border-radius: 3px; background: #333; color: white; font-size: 12px; font-weight: normal; line-height: 1.4; pointer-events: none; }
+    .dependency-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .dependency-warning { flex-shrink: 0; color: #555; }
+    .history-list { list-style: none; margin: 0; padding: 0; }
+    #plan-history { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #ddd; }
+    #plan-history h2 { margin-bottom: 6px; }
+    .history-list button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 4px 6px; border: 1px solid transparent; text-align: left; }
+    .history-list small { font-size: 11px; white-space: nowrap; }
+    .history-notice { justify-content: space-between; margin-bottom: 16px; }
+    .iteration-reply p + p { margin-top: 8px; }
+    .entity-section { min-width: 0; margin-bottom: 24px; scroll-margin-top: 24px; }
+    .entity-section + .entity-section { padding-top: 24px; border-top: 1px solid #ddd; }
+    .entity-field + .entity-field { margin-top: 20px; }
+    .entity-field h3 { font-size: 13px; font-weight: normal; margin: 0 0 12px; }
+    .entity-link { padding: 0; border: 0; background: transparent; text-align: left; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+    .entity-link:hover { background: transparent; color: #666; }
+    .table-wrap { overflow-x: auto; }
+    .children-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .children-table th, .children-table td { width: 33.33%; height: 38px; padding: 8px; border: 1px solid #ccc; text-align: left; }
+    .children-table th { font-weight: 500; }
+    @media (max-width: 1000px) { .workspace { grid-template-columns: 175px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 200px; } .inspector { grid-column: 2; border-left: 0; border-top: 1px solid #777; } .sidebar { grid-row: span 2; } }
+    @media (max-width: 620px) { .workspace { grid-template-columns: minmax(0, 1fr); grid-template-rows: 140px minmax(0, 1fr) 140px; } .sidebar { grid-row: auto; border-right: 0; border-bottom: 1px solid #777; } .content { padding: 18px 14px; } .inspector { grid-column: auto; border-left: 0; } }
+    @media (max-width: 460px) { .variant-options { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="workspace">
+    <aside class="sidebar" aria-label="Navigation">
+      <div class="brand"><strong>App</strong></div>
+      <ul class="explorer" aria-label="Workspace tree">
+        <li><ul id="model-tree" aria-label="Entity structure"></ul></li>
+        <li><details open><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Changes</span></summary><ul>
+          <li><button class="leaf" type="button" id="open-plan"><span class="tree-icon" aria-hidden="true"></span>Plan</button></li>
+        </ul></details></li>
+        <li><button class="leaf" type="button" id="open-decisions"><span class="tree-icon" aria-hidden="true"></span>Decisions</button></li>
+        <li><details><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Entity types</span></summary><ul id="model-types"></ul></details></li>
+        <li><details><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Content types</span></summary><ul>
+          <li><button class="leaf" type="button" data-entity="Content type 1" data-scope="Content types" data-kind="Content type"><span class="tree-icon" aria-hidden="true"></span>Content type 1</button></li>
+          <li><button class="leaf" type="button" data-entity="Content type 2" data-scope="Content types" data-kind="Content type"><span class="tree-icon" aria-hidden="true"></span>Content type 2</button></li>
+          <li><button class="leaf" type="button" data-entity="Content type 3" data-scope="Content types" data-kind="Content type"><span class="tree-icon" aria-hidden="true"></span>Content type 3</button></li>
+          <li><button class="leaf" type="button" data-entity="Content type 4" data-scope="Content types" data-kind="Content type"><span class="tree-icon" aria-hidden="true"></span>Content type 4</button></li>
+        </ul></details></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <nav class="tabs" id="tabs" aria-label="Open tabs"></nav>
+      <div class="content">
+        <section id="plan-view" aria-labelledby="plan-heading">
+          <div class="heading"><h1 id="plan-heading">Plan</h1><div class="preview-controls" id="preview-controls"><label for="response-state">Preview</label><select id="response-state" aria-label="Preview agent response"><option value="questions">Questions only</option><option value="draft" selected>Draft + questions</option><option value="ready">Ready plan</option></select></div></div>
+          <div class="row history-notice" id="history-notice" hidden><small id="history-label"></small><button type="button" id="latest-iteration">Latest iteration</button></div>
+          <section class="box" id="plan-preview" aria-labelledby="preview-title">
+            <h2 id="preview-title">Draft plan</h2>
+            <div class="placeholder" aria-label="Plan preview"><div class="plan-element" id="plan-element"><span>Element</span><button type="button" class="comment-marker" id="plan-comment" aria-label="Open comment 1 on plan element" aria-controls="comment-thread" aria-expanded="false">1</button></div></div>
+            <div class="comment-thread" id="comment-thread" hidden><div class="row"><small>Comment 1: Plan element</small><div class="composer-actions"><button type="button" id="attach-comment">Attach</button><button type="button" id="close-comment">Close</button></div></div><p>Comment text</p></div>
+            <div class="lines" aria-hidden="true"><span></span><span></span></div>
+            <p class="muted" id="plan-choices" hidden></p>
+          </section>
+          <section class="box" id="required-questions" aria-labelledby="question-title">
+            <h2 id="question-title">Questions</h2>
+            <div class="question-item" role="group" aria-labelledby="question-1"><p id="question-1">Question 1 <small>Required</small></p><div class="question"><label><input type="radio" name="answer-1" value="a">Option A</label><label><input type="radio" name="answer-1" value="b">Option B</label></div></div>
+            <div class="question-item" role="group" aria-labelledby="question-2">
+              <p id="question-2">Question 2 <small>Required</small></p>
+              <div class="variant-options" role="radiogroup" aria-labelledby="question-2">
+                <label class="variant"><span class="variant-title"><input type="radio" name="answer-2" value="a" aria-label="Variant A"><span>Variant A</span><small class="variant-selection">Selected</small></span><span class="variant-preview" aria-hidden="true"><span class="variant-bar"></span><span class="variant-body"><span></span><span></span></span></span></label>
+                <label class="variant"><span class="variant-title"><input type="radio" name="answer-2" value="b" aria-label="Variant B"><span>Variant B</span><small class="variant-selection">Selected</small></span><span class="variant-preview" aria-hidden="true"><span class="variant-bar"></span><span class="variant-body stacked"><span></span><span></span></span></span></label>
+              </div>
+            </div>
+          </section>
+          <section class="box iteration-reply" id="iteration-reply" aria-labelledby="reply-title" hidden><h2 id="reply-title">Your response</h2><p id="reply-answers" hidden></p><p id="reply-message" hidden></p><p class="muted" id="reply-attachment" hidden>Comment 1 attached</p><p class="muted" id="reply-files" hidden></p></section>
+          <form class="composer" id="composer">
+            <small>Comments / attachments</small>
+            <ul class="attachments" id="attachments-list" aria-label="Added comments and attachments"><li id="comment-attachments"><button class="attachment-label" type="button" id="comment-attachment">Comment 1: Plan element (Comment text)</button><button class="attachment-remove" type="button" id="remove-attachment" aria-label="Remove comment attachment">×</button></li></ul>
+            <p class="muted" id="no-attachments" hidden>None</p>
+            <textarea rows="2" id="message" placeholder="Message the agent…" aria-label="Message the agent"></textarea>
+            <div class="row"><small id="message-status" aria-live="polite"></small><div class="composer-actions"><button type="button" id="approve-plan" hidden>Approve plan</button><button type="submit" id="send-response" disabled>Send answers</button></div></div>
+          </form>
+        </section>
+        <section id="decisions-view" aria-labelledby="decisions-title" hidden><div class="heading"><h1 id="decisions-title">Decisions</h1></div><div class="lines" aria-hidden="true"><span></span><span></span><span></span></div></section>
+        <section id="entity-view" aria-labelledby="entity-title" hidden>
+          <div class="heading"><h1 id="entity-title">Entity 1</h1><small id="entity-kind">Entity</small></div>
+          <div id="entity-content"></div>
+          <div id="entity-placeholder"><div class="placeholder"><span id="field-label">Entity view</span></div><div class="lines" aria-hidden="true"><span></span><span></span><span></span></div></div>
+        </section>
+        <p class="muted" id="empty-view" hidden>Select an item</p>
+      </div>
+    </main>
+
+    <aside class="inspector" aria-label="Context">
+      <section id="plan-history" aria-labelledby="history-title"><h2 id="history-title">Iterations</h2><ol class="history-list" id="iteration-list" aria-label="Plan history"></ol></section>
+      <section id="question-context" hidden><h2>Questions</h2><p class="muted">Answers needed before a plan.</p></section>
+      <section id="plan-comments" aria-labelledby="comments-title"><h2 id="comments-title">Comments</h2><ul class="comment-list"><li><button type="button" id="sidebar-comment" aria-controls="comment-thread" aria-expanded="false"><span>1: Plan element</span><small>Comment text</small></button></li></ul></section>
+      <section id="context-panel" hidden>
+        <h2 id="context-title">Entity 1</h2>
+        <p class="muted entity-version" id="entity-version"></p>
+        <label for="autonomy">Agent autonomy</label>
+        <select id="autonomy"><option>Ask first</option><option>Keep me informed</option><option>Act independently</option></select>
+        <div id="entity-dependencies">
+          <hr><h2 id="depends-on-title">Depends on</h2><ul class="dependency-list" id="depends-on" aria-labelledby="depends-on-title"></ul>
+          <hr><h2 id="used-by-title">Used by</h2><ul class="dependency-list" id="used-by" aria-labelledby="used-by-title"></ul>
+        </div>
+      </section>
+    </aside>
+  </div>
+  <div class="dependency-tooltip" id="dependency-tooltip" role="tooltip" hidden></div>
+  <script>
+    (() => {
+      const schemas = {
+        'Type 1': { tree: 'structured', brief: [], content: ['Field 1'], children: {
+          'Field 2': { entity: 'Type 2' }, 'Field 3': { entity: 'Type 3' }, 'Field 4': { entity: 'Type 4' }
+        } },
+        'Type 2': { tree: 'list', listField: 'Field 2', brief: ['Field 1', 'Field 2'], content: ['Field 1'], children: {
+          'Field 2': { map: 'Type 5' }
+        } },
+        'Type 3': { tree: 'structured', brief: ['Field 1'], content: ['Field 1'], children: {} },
+        'Type 4': { tree: 'list', listField: 'Field 2', brief: ['Field 1', 'Field 2'], content: ['Field 1'], children: {
+          'Field 2': { map: 'Type 4' }
+        } },
+        'Type 5': { tree: 'list', listField: 'Field 2', brief: ['Field 1'], content: ['Field 1'], children: {
+          'Field 2': { map: 'Type 6' }
+        } },
+        'Type 6': { tree: 'structured', brief: ['Field 1', 'Field 2'], content: ['Field 1', 'Field 2', 'Field 3'], children: {} }
+      };
+      function entity(type, children = {}) {
+        const schema = schemas[type];
+        return {
+          type,
+          brief: Object.fromEntries(schema.brief.map(name => [name, ''])),
+          content: Object.fromEntries(schema.content.map(name => [name, ''])),
+          children: { ...Object.fromEntries(Object.entries(schema.children).map(([name, child]) => [name, child.map ? {} : ''])), ...children }
+        };
+      }
+      const entities = {
+        'entity-1': entity('Type 1', { 'Field 2': 'entity-2', 'Field 3': 'entity-3', 'Field 4': 'entity-4' }),
+        'entity-2': entity('Type 2', { 'Field 2': { 'Entity 7': 'entity-7' } }),
+        'entity-3': entity('Type 3'),
+        'entity-4': entity('Type 4', { 'Field 2': { 'Entity 5': 'entity-5', 'Entity 6': 'entity-6' } }),
+        'entity-5': entity('Type 4'),
+        'entity-6': entity('Type 4'),
+        'entity-7': entity('Type 5', { 'Field 2': { 'Entity 8': 'entity-8', 'Entity 9': 'entity-9' } }),
+        'entity-8': entity('Type 6'),
+        'entity-9': entity('Type 6')
+      };
+
+      function childFields(id) {
+        return Object.entries(schemas[entities[id].type].children);
+      }
+      function children(id) {
+        return childFields(id).flatMap(([field, definition]) => definition.map
+          ? Object.entries(entities[id].children[field]).map(([name, entity]) => ({ field, name, entity, map: true }))
+          : [{ field, name: field, entity: entities[id].children[field], map: false }]);
+      }
+      function parentOf(id) {
+        for (const parent of Object.keys(entities)) {
+          const child = children(parent).find(item => item.entity === id);
+          if (child) return { ...child, parent };
+        }
+        return null;
+      }
+      function label(id) { return parentOf(id)?.name || (entities[id] ? 'Entity 1' : id); }
+      function item(id, field = '') { return { entity: id, scope: 'Workspace', kind: 'Entity', field }; }
+
+      const versions = {
+        'entity-1': 'a71c9e2', 'entity-2': 'b62e8f4', 'entity-3': '8e4f2a1',
+        'entity-4': 'c94a1f7', 'entity-5': 'd83b6a9', 'entity-6': 'e52c7b3',
+        'entity-7': 'f28b4d6', 'entity-8': '61d2c08', 'entity-9': '7f20de5'
+      };
+      Object.entries(entities).forEach(([id, entity]) => { entity.version = versions[id]; });
+      Object.entries(entities).forEach(([id, entity]) => {
+        const relation = parentOf(id);
+        entity.dependencies = relation ? [{ entity: relation.parent, version: entities[relation.parent].version }] : [];
+      });
+
+      const el = (tag, text, className) => {
+        const node = document.createElement(tag);
+        if (text !== undefined) node.textContent = text;
+        if (className) node.className = className;
+        return node;
+      };
+      function renderTree(onOpen) {
+        const target = document.getElementById('model-tree');
+        const existing = [...target.querySelectorAll('details[data-node]')];
+        const opened = existing.length ? new Set(existing.filter(node => node.open).map(node => node.dataset.node))
+          : new Set(['entity-1', 'entity-2', 'entity-4', 'entity-7']);
+        target.replaceChildren();
+        function branch(id) {
+          const li = el('li');
+          const button = el('button');
+          button.type = 'button';
+          button.dataset.entity = id;
+          button.title = label(id) + ' · ' + entities[id].type;
+          const icon = el('span', undefined, 'tree-icon');
+          icon.setAttribute('aria-hidden', 'true');
+          button.append(icon, document.createTextNode(label(id)));
+          button.addEventListener('click', event => { event.preventDefault(); onOpen(item(id)); });
+          const entries = children(id);
+          if (entries.length) {
+            const details = el('details');
+            details.dataset.node = id;
+            details.open = opened.has(id);
+            const summary = el('summary');
+            summary.append(button);
+            const list = el('ul');
+            entries.forEach(child => list.append(branch(child.entity)));
+            details.append(summary, list);
+            li.append(details);
+          } else {
+            button.className = 'leaf';
+            li.append(button);
+          }
+          return li;
+        }
+        target.append(branch('entity-1'));
+        const typeList = document.getElementById('model-types');
+        if (!typeList.childElementCount) Object.keys(schemas).forEach(type => {
+          const li = el('li');
+          const button = el('button', type, 'leaf');
+          button.type = 'button';
+          const icon = el('span', undefined, 'tree-icon');
+          icon.setAttribute('aria-hidden', 'true');
+          button.prepend(icon);
+          Object.assign(button.dataset, { entity: type, scope: 'Entity types', kind: 'Entity type' });
+          button.addEventListener('click', () => onOpen({ entity: type, scope: 'Entity types', kind: 'Entity type', field: '' }));
+          li.append(button);
+          typeList.append(li);
+        });
+      }
+
+      function renderType(target) {
+        ['Brief', 'Content', 'Children'].forEach(title => {
+          const section = el('section', undefined, 'entity-section');
+          const heading = el('h2', title);
+          heading.id = 'type-section-' + title.toLowerCase();
+          section.setAttribute('aria-labelledby', heading.id);
+          section.append(heading, pagePlaceholder('Settings'));
+          target.append(section);
+        });
+      }
+
+      function childTable(field) {
+        const wrap = el('div', undefined, 'table-wrap');
+        const table = el('table', undefined, 'children-table');
+        table.setAttribute('aria-label', field);
+        const head = el('thead'), header = el('tr'), body = el('tbody');
+        ['Column 1', 'Column 2', 'Column 3'].forEach(name => {
+          const cell = el('th', name); cell.scope = 'col'; header.append(cell);
+        });
+        head.append(header);
+        for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
+          const row = el('tr');
+          for (let column = 0; column < 3; column++) row.append(el('td'));
+          body.append(row);
+        }
+        table.append(head, body); wrap.append(table);
+        return wrap;
+      }
+
+      function pagePlaceholder(label = 'Content') {
+        const page = el('div');
+        const preview = el('div', undefined, 'placeholder');
+        preview.append(el('span', label));
+        const lines = el('div', undefined, 'lines');
+        lines.setAttribute('aria-hidden', 'true');
+        for (let line = 0; line < 3; line++) lines.append(el('span'));
+        page.append(preview, lines);
+        return page;
+      }
+
+      function renderView(active) {
+        const target = document.getElementById('entity-content');
+        const known = active.scope === 'Workspace' && entities[active.entity];
+        const isType = active.scope === 'Entity types' && schemas[active.entity];
+        target.hidden = !known && !isType;
+        document.getElementById('entity-placeholder').hidden = !!known || !!isType;
+        target.replaceChildren();
+        if (isType) { renderType(target); return; }
+        if (!known) return;
+        const schema = schemas[entities[active.entity].type];
+        function section(title, className = 'entity-section', headingTag = 'h2') {
+          const node = el('section', undefined, className);
+          const heading = el(headingTag, title);
+          heading.id = 'entity-section-' + target.querySelectorAll('section').length;
+          node.setAttribute('aria-labelledby', heading.id);
+          node.append(heading);
+          return node;
+        }
+        if (schema.brief.length) {
+          const brief = section('Brief');
+          target.append(brief);
+          schema.brief.forEach(field => {
+            const node = section(field, 'entity-field', 'h3');
+            node.append(pagePlaceholder());
+            brief.append(node);
+          });
+        }
+        let activeSection;
+        if (schema.content.length) {
+          const content = section('Content');
+          target.append(content);
+          schema.content.forEach(field => {
+            const node = section(field, 'entity-field', 'h3');
+            node.append(pagePlaceholder());
+            content.append(node);
+            if (active.field === field) activeSection = node;
+          });
+        }
+        if (Object.keys(schema.children).length) {
+          const children = section('Children');
+          target.append(children);
+          Object.entries(schema.children).forEach(([field, definition]) => {
+            const node = section(field, 'entity-field', 'h3');
+            node.append(definition.map ? childTable(field) : pagePlaceholder());
+            children.append(node);
+            if (active.field === field) activeSection = node;
+          });
+        }
+        activeSection?.scrollIntoView({ block: 'start' });
+      }
+      window.entityModel = { entities, schemas, label, renderTree, renderView };
+    })();
+
+    (() => {
+      const get = id => document.getElementById(id);
+      const policies = new Map();
+      // Each current entity version stores the dependency versions used to generate it.
+      const entities = entityModel.entities;
+      const entityLabel = item => item.scope === 'Workspace' ? entityModel.label(item.entity) : item.entity;
+      const keyFor = item => item.page || JSON.stringify([item.scope, item.entity, item.field]);
+      const itemFor = button => ({
+        entity: button.dataset.entity,
+        scope: button.dataset.scope || 'Workspace',
+        kind: button.dataset.kind || 'Entity',
+        field: button.dataset.field || ''
+      });
+      const plan = { page: 'plan', entity: 'Plan', scope: 'Changes', field: '' };
+      const decisions = { page: 'decisions', entity: 'Decisions', scope: 'Workspace', field: '' };
+      const openTabs = [{ entity: 'entity-1', scope: 'Workspace', kind: 'Entity', field: '' }, plan];
+      let activeKey = keyFor(openTabs[0]);
+      let renderedKey = null;
+      let responseState = 'draft';
+      let approved = false;
+      let submittedAnswers = [];
+      let commentOpen = false;
+      let commentAttached = true;
+      let fileAttachments = ['Attachment 1'];
+      const iterations = [
+        newIteration('questions', { answers: ['a', 'a'], replyAnswers: ['a', 'a'] }),
+        newIteration('draft')
+      ];
+      let iterationIndex = iterations.length - 1;
+
+      function newIteration(state, values = {}) {
+        return { responseState: state, approved: false, answers: ['', ''], submittedAnswers: [], messageDraft: '', messageStatus: '', commentAttached: false, fileAttachments: [], replyAnswers: [], replyMessage: '', replyAttachment: false, replyFiles: [], ...values };
+      }
+
+      function isLatestIteration() { return iterationIndex === iterations.length - 1; }
+
+      function saveIteration() {
+        if (!isLatestIteration()) return;
+        Object.assign(iterations[iterationIndex], { responseState, approved, answers: selectedAnswers(), submittedAnswers: [...submittedAnswers], messageDraft: get('message').value, messageStatus: get('message-status').textContent, commentAttached, fileAttachments: [...fileAttachments] });
+      }
+
+      function showIteration(index, save = true) {
+        if (save) saveIteration();
+        iterationIndex = index;
+        const item = iterations[index];
+        responseState = item.responseState;
+        approved = item.approved;
+        submittedAnswers = [...item.submittedAnswers];
+        commentAttached = item.commentAttached;
+        fileAttachments = [...item.fileAttachments];
+        commentOpen = false;
+        document.querySelectorAll('[name^="answer-"]').forEach(input => {
+          const answerIndex = input.name === 'answer-1' ? 0 : 1;
+          input.checked = input.value === item.answers[answerIndex];
+        });
+        get('message').value = item.messageDraft;
+        get('message-status').textContent = item.messageStatus;
+        renderReview();
+      }
+
+      function renderHistory() {
+        get('plan-history').hidden = activeKey !== 'plan';
+        get('iteration-list').replaceChildren();
+        iterations.forEach((item, index) => {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.type = 'button';
+          const title = document.createElement('span');
+          title.textContent = (index + 1) + ': ' + { questions: 'Questions', draft: 'Draft', ready: 'Plan' }[item.responseState];
+          const detail = document.createElement('small');
+          detail.textContent = item.approved ? 'Approved' : index === iterations.length - 1 ? 'Current' : '';
+          detail.hidden = !detail.textContent;
+          if (index === iterationIndex) button.setAttribute('aria-current', 'page');
+          button.append(title, detail);
+          button.addEventListener('click', () => {
+            showIteration(index);
+            get('iteration-list').querySelector('[aria-current="page"]').focus();
+          });
+          li.append(button);
+          get('iteration-list').append(li);
+        });
+      }
+
+      function openItem(item) {
+        activeKey = keyFor(item);
+        if (!openTabs.some(open => keyFor(open) === activeKey)) openTabs.push(item);
+        render();
+      }
+
+      function hideDependencyTooltip() {
+        get('dependency-tooltip').hidden = true;
+      }
+
+      function showDependencyTooltip(anchor, text) {
+        const tooltip = get('dependency-tooltip');
+        tooltip.textContent = text;
+        tooltip.hidden = false;
+        const bounds = anchor.getBoundingClientRect();
+        const size = tooltip.getBoundingClientRect();
+        tooltip.style.left = Math.max(8, Math.min(bounds.left, window.innerWidth - size.width - 8)) + 'px';
+        const top = bounds.top - size.height - 6;
+        tooltip.style.top = (top >= 8 ? top : bounds.bottom + 6) + 'px';
+      }
+
+      function renderDependencies(active) {
+        const entity = active.scope === 'Workspace' ? entities[active.entity] : null;
+        get('entity-version').hidden = !entity;
+        get('entity-dependencies').hidden = !entity;
+        if (!entity) return;
+        get('entity-version').textContent = entityModel.label(active.entity) + '@' + entity.version;
+
+        function showRelations(id, relations) {
+          const list = get(id);
+          list.replaceChildren();
+          if (!relations.length) {
+            const empty = document.createElement('li');
+            empty.className = 'muted';
+            empty.textContent = 'None';
+            list.append(empty);
+          }
+          relations.forEach(relation => {
+            const li = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = '#entity-view';
+            const label = document.createElement('span');
+            label.className = 'dependency-label';
+            label.textContent = entityModel.label(relation.entity) + '@' + relation.version;
+            const outdated = relation.usedVersion !== relation.currentVersion;
+            const target = entityModel.label(id === 'depends-on' ? relation.entity : active.entity);
+            const detail = (id === 'depends-on' ? 'Generated from ' : 'Uses ') + target
+              + '@' + relation.usedVersion + '; current @' + relation.currentVersion;
+            link.setAttribute('aria-label', label.textContent + '. ' + (outdated ? 'Outdated. ' : '') + detail);
+            link.addEventListener('mouseenter', () => showDependencyTooltip(link, detail));
+            link.addEventListener('focus', () => showDependencyTooltip(link, detail));
+            link.addEventListener('mouseleave', hideDependencyTooltip);
+            link.addEventListener('blur', hideDependencyTooltip);
+            link.append(label);
+            if (outdated) {
+              const warning = document.createElement('span');
+              warning.className = 'dependency-warning';
+              warning.textContent = '\u26a0\ufe0e';
+              warning.setAttribute('aria-hidden', 'true');
+              link.append(warning);
+            }
+            link.addEventListener('click', event => {
+              event.preventDefault();
+              openItem({ entity: relation.entity, scope: 'Workspace', kind: 'Entity', field: '' });
+              focusActiveTab();
+            });
+            li.append(link);
+            list.append(li);
+          });
+        }
+
+        showRelations('depends-on', entity.dependencies.map(dependency => ({
+          entity: dependency.entity,
+          version: dependency.version,
+          usedVersion: dependency.version,
+          currentVersion: entities[dependency.entity].version
+        })));
+        // Reverse the same stored references so both lists always agree.
+        showRelations('used-by', Object.entries(entities).flatMap(([name, dependent]) =>
+          dependent.dependencies.filter(dependency => dependency.entity === active.entity).map(dependency => ({
+            entity: name,
+            version: dependent.version,
+            usedVersion: dependency.version,
+            currentVersion: entity.version
+          }))
+        ));
+      }
+
+      function render() {
+        hideDependencyTooltip();
+        if (renderedKey !== activeKey) document.querySelector('.content').scrollTop = 0;
+        renderedKey = activeKey;
+        entityModel.renderTree(openItem);
+        const active = openTabs.find(item => keyFor(item) === activeKey);
+        get('tabs').replaceChildren();
+        openTabs.forEach(item => {
+          const key = keyFor(item);
+          const label = entityLabel(item) + (item.field ? ' / ' + item.field : '');
+          const tab = document.createElement('div');
+          tab.className = 'workspace-tab' + (key === activeKey ? ' active' : '');
+          const select = document.createElement('button');
+          select.type = 'button';
+          select.className = 'tab-label';
+          select.textContent = label;
+          select.title = item.scope + ' / ' + label;
+          if (key === activeKey) select.setAttribute('aria-current', 'page');
+          select.addEventListener('click', () => { activeKey = key; render(); focusActiveTab(); });
+          const close = document.createElement('button');
+          close.type = 'button';
+          close.className = 'tab-close';
+          close.textContent = '×';
+          close.setAttribute('aria-label', 'Close ' + item.scope + ' / ' + label);
+          close.addEventListener('click', () => {
+            const index = openTabs.findIndex(open => keyFor(open) === key);
+            openTabs.splice(index, 1);
+            if (activeKey === key) activeKey = openTabs[Math.min(index, openTabs.length - 1)] ? keyFor(openTabs[Math.min(index, openTabs.length - 1)]) : null;
+            render();
+            focusActiveTab();
+          });
+          tab.append(select, close);
+          get('tabs').append(tab);
+        });
+        document.querySelectorAll('[data-entity]').forEach(button => {
+          if (keyFor(itemFor(button)) === activeKey) button.setAttribute('aria-current', 'page');
+          else button.removeAttribute('aria-current');
+        });
+        const isEntity = !!active && !active.page;
+        const isPlan = activeKey === 'plan';
+        get('open-plan').toggleAttribute('aria-current', false);
+        get('open-decisions').toggleAttribute('aria-current', false);
+        if (isPlan) get('open-plan').setAttribute('aria-current', 'page');
+        if (activeKey === 'decisions') get('open-decisions').setAttribute('aria-current', 'page');
+        get('plan-view').hidden = !isPlan;
+        get('decisions-view').hidden = activeKey !== 'decisions';
+        get('entity-view').hidden = !isEntity;
+        get('context-panel').hidden = !isEntity;
+        get('empty-view').hidden = !!active;
+        renderReview();
+        if (!isEntity) return;
+        get('entity-title').textContent = entityLabel(active);
+        get('entity-kind').textContent = active.field || (active.scope === 'Workspace' ? entities[active.entity]?.type : active.kind);
+        get('field-label').textContent = (active.field || active.kind) + ' view';
+        get('context-title').textContent = entityLabel(active);
+        get('autonomy').value = policies.get(activeKey) || 'Ask first';
+        entityModel.renderView(active);
+        renderDependencies(active);
+      }
+
+      function selectedAnswers() {
+        return ['answer-1', 'answer-2'].map(name => document.querySelector('input[name="' + name + '"]:checked')?.value || '');
+      }
+
+      function renderAttachments() {
+        const list = get('attachments-list');
+        list.hidden = !commentAttached && !fileAttachments.length;
+        get('no-attachments').hidden = !list.hidden;
+        list.replaceChildren(get('comment-attachments'));
+        fileAttachments.forEach((filename, index) => {
+          const item = document.createElement('li');
+          const label = document.createElement('span');
+          label.textContent = filename;
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'attachment-remove';
+          remove.textContent = '×';
+          remove.setAttribute('aria-label', 'Remove ' + filename);
+          remove.addEventListener('click', () => {
+            fileAttachments.splice(index, 1);
+            renderReview();
+            get('message').focus();
+          });
+          item.append(label, remove);
+          list.append(item);
+        });
+      }
+
+      function renderReview() {
+        saveIteration();
+        const latest = isLatestIteration();
+        const iteration = iterations[iterationIndex];
+        const needsAnswers = responseState !== 'ready';
+        const hasPlan = responseState !== 'questions';
+        const hasFeedback = !!get('message').value.trim() || commentAttached || !!fileAttachments.length;
+        const answersComplete = selectedAnswers().every(Boolean);
+        get('plan-heading').textContent = hasPlan ? 'Plan' : 'Questions';
+        get('response-state').value = responseState;
+        get('response-state').disabled = !latest;
+        get('preview-controls').hidden = activeKey !== 'plan';
+        get('history-notice').hidden = latest;
+        get('history-label').textContent = 'Iteration ' + (iterationIndex + 1) + ' (Earlier version)';
+        get('plan-preview').hidden = !hasPlan;
+        get('preview-title').textContent = (needsAnswers ? 'Draft plan' : 'Plan preview') + ' (Iteration ' + (iterationIndex + 1) + ')';
+        get('required-questions').hidden = !needsAnswers;
+        document.querySelectorAll('[name^="answer-"]').forEach(input => { input.disabled = !latest; });
+        get('composer').hidden = !latest;
+        get('attach-comment').hidden = !latest;
+        get('plan-comments').hidden = activeKey !== 'plan' || !hasPlan;
+        get('question-context').hidden = activeKey !== 'plan' || hasPlan;
+        get('comment-thread').hidden = !commentOpen;
+        get('plan-comment').setAttribute('aria-expanded', String(commentOpen));
+        get('sidebar-comment').setAttribute('aria-expanded', String(activeKey === 'plan' && hasPlan && commentOpen));
+        get('comment-attachments').hidden = !commentAttached;
+        get('plan-choices').hidden = !submittedAnswers.length;
+        get('plan-choices').textContent = submittedAnswers.length ? 'Option ' + submittedAnswers[0].toUpperCase() + ', Variant ' + submittedAnswers[1].toUpperCase() : '';
+        get('approve-plan').hidden = needsAnswers || hasFeedback;
+        get('approve-plan').disabled = approved;
+        get('send-response').hidden = !needsAnswers && !hasFeedback;
+        get('send-response').textContent = hasFeedback ? 'Send' : 'Send answers';
+        get('send-response').disabled = !hasFeedback && !answersComplete;
+        get('iteration-reply').hidden = !iteration.replyAnswers.length && !iteration.replyMessage && !iteration.replyAttachment && !iteration.replyFiles.length;
+        get('reply-answers').hidden = !iteration.replyAnswers.length;
+        get('reply-answers').textContent = iteration.replyAnswers.length ? 'Option ' + iteration.replyAnswers[0].toUpperCase() + ', Variant ' + iteration.replyAnswers[1].toUpperCase() : '';
+        get('reply-message').hidden = !iteration.replyMessage;
+        get('reply-message').textContent = iteration.replyMessage;
+        get('reply-attachment').hidden = !iteration.replyAttachment;
+        get('reply-files').hidden = !iteration.replyFiles.length;
+        get('reply-files').textContent = iteration.replyFiles.join(', ');
+        renderAttachments();
+        renderHistory();
+      }
+
+      function focusActiveTab() {
+        const target = document.querySelector('.tab-label[aria-current="page"]') || document.querySelector('.sidebar [data-entity]');
+        target.focus();
+      }
+
+      document.querySelectorAll('[data-entity]').forEach(button => button.addEventListener('click', event => {
+        event.preventDefault();
+        openItem(itemFor(button));
+      }));
+      get('autonomy').addEventListener('change', () => { if (activeKey) policies.set(activeKey, get('autonomy').value); });
+      get('open-plan').addEventListener('click', () => openItem(plan));
+      get('open-decisions').addEventListener('click', () => openItem(decisions));
+      get('latest-iteration').addEventListener('click', () => {
+        showIteration(iterations.length - 1);
+        get('message').focus();
+      });
+      get('response-state').addEventListener('change', () => {
+        if (!isLatestIteration()) return;
+        const state = get('response-state').value;
+        saveIteration();
+        iterations.push(newIteration(state));
+        showIteration(iterations.length - 1, false);
+      });
+      get('approve-plan').addEventListener('click', () => {
+        if (!isLatestIteration() || responseState !== 'ready' || get('message').value.trim() || commentAttached || fileAttachments.length) return;
+        approved = true;
+        get('message-status').textContent = 'Plan approved';
+        renderReview();
+      });
+      document.querySelectorAll('[name^="answer-"]').forEach(input => input.addEventListener('change', renderReview));
+      get('message').addEventListener('input', renderReview);
+      get('plan-comment').addEventListener('click', () => { commentOpen = !commentOpen; renderReview(); });
+      function openComment() {
+        commentOpen = true;
+        openItem(plan);
+        get('plan-comment').focus();
+        get('plan-element').scrollIntoView({ block: 'center' });
+      }
+      get('sidebar-comment').addEventListener('click', openComment);
+      get('comment-attachment').addEventListener('click', openComment);
+      get('attach-comment').addEventListener('click', () => { commentAttached = true; renderReview(); get('message').focus(); });
+      get('remove-attachment').addEventListener('click', () => { commentAttached = false; renderReview(); get('message').focus(); });
+      get('close-comment').addEventListener('click', () => { commentOpen = false; renderReview(); get('plan-comment').focus(); });
+      get('composer').addEventListener('submit', event => {
+        event.preventDefault();
+        if (!isLatestIteration()) return;
+        const needsAnswers = responseState !== 'ready';
+        const answers = selectedAnswers();
+        const hasAnswers = needsAnswers && answers.every(Boolean);
+        const hasFeedback = !!get('message').value.trim() || commentAttached || !!fileAttachments.length;
+        if (!hasAnswers && !hasFeedback) return;
+        saveIteration();
+        Object.assign(iterations[iterationIndex], {
+          replyAnswers: hasAnswers ? [...answers] : [],
+          replyMessage: get('message').value.trim(),
+          replyAttachment: commentAttached,
+          replyFiles: [...fileAttachments],
+          messageDraft: '', commentAttached: false, fileAttachments: [], messageStatus: ''
+        });
+        iterations.push(newIteration(hasAnswers ? 'ready' : responseState, {
+          answers: hasAnswers ? ['', ''] : [...answers],
+          submittedAnswers: hasAnswers ? [...answers] : [...submittedAnswers],
+          messageStatus: hasAnswers ? 'Answers sent. Plan updated' : needsAnswers ? 'Feedback sent. Answers still needed' : 'Feedback sent. Plan updated'
+        }));
+        showIteration(iterations.length - 1, false);
+        if (responseState === 'ready') get('approve-plan').focus();
+      });
+      document.addEventListener('scroll', hideDependencyTooltip, true);
+      window.addEventListener('resize', hideDependencyTooltip);
+      document.addEventListener('keydown', event => { if (event.key === 'Escape') hideDependencyTooltip(); });
+      render();
+    })();
+  </script>
+</body>
+</html>
