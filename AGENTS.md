@@ -13,10 +13,13 @@ Use short, imperative commit subjects and keep commits focused. Pull requests sh
 
 Write Markdown under `docs/` for human readers. Use descriptive titles and lowercase kebab-case filenames.
 
-Keep documentation concise. Use only the words and detail readers need to understand the topic or complete the task.
+Keep documentation concise. Use the fewest words needed to convey useful information.
+
+Before adding content, check whether its meaning is already covered, even in different words
 
 ### Scope and structure
 
+- Describe directory structure in its README as an unordered list of links to immediate children, with short descriptions of their contents.
 - Read existing documentation before writing. Extend the appropriate page instead of creating an overlapping document or fragmenting one topic across files.
 - Give each page a clear reader need. Lead with the main idea, then explain details in a logical order. Separate instructions, reference material, and design rationale when they serve different needs.
 - Use descriptive, sentence-case headings in a consistent hierarchy. Avoid empty sections, elaborate templates, and headings for every sentence.
@@ -31,7 +34,7 @@ Keep documentation concise. Use only the words and detail readers need to unders
 
 - Use familiar words, active voice, explicit actors, and short sentences. Keep each paragraph focused on one idea.
 - Use the same term for the same concept. Define unfamiliar terms on first use; avoid invented jargon and unnecessary acronyms.
-- Delete filler, promotional claims, vague qualifiers, and obvious statements. Avoid phrases such as “This document explains,” “It is important to note,” “seamlessly,” and “simply.”
+- Delete filler, promotional claims, vague qualifiers, and obvious statements. Avoid phrases such as “This document explains,” “Implementation documents belong here,” “It is important to note,” “seamlessly,” and “simply.”
 - State behavior directly. Keep conversation history, agent progress reports, rhetorical contrasts, and repeated introductions or conclusions out of documentation.
 - Prefer connected prose for explanations. Use numbered steps for sequences, bullets for parallel points, and tables for comparisons. Avoid deep nesting, excessive bold text, and decorative callouts.
 
