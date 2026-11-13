@@ -4,7 +4,6 @@ A workspace uses a directory to store all its files. It contains:
 
 - Entities content.
 - Installed entity types.
-- A list of decisions made during development.
 
 ## Configuration
 

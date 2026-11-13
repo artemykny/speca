@@ -134,7 +134,6 @@
         <li><details open><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Changes</span></summary><ul>
           <li><button class="leaf" type="button" id="open-plan"><span class="tree-icon" aria-hidden="true"></span>Plan</button></li>
         </ul></details></li>
-        <li><button class="leaf" type="button" id="open-decisions"><span class="tree-icon" aria-hidden="true"></span>Decisions</button></li>
         <li><details><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Entity types</span></summary><ul id="model-types"></ul></details></li>
       </ul>
     </aside>
@@ -172,7 +171,6 @@
             <div class="row"><small id="message-status" aria-live="polite"></small><div class="composer-actions"><button type="button" id="approve-plan" hidden>Approve plan</button><button type="submit" id="send-response" disabled>Send answers</button></div></div>
           </form>
         </section>
-        <section id="decisions-view" aria-labelledby="decisions-title" hidden><div class="heading"><h1 id="decisions-title">Decisions</h1></div><div class="lines" aria-hidden="true"><span></span><span></span><span></span></div></section>
         <section id="entity-view" aria-labelledby="entity-title" hidden>
           <div class="heading"><h1 id="entity-title">Entity 1</h1><small id="entity-kind">Entity</small></div>
           <div id="entity-content"></div>
@@ -429,7 +427,6 @@
         field: button.dataset.field || ''
       });
       const plan = { page: 'plan', entity: 'Plan', scope: 'Changes', field: '' };
-      const decisions = { page: 'decisions', entity: 'Decisions', scope: 'Workspace', field: '' };
       const openTabs = [{ entity: 'entity-1', scope: 'Workspace', kind: 'Entity', field: '' }, plan];
       let activeKey = keyFor(openTabs[0]);
       let renderedKey = null;
@@ -627,11 +624,8 @@
         const isEntity = !!active && !active.page;
         const isPlan = activeKey === 'plan';
         get('open-plan').toggleAttribute('aria-current', false);
-        get('open-decisions').toggleAttribute('aria-current', false);
         if (isPlan) get('open-plan').setAttribute('aria-current', 'page');
-        if (activeKey === 'decisions') get('open-decisions').setAttribute('aria-current', 'page');
         get('plan-view').hidden = !isPlan;
-        get('decisions-view').hidden = activeKey !== 'decisions';
         get('entity-view').hidden = !isEntity;
         get('context-panel').hidden = !isEntity;
         get('empty-view').hidden = !!active;
@@ -730,7 +724,6 @@
       }));
       get('autonomy').addEventListener('change', () => { if (activeKey) policies.set(activeKey, get('autonomy').value); });
       get('open-plan').addEventListener('click', () => openItem(plan));
-      get('open-decisions').addEventListener('click', () => openItem(decisions));
       get('latest-iteration').addEventListener('click', () => {
         showIteration(iterations.length - 1);
         get('message').focus();
