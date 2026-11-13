@@ -34,7 +34,8 @@ Before adding content, check whether its meaning is already covered, even in dif
 
 - Use familiar words, active voice, explicit actors, and short sentences. Keep each paragraph focused on one idea.
 - Use the same term for the same concept. Define unfamiliar terms on first use; avoid invented jargon and unnecessary acronyms.
-- Delete filler, promotional claims, vague qualifiers, and obvious statements. Avoid phrases such as “This document explains,” “Implementation documents belong here,” “It is important to note,” “seamlessly,” and “simply.”
+- Delete filler, promotional claims, and obvious statements. Avoid phrases such as “This document explains,” “Implementation documents belong here,” “It is important to note,” “seamlessly,” and “simply.”
+- Replace vague labels such as “simple,” “complex,” or “advanced” with the specific capabilities, constraints, or criteria that distinguish them. State what readers can do or what a feature supports.
 - State behavior directly. Keep conversation history, agent progress reports, rhetorical contrasts, and repeated introductions or conclusions out of documentation.
 - Prefer connected prose for explanations. Use numbered steps for sequences, bullets for parallel points, and tables for comparisons. Avoid deep nesting, excessive bold text, and decorative callouts.
 

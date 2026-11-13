@@ -7,7 +7,7 @@ An entity represents something in a workspace, such as a feature or a spec. Its 
 - **Content** — information it stores.
 - **Children** — other entities it contains.
 
-The entity's type defines its brief, content, and children.
+The [entity type](entity-type.md) defines its brief, content, and children.
 
 ## Metadata
 

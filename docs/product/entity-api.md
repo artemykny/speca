@@ -17,7 +17,7 @@ Every entity supports these default operations:
 - Open a referenced entity.
 - List dependencies and their recorded version IDs.
 
-The entity type defines how its [brief, content, and children](entity-structure.md) can be edited.
+The [entity type](entity-type.md) defines supported content edits and operations for creating, deleting, and renaming children. A child's content is edited through the child's own operations.
 
 Integrations can expose any operation. For example, a code integration can:
 
