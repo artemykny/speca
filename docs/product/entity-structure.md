@@ -1,6 +1,6 @@
 # Entity structure
 
-An entity represents something in a project, such as a feature or a spec. Its structure includes:
+An entity represents something in a workspace, such as a feature or a spec. Its structure includes:
 
 - **Brief** — what the parent expects it to cover.
 - **Content** — information it stores.

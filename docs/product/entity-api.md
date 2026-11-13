@@ -1,6 +1,6 @@
 # Entity API
 
-Agents use the speca entity API to work with project entities.
+Agents use the speca entity API to work with workspace entities.
 
 ## Entity operations
 

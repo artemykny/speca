@@ -40,6 +40,7 @@ Before adding content, check whether its meaning is already covered, even in dif
 
 ### Accuracy and maintenance
 
+- Understand each concept before documenting it. If its meaning is unclear, ask the user before writing.
 - Never invent capabilities, guarantees, decisions, or requirements.
 - Match detail to the page's purpose. Explain necessary prerequisites, conditions, outcomes, and relevant limitations without cataloguing hypothetical edge cases or unrelated implementation details.
 - Use minimal, realistic examples with consistent names. Verify commands, paths, APIs, and expected results; label illustrative pseudocode. Use placeholders instead of real credentials or personal data.
