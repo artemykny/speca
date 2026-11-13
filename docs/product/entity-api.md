@@ -7,12 +7,15 @@ Agents use the speca entity API to work with workspace entities.
 Every entity supports these default operations:
 
 - Inspect its type.
-- Inspect its version.
+- Inspect its current version ID.
+- Inspect the version ID of any content field.
+- List its version history, including at least version IDs.
 - List supported operations.
 - Read content.
 - List children.
+- Read and set a child's brief and inspect its field version IDs.
 - Open a referenced entity.
-- List content dependencies.
+- List dependencies and their recorded version IDs.
 
 The entity type defines how its [brief, content, and children](entity-structure.md) can be edited.
 

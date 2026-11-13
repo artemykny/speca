@@ -2,15 +2,30 @@
 
 An entity represents something in a workspace, such as a feature or a spec. Its structure includes:
 
+- **Metadata** — its current version, version history, and dependencies.
 - **Brief** — what the parent expects it to cover.
 - **Content** — information it stores.
 - **Children** — other entities it contains.
 
 The entity's type defines its brief, content, and children.
 
+## Metadata
+
+Every entity has:
+
+- **Version** — the ID of the entity's current revision.
+- **Version history** — a record of all the entity's revisions, retaining at least their IDs.
+- **Dependencies** — references to other entities or specific content fields of other entities, including the version ID of each dependency used.
+
+Every field in an entity's brief or content also has its own version ID.
+
+If a dependency changes, the entity's generated content becomes outdated but stays in place until it is updated.
+
 ## Brief
 
 A brief describes what the parent expects the entity to cover. It can contain multiple fields.
+
+Only the parent reads and sets the brief. Brief fields are not dependency targets.
 
 ### Examples
 
@@ -18,17 +33,13 @@ A brief describes what the parent expects the entity to cover. It can contain mu
 
 ## Content
 
-Content is the information an entity stores.
-
-Each part of the content can depend on fields in the brief and other content.
-
-The system records which versions of these dependencies were used during generation. If any dependency changes, the generated content becomes outdated but stays in place until it is updated.
+Content is the information an entity stores, organized into fields.
 
 ### Examples
 
 - A feature's content might include `limitations`.
-- A spec's content might include `given`, `when`, and `then` sections.
-- Generating a spec's `given` section may require the `intent` field in its brief and the parent feature's `limitations`.
+- A spec's content might include `given`, `when`, and `then` fields.
+- A spec can depend on the parent feature's `limitations` content field.
 
 ## Children
 
