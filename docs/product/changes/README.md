@@ -1,5 +1,6 @@
 # Changes
 
+- [Specification](spec.md): requirements and acceptance scenarios.
 - [Lifecycle](lifecycle.md): change entry points, work sessions, persistence, and archival.
 - [Planning](planning.md): proposals, questions, comments, and plan approval.
 - [Propagation](propagation.md): triage, dependency ordering, and iteration history.

@@ -12,6 +12,7 @@ Every entity supports these default operations:
 - List its version history, including at least version IDs.
 - List supported operations.
 - Read content.
+- Read its own brief.
 - List children.
 - Read and set a child's brief and inspect its field version IDs.
 - Open a referenced entity.

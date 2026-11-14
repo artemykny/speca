@@ -15,7 +15,7 @@ Every field in an entity's brief or content also has its own version ID.
 
 ## Brief
 
-A brief describes what the parent expects the entity to cover. It can contain multiple fields. Only the parent reads and sets the brief.
+A brief describes what the parent expects the entity to cover. It can contain multiple fields. The entity and its parent can read the brief; only the parent can edit it.
 
 For example, a spec's brief might have an `intent` field: “Check what happens when the invitee already belongs to the group.”
 
