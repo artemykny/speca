@@ -1,3 +1,4 @@
 # speca
 
-See the [project documentation](docs/README.md).
+- [Apps](apps/): application and component library source.
+- [Documentation](docs/): product, design, and engineering guidance.
