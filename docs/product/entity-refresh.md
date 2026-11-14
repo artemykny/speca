@@ -29,11 +29,11 @@ The agent edits entities directly during refresh:
 
 ## Result
 
-The agent ends the refresh with one of two calls.
+The agent ends each iteration with one of two calls.
 
 ### Success
 
-`success(summary)` reports the completed changes and validation results. After this call, the system automatically records the dependency versions used during the refresh.
+`success(summary)` reports the completed changes and validation results. The user can request another iteration or approve the result to finish the refresh. On approval, the system records the dependency versions used during the refresh.
 
 ### Error
 

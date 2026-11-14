@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Speca · Branch mockup</title>
+  <title>Speca · Workspace mockup</title>
   <style>
     * { box-sizing: border-box; }
     :root { color-scheme: light; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -115,7 +115,14 @@
     .lines span:nth-child(3) { width: 76%; }
     .box { border: 1px solid #ccc; padding: 16px; margin-bottom: 16px; }
     .row, .composer-actions, .question { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .preview-controls { display: flex; align-items: center; gap: 7px; margin-left: auto; }
+    .activity-bar #mock-configuration-button { margin-top: auto; margin-bottom: 8px; }
+    .mock-configuration { position: fixed; inset: auto auto 12px 44px; margin: 0; width: 320px; max-width: calc(100vw - 56px); }
+    .mock-configuration::backdrop { background: transparent; }
+    .mock-configuration .heading { margin-bottom: 20px; }
+    .mock-configuration h2 { margin: 0; font-size: 16px; }
+    .mock-configuration label { font-size: 12px; }
+    .mock-configuration select { width: 100%; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
     .question label { display: flex; align-items: center; gap: 5px; }
     .question-item + .question-item { margin-top: 16px; padding-top: 16px; border-top: 1px solid #ddd; }
     .question-item > p { margin-bottom: 8px; }
@@ -176,6 +183,50 @@
     @media (max-width: 1000px) { .workspace { grid-template-columns: 36px 190px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 200px; } .inspector { grid-column: 3; border-left: 0; border-top: 1px solid #777; } .sidebar, .activity-bar { grid-row: span 2; } }
     @media (max-width: 620px) { .workspace { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 200px minmax(0, 1fr) 140px; } .activity-bar { grid-row: 1 / -1; } .sidebar { grid-row: auto; border-right: 0; border-bottom: 1px solid #777; } .main, .inspector { grid-column: 2; } .content { padding: 18px 14px; } .inspector { border-left: 0; } }
     @media (max-width: 460px) { .variant-options { grid-template-columns: 1fr; } }
+    .entity-heading { position: relative; justify-content: flex-start; }
+    .freshness-button { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; }
+    .freshness-button::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #39714d; }
+    .freshness-button.outdated::before { background: #936515; }
+    .freshness-menu { position: absolute; left: 0; top: calc(100% + 8px); z-index: 5; width: 260px; max-width: 100%; padding: 14px; background: white; border: 1px solid #ccc; }
+    .freshness-menu p { margin-bottom: 12px; font-size: 12px; color: #666; }
+    .workspace.refresh-open { grid-template-columns: 36px 190px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+    .workspace.refresh-open > .inspector { display: none; }
+    .content.refresh-content { padding: 0; overflow: hidden; display: flex; }
+    #refresh-view { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+    .refresh-heading { flex: 0 0 auto; flex-wrap: nowrap; gap: 8px; margin: 0; padding: 7px 12px; min-height: 44px; border-bottom: 1px solid #ccc; }
+    .refresh-heading h1 { flex: 1; min-width: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .refresh-heading select { width: 190px; max-width: 48%; font-size: 12px; }
+    .refresh-heading .icon-button { flex-shrink: 0; }
+    .refresh-layout { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr); }
+    .refresh-document, .refresh-chat { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+    .refresh-chat { border-left: 1px solid #ccc; }
+    .refresh-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 7px 20px; border-bottom: 1px solid #ddd; min-height: 44px; flex-shrink: 0; }
+    .refresh-toolbar h2 { margin: 0; }
+    .refresh-document-body { padding: 24px; overflow: auto; flex: 1; }
+    .content-skeleton { max-width: 680px; padding: 8px 0; }
+    .content-skeleton span { display: block; height: 8px; margin-bottom: 12px; background: #eee; border-radius: 2px; }
+    .content-skeleton .skeleton-title { width: 32%; height: 16px; margin-bottom: 28px; background: #ddd; }
+    .skeleton-paragraph { margin-bottom: 30px; }
+    .skeleton-paragraph span:last-child { width: 64%; }
+    .skeleton-paragraph:nth-child(3) span:last-child { width: 78%; }
+    .diff-field { border: 1px solid #ddd; margin: 16px 0; }
+    .diff-field h3 { font-size: 12px; font-weight: 500; padding: 10px 14px; margin: 0; border-bottom: 1px solid #ddd; }
+    .diff-line { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; padding: 12px 14px; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .diff-removed { background: #fbefed; color: #843f36; }
+    .diff-added { background: #edf6ef; color: #2c6540; }
+    .diff-line p { max-width: 75ch; }
+    .refresh-messages { flex: 1; overflow: auto; padding: 20px; }
+    .refresh-message + .refresh-message { margin-top: 24px; }
+    .refresh-message strong { font-size: 12px; font-weight: 500; }
+    .refresh-message p { margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .refresh-message.user { border-left: 2px solid #ccc; padding-left: 12px; }
+    .refresh-composer { padding: 16px 20px; border-top: 1px solid #ddd; }
+    .refresh-composer textarea { min-height: 84px; max-height: 180px; }
+    .refresh-composer .row { margin-top: 10px; justify-content: flex-end; }
+    .refresh-footer { padding: 14px 20px; border-top: 1px solid #ccc; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+    @media (max-width: 1000px) { .workspace.refresh-open { grid-template-columns: 36px 160px minmax(0, 1fr); } .refresh-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 1fr); } }
+    @media (max-width: 760px) { .workspace.refresh-open { grid-template-columns: 36px minmax(0, 1fr); } .refresh-open > .sidebar { display: none; } .refresh-document-body { padding: 16px; } }
+    @media (max-width: 540px) { .refresh-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(220px, 1fr) minmax(300px, 1fr); overflow: auto; } .refresh-chat { border-left: 0; border-top: 1px solid #ccc; } .refresh-composer textarea { min-height: 55px; } }
   </style>
 </head>
 <body>
@@ -183,6 +234,7 @@
     <nav class="activity-bar" aria-label="Activity bar">
       <button type="button" id="activity-explorer" aria-label="Explorer" title="Explorer" aria-pressed="true" aria-controls="explorer-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h11v15H8zM5 6H3v15h12v-1"/></svg></button>
       <button type="button" id="activity-vc" aria-label="Version control" title="Version control" aria-pressed="false" aria-controls="version-control-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M6 7.5v9M18 7.5v2a5 5 0 0 1-5 5H6"/></svg></button>
+      <button type="button" id="mock-configuration-button" aria-label="Mock configuration" title="Mock configuration" aria-haspopup="dialog" aria-controls="mock-configuration"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h7m4 0h5M4 17h3m4 0h9"/><circle cx="13" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
     </nav>
     <aside class="sidebar" aria-label="Navigation">
       <div id="explorer-panel">
@@ -221,7 +273,7 @@
           <p class="muted">Illustrative history for this mockup.</p>
         </section>
         <section id="plan-view" aria-labelledby="plan-heading">
-          <div class="heading"><h1 id="plan-heading">Plan</h1><div class="preview-controls" id="preview-controls"><label for="response-state">Preview</label><select id="response-state" aria-label="Preview agent response"><option value="questions">Questions only</option><option value="draft" selected>Draft + questions</option><option value="ready">Ready plan</option></select></div></div>
+          <div class="heading"><h1 id="plan-heading">Plan</h1></div>
           <div class="row history-notice" id="history-notice" hidden><small id="history-label"></small><button type="button" id="latest-iteration">Latest iteration</button></div>
           <section class="box" id="plan-preview" aria-labelledby="preview-title">
             <h2 id="preview-title">Draft plan</h2>
@@ -251,9 +303,30 @@
           </form>
         </section>
         <section id="entity-view" aria-labelledby="entity-title" hidden>
-          <div class="heading"><h1 id="entity-title">Entity 1</h1><small id="entity-kind">Entity</small></div>
+          <div class="heading entity-heading"><h1 id="entity-title">Entity 1</h1><div class="freshness" id="entity-freshness"><button type="button" class="freshness-button" id="freshness-status" aria-expanded="false" aria-controls="freshness-menu">Fresh</button><div class="freshness-menu" id="freshness-menu" hidden><p id="freshness-detail"></p><button type="button" id="start-refresh">Refresh</button></div></div></div>
           <div id="entity-content"></div>
           <div id="entity-placeholder"><div class="placeholder"><span id="field-label">Entity view</span></div><div class="lines" aria-hidden="true"><span></span><span></span><span></span></div></div>
+        </section>
+        <section id="refresh-view" aria-labelledby="refresh-title" hidden>
+          <div class="refresh-layout">
+            <section class="refresh-document" aria-label="Entity content and changes">
+              <header class="heading refresh-heading"><button type="button" class="icon-button" id="refresh-back" aria-label="View entity" title="View entity">←</button><h1 id="refresh-title">Refresh</h1><select id="refresh-iteration" aria-label="Iteration"></select><button type="button" id="refresh-latest" hidden>Latest</button></header>
+              <div class="refresh-document-body">
+                <div class="content-skeleton" id="refresh-skeleton" role="img" aria-label="Entity content placeholder"><span class="skeleton-title"></span><div class="skeleton-paragraph"><span></span><span></span><span></span></div><div class="skeleton-paragraph"><span></span><span></span><span></span></div><div class="skeleton-paragraph"><span></span><span></span><span></span></div></div>
+                <div id="refresh-diff"></div>
+              </div>
+              <footer class="refresh-footer"><small id="refresh-approval-note"></small><button type="button" class="primary-action" id="approve-refresh">Approve</button></footer>
+            </section>
+            <section class="refresh-chat" aria-labelledby="refresh-chat-title">
+              <div class="refresh-toolbar"><h2 id="refresh-chat-title">Agent</h2></div>
+              <div class="refresh-messages" id="refresh-messages" role="log" aria-label="Agent conversation"></div>
+              <form class="refresh-composer" id="refresh-composer">
+                <label class="visually-hidden" for="refresh-message">Message the agent</label>
+                <textarea id="refresh-message" rows="3" placeholder="Tell the agent what to adjust…"></textarea>
+                <div class="row"><div class="composer-actions"><button type="button" id="retry-refresh" hidden>Retry</button><button type="submit" id="send-refresh" disabled>Send</button></div></div>
+              </form>
+            </section>
+          </div>
         </section>
         <section id="no-active-view" aria-labelledby="no-active-title" hidden>
           <div class="heading"><h1 id="no-active-title">No active branch</h1></div>
@@ -270,6 +343,7 @@
       <section id="plan-comments" aria-labelledby="comments-title"><h2 id="comments-title">Comments</h2><ul class="comment-list"><li><button type="button" id="sidebar-comment" aria-controls="comment-thread" aria-expanded="false"><span>1: Plan element</span><small>Comment text</small></button></li></ul></section>
       <section id="context-panel" hidden>
         <h2 id="context-title">Entity 1</h2>
+        <p class="muted entity-version">Type: <span id="entity-kind">Entity</span></p>
         <p class="muted entity-version" id="entity-version"></p>
         <label for="autonomy">Agent autonomy</label>
         <select id="autonomy"><option>Ask first</option><option>Keep me informed</option><option>Act independently</option></select>
@@ -280,6 +354,12 @@
       </section>
     </aside>
   </div>
+  <dialog class="mock-configuration" id="mock-configuration" aria-labelledby="mock-configuration-title">
+    <div class="heading"><h2 id="mock-configuration-title">Mock configuration</h2><button type="button" class="icon-button" id="close-mock-configuration" aria-label="Close mock configuration">×</button></div>
+    <div id="preview-controls"><label for="response-state">Plan response</label><select id="response-state"><option value="questions">Questions only</option><option value="draft" selected>Draft + questions</option><option value="ready">Ready plan</option></select></div>
+    <div id="mock-refresh-controls" hidden><label for="refresh-response">Next agent response</label><select id="refresh-response"><option value="ready">Ready for review</option><option value="context">Needs context</option><option value="error">Error</option></select></div>
+    <p class="muted" id="mock-configuration-empty">Open Plan or start an agent chat to configure responses.</p>
+  </dialog>
   <div class="vc-menu" id="vc-menu" role="menu" aria-label="Version control actions" hidden>
     <button type="button" role="menuitem" data-command="pull">Pull</button>
     <button type="button" role="menuitem" data-command="push">Push</button>
@@ -367,6 +447,8 @@
         'entity-9': entity('Type 6')
       };
 
+      entities['entity-2'].content['Field 1'] = 'Use the current parent requirements.';
+
       function childFields(id) {
         return Object.entries(schemas[entities[id].type].children);
       }
@@ -395,6 +477,9 @@
         const relation = parentOf(id);
         entity.dependencies = relation ? [{ entity: relation.parent, version: entities[relation.parent].version }] : [];
       });
+
+      entities['entity-2'].dependencies[0].version = 'previous';
+      entities['entity-7'].dependencies[0].version = 'previous';
 
       const el = (tag, text, className) => {
         const node = document.createElement(tag);
@@ -524,7 +609,7 @@
           target.append(content);
           schema.content.forEach(field => {
             const node = section(field, 'entity-field', 'h3');
-            node.append(pagePlaceholder());
+            node.append(entities[active.entity].content[field] ? el('p', entities[active.entity].content[field]) : pagePlaceholder());
             content.append(node);
             if (active.field === field) activeSection = node;
           });
@@ -1182,6 +1267,8 @@
             if (gitBranches.size === 1) gitHistory.set('HEAD', [...historyFor(name)]);
             gitBranches.delete(name);
             gitHistory.delete(name);
+            refreshBranches.delete(name);
+            if (refreshBranchId === name) refreshBranchId = null;
             if (branch) branches.splice(branches.indexOf(branch), 1);
           }
           feedback = 'Simulated: ' + name + (command === 'branch-delete' ? ' deleted with its worktree and saved context.' : ' closed. Git branch and saved context kept.');
@@ -1191,6 +1278,11 @@
           gitHistory.delete(name);
           gitBranches.delete(name);
           gitBranches.add(next);
+          if (refreshBranches.has(name)) {
+            refreshBranches.set(next, refreshBranches.get(name));
+            refreshBranches.delete(name);
+          }
+          if (refreshBranchId === name) refreshBranchId = next;
           if (branch) Object.assign(branch, { id: next, title: next, gitName: next });
           if (currentBranchId === name) currentBranchId = next;
           if (selectedGitBranchId === name) selectedGitBranchId = next;
@@ -1348,7 +1440,211 @@
         ));
       }
 
+      // Refresh sessions and entity edits belong to the selected branch.
+      const initialEntities = structuredClone(entities);
+      const refreshBranches = new Map();
+      let refreshBranchId = null;
+      let refreshSessions = new Map();
+      function syncRefreshBranch() {
+        if (refreshBranchId === currentBranchId) return;
+        if (refreshBranchId) refreshBranches.set(refreshBranchId, { entities: structuredClone(entities), sessions: refreshSessions });
+        const saved = refreshBranches.get(currentBranchId);
+        Object.assign(entities, structuredClone(saved?.entities || initialEntities));
+        refreshSessions = saved?.sessions || new Map();
+        refreshBranchId = currentBranchId;
+      }
+      function isOutdated(id) {
+        return entities[id].dependencies.some(dependency => dependency.version !== entities[dependency.entity].version);
+      }
+      function activeRefresh() {
+        const active = openTabs.find(item => keyFor(item) === activeKey);
+        return active?.refresh ? refreshSessions.get(active.entity) : null;
+      }
+      function closeFreshness() {
+        get('freshness-menu').hidden = true;
+        get('freshness-status').setAttribute('aria-expanded', 'false');
+      }
+      function renderFreshness(active) {
+        const known = active.scope === 'Workspace' && entities[active.entity];
+        get('entity-freshness').hidden = !known;
+        if (!known) return;
+        const outdated = isOutdated(active.entity);
+        get('freshness-status').textContent = outdated ? 'Outdated' : 'Fresh';
+        get('freshness-status').classList.toggle('outdated', outdated);
+        const session = refreshSessions.get(active.entity);
+        const unfinished = session && !session.approved;
+        get('freshness-detail').textContent = unfinished ? 'Open the conversation to review changes or continue with the agent.' : outdated ? 'A dependency has changed since the last refresh.' : 'Up to date. Start a chat to edit this entity with the agent.';
+        get('start-refresh').textContent = unfinished ? (session.manual ? 'Continue chat' : 'Continue refresh') : outdated ? 'Refresh' : 'Start chat';
+      }
+      const refreshLabels = { waiting: 'What would you like to change?', context: 'Needs context', error: 'Error', ready: 'Ready for review' };
+      function addRefreshIteration(session, state, message = '') {
+        const current = entities[session.entity];
+        const first = session.iterations.length === 0;
+        const field = Object.keys(current.content)[0];
+        const previousContent = structuredClone(current.content);
+        if (first && !session.manual) current.content[field] = 'Follow the updated parent requirements. Preserve existing items.';
+        if (message && state !== 'error') current.content[field] = [current.content[field], (session.manual ? 'Edit request: ' : 'Refresh guidance: ') + message].filter(Boolean).join('\n');
+        const reply = state === 'context' ? (session.manual ? 'I started the requested edit. Should this change also apply to existing items?' : 'I updated the content using the current context. Should existing items keep their current behavior or follow the updated requirements?') : state === 'error' ? 'I could not run the validation check because the check service was unavailable. Changes made so far are shown on the left. Retry the check, or send more context.' : 'I included your guidance in the content. Validation passed. You can request another change or approve this result.';
+        if (first && !session.manual) session.messages.push({ role: 'You', text: 'Refresh ' + entityModel.label(session.entity) + '.' });
+        if (message) session.messages.push({ role: 'You', text: message });
+        session.messages.push({ role: 'Agent', text: reply });
+        session.iterations.push({ state, content: structuredClone(current.content), messages: structuredClone(session.messages), dependencies: current.dependencies.map(dependency => ({ entity: dependency.entity, version: entities[dependency.entity].version })) });
+        session.selected = session.iterations.length - 1;
+        session.draft = '';
+        session.response = 'ready';
+        if (JSON.stringify(previousContent) !== JSON.stringify(current.content)) {
+          current.version = (session.manual ? 'edit-' : 'refresh-') + (++session.revision);
+          currentBranch().dirty = true;
+        }
+      }
+      function renderRefresh(active) {
+        const session = refreshSessions.get(active.entity);
+        const waiting = session.iterations.length === 0;
+        const iteration = session.iterations[session.selected] || { state: 'waiting', content: session.before, messages: session.messages };
+        const latest = session.selected === session.iterations.length - 1;
+        get('refresh-title').textContent = (session.manual ? 'Chat · ' : 'Refresh · ') + entityModel.label(active.entity);
+        const select = get('refresh-iteration');
+        select.replaceChildren();
+        session.iterations.forEach((entry, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = 'Iteration ' + (index + 1) + ' · ' + (session.approved && index === session.iterations.length - 1 ? 'Approved' : refreshLabels[entry.state]);
+          select.append(option);
+        });
+        select.disabled = waiting;
+        if (waiting) {
+          const option = document.createElement('option');
+          option.value = -1;
+          option.textContent = 'No iterations yet';
+          select.append(option);
+        }
+        select.value = session.selected;
+        get('refresh-skeleton').hidden = !waiting;
+        get('refresh-diff').hidden = waiting;
+        get('refresh-latest').hidden = latest;
+        get('refresh-diff').replaceChildren();
+        let changes = 0;
+        Object.entries(iteration.content).forEach(([field, after]) => {
+          const before = session.before[field];
+          if (waiting || before === after) return;
+          changes++;
+          const section = document.createElement('section');
+          section.className = 'diff-field';
+          const heading = document.createElement('h3');
+          heading.textContent = 'Content / ' + field;
+          section.append(heading);
+          const lines = [['removed', '−', before || '(Empty)'], ['added', '+', after || '(Empty)']];
+          for (const [kind, sign, text] of lines) {
+            const line = document.createElement('div');
+            line.className = 'diff-line diff-' + kind;
+            line.setAttribute('aria-label', kind === 'removed' ? 'Removed content' : 'Added content');
+            const marker = document.createElement('span');
+            marker.textContent = sign;
+            marker.setAttribute('aria-hidden', 'true');
+            const content = document.createElement('p');
+            content.textContent = text;
+            line.append(marker, content);
+            section.append(line);
+          }
+          get('refresh-diff').append(section);
+        });
+        if (!changes) get('refresh-diff').textContent = 'No content changes in this iteration.';
+        get('refresh-approval-note').textContent = !latest ? 'Viewing a previous iteration' : '';
+        get('approve-refresh').hidden = session.approved;
+        get('approve-refresh').disabled = !latest || iteration.state !== 'ready';
+        get('refresh-messages').replaceChildren();
+        iteration.messages.forEach(message => {
+          const article = document.createElement('article');
+          article.className = 'refresh-message' + (message.role === 'You' ? ' user' : '');
+          const author = document.createElement('strong');
+          author.textContent = message.role;
+          const text = document.createElement('p');
+          text.textContent = message.text;
+          article.append(author, text);
+          get('refresh-messages').append(article);
+        });
+        const readOnly = !latest || session.approved;
+        get('refresh-message').value = latest ? session.draft : '';
+        get('refresh-message').disabled = readOnly;
+        get('refresh-response').value = session.response;
+        get('refresh-response').disabled = readOnly;
+        get('send-refresh').disabled = readOnly || !session.draft.trim();
+        get('retry-refresh').hidden = readOnly || iteration.state !== 'error';
+        if (latest) get('refresh-messages').scrollTop = get('refresh-messages').scrollHeight;
+      }
+      get('mock-configuration-button').addEventListener('click', () => get('mock-configuration').showModal());
+      get('close-mock-configuration').addEventListener('click', () => get('mock-configuration').close());
+      get('mock-configuration').addEventListener('close', () => get('mock-configuration-button').focus());
+      get('freshness-status').addEventListener('click', () => {
+        const open = get('freshness-menu').hidden;
+        get('freshness-menu').hidden = !open;
+        get('freshness-status').setAttribute('aria-expanded', String(open));
+      });
+      document.addEventListener('click', event => { if (!event.target.closest('.freshness')) closeFreshness(); });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !get('freshness-menu').hidden) { closeFreshness(); get('freshness-status').focus(); }
+      });
+      get('start-refresh').addEventListener('click', () => {
+        const active = openTabs.find(item => keyFor(item) === activeKey);
+        let session = refreshSessions.get(active.entity);
+        if (!session || session.approved) {
+          session = { entity: active.entity, manual: !isOutdated(active.entity), before: structuredClone(entities[active.entity].content), iterations: [], messages: [], selected: 0, draft: '', response: 'ready', approved: false, revision: session?.revision || 0 };
+          refreshSessions.set(active.entity, session);
+          if (session.manual) {
+            session.selected = -1;
+            session.messages.push({ role: 'Agent', text: 'What would you like to change in this entity?' });
+          } else addRefreshIteration(session, 'context');
+        }
+        openItem({ ...active, field: '', page: 'refresh:' + active.entity, refresh: true });
+        get('refresh-message').focus();
+      });
+      get('refresh-back').addEventListener('click', () => {
+        const session = activeRefresh();
+        openItem({ entity: session.entity, scope: 'Workspace', kind: 'Entity', field: '' });
+        get('freshness-status').focus();
+      });
+      get('refresh-iteration').addEventListener('change', () => {
+        activeRefresh().selected = Number(get('refresh-iteration').value);
+        render();
+      });
+      get('refresh-latest').addEventListener('click', () => {
+        const session = activeRefresh();
+        session.selected = session.iterations.length - 1;
+        render();
+        get('refresh-message').focus();
+      });
+      get('refresh-message').addEventListener('input', () => {
+        const session = activeRefresh();
+        session.draft = get('refresh-message').value;
+        get('send-refresh').disabled = !session.draft.trim();
+      });
+      get('refresh-response').addEventListener('change', () => { activeRefresh().response = get('refresh-response').value; });
+      get('refresh-composer').addEventListener('submit', event => {
+        event.preventDefault();
+        const session = activeRefresh();
+        if (!session || session.approved || session.selected !== session.iterations.length - 1 || !session.draft.trim()) return;
+        addRefreshIteration(session, session.response, session.draft.trim());
+        render();
+        get('refresh-message').focus();
+      });
+      get('retry-refresh').addEventListener('click', () => {
+        const session = activeRefresh();
+        addRefreshIteration(session, session.response, session.draft.trim() || 'Retry the validation check.');
+        render();
+      });
+      get('approve-refresh').addEventListener('click', () => {
+        const session = activeRefresh();
+        const latest = session.iterations.at(-1);
+        if (session.approved || session.selected !== session.iterations.length - 1 || latest?.state !== 'ready') return;
+        session.approved = true;
+        if (!session.manual) entities[session.entity].dependencies = structuredClone(latest.dependencies);
+        render();
+        get('refresh-back').focus();
+      });
+
       function render() {
+        syncRefreshBranch();
+        closeFreshness();
         hideDependencyTooltip();
         renderBranches();
         if (renderedKey !== activeKey) document.querySelector('.content').scrollTop = 0;
@@ -1361,7 +1657,7 @@
         get('tabs').replaceChildren();
         openTabs.forEach(item => {
           const key = keyFor(item);
-          const label = entityLabel(item) + (item.field ? ' / ' + item.field : '');
+          const label = (item.refresh ? (refreshSessions.get(item.entity)?.manual ? 'Chat · ' : 'Refresh · ') : '') + entityLabel(item) + (item.field ? ' / ' + item.field : '');
           const tab = document.createElement('div');
           tab.className = 'workspace-tab' + (key === activeKey ? ' active' : '');
           const select = document.createElement('button');
@@ -1391,7 +1687,14 @@
           else button.removeAttribute('aria-current');
         });
         const isEntity = !!active && !active.page;
+        const isRefresh = !!active?.refresh;
+        document.querySelector('.workspace').classList.toggle('refresh-open', isRefresh);
+        document.querySelector('.content').classList.toggle('refresh-content', isRefresh);
+        get('refresh-view').hidden = !isRefresh;
+        if (isRefresh) renderRefresh(active);
         const isPlan = activeKey === 'plan';
+        get('mock-refresh-controls').hidden = !isRefresh;
+        get('mock-configuration-empty').hidden = isPlan || isRefresh;
         get('open-plan').toggleAttribute('aria-current', false);
         if (isPlan) get('open-plan').setAttribute('aria-current', 'page');
         get('plan-view').hidden = !isPlan;
@@ -1404,10 +1707,11 @@
         renderReview();
         if (!isEntity) return;
         get('entity-title').textContent = entityLabel(active);
-        get('entity-kind').textContent = active.field || (active.scope === 'Workspace' ? entities[active.entity]?.type : active.kind);
+        get('entity-kind').textContent = active.scope === 'Workspace' ? entities[active.entity]?.type : active.kind;
         get('field-label').textContent = (active.field || active.kind) + ' view';
         get('context-title').textContent = entityLabel(active);
         get('autonomy').value = policies.get(activeKey) || 'Ask first';
+        renderFreshness(active);
         entityModel.renderView(active);
         renderDependencies(active);
       }
