@@ -16,6 +16,7 @@ Every entity has:
 - **Version** — the ID of the entity's current revision.
 - **Version history** — a record of all the entity's revisions, retaining at least their IDs.
 - **Dependencies** — references to other entities or specific content fields of other entities, including the version ID of each dependency used.
+- **Agent autonomy** — **Ask first** or **Act independently**, chosen by the user for the entity.
 
 Every field in an entity's brief or content also has its own version ID.
 
