@@ -33,7 +33,7 @@ The agent ends each iteration with one of two calls.
 
 ### Success
 
-`success(summary)` reports the completed changes and validation results. The user can request another iteration or approve the result to finish the refresh. On approval, the system records the dependency versions used during the refresh.
+`success(summary)` reports the completed changes and validation results. The user can request another iteration or approve the result to finish the refresh. Approval is required at every agent autonomy setting. On approval, the system records the dependency versions used during the refresh.
 
 ### Error
 

@@ -126,9 +126,17 @@
     .question label { display: flex; align-items: center; gap: 5px; }
     .question-item + .question-item { margin-top: 16px; padding-top: 16px; border-top: 1px solid #ddd; }
     .question-item > p { margin-bottom: 8px; }
-    .change-context { margin: -12px 0 18px; }
+    #change-feedback { padding: 12px 24px; }
+    .final-review-status { margin-bottom: 18px; }
+    .final-file summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; padding: 12px 0; }
+    .final-file { border-top: 1px solid #ddd; }
+    .final-file summary span { overflow-wrap: anywhere; }
     .plan-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
     .plan-toolbar h2 { margin: 0; }
+    .plan-scope > summary { cursor: pointer; }
+    .plan-scope > summary h2 { display: inline; margin: 0; }
+    .plan-scope > summary small { float: right; }
+    .plan-scope[open] > summary { margin-bottom: 18px; }
     .plan-document { max-width: 76ch; white-space: pre-wrap; overflow-wrap: anywhere; }
     .plan-document { margin: 0; }
     .plan-files { margin-top: 14px; }
@@ -184,8 +192,16 @@
     .dependency-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
     .dependency-warning { flex-shrink: 0; color: #555; }
     .history-list { list-style: none; margin: 0; padding: 0; }
-    #plan-history { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #ddd; }
-    #plan-history h2 { margin-bottom: 6px; }
+    #change-history { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #ddd; }
+    #change-history h2 { margin-bottom: 14px; }
+    .history-stage + .history-stage { margin-top: 18px; }
+    .history-stage h3 { margin: 0 0 6px; font-size: 12px; font-weight: 500; }
+    .history-row { display: flex; align-items: center; gap: 2px; }
+    .history-toggle, .history-spacer { flex: 0 0 18px; width: 18px; }
+    .history-list .history-toggle { width: 18px; padding: 4px 0; justify-content: center; border: 0; }
+    .history-row > .history-entry { flex: 1; min-width: 0; }
+    .history-files { padding-left: 20px; }
+    .history-files button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .history-list button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 4px 6px; border: 1px solid transparent; text-align: left; }
     .history-list small { font-size: 11px; white-space: nowrap; }
     .history-notice { justify-content: space-between; margin-bottom: 16px; }
@@ -193,6 +209,7 @@
     .entity-section { min-width: 0; margin-bottom: 24px; scroll-margin-top: 24px; }
     .entity-section + .entity-section { padding-top: 24px; border-top: 1px solid #ddd; }
     .entity-field + .entity-field { margin-top: 20px; }
+    .entity-text { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 76ch; }
     .entity-field h3 { font-size: 13px; font-weight: normal; margin: 0 0 12px; }
     .entity-link { padding: 0; border: 0; background: transparent; text-align: left; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
     .entity-link:hover { background: transparent; color: #666; }
@@ -212,9 +229,9 @@
     .workspace.refresh-open { grid-template-columns: 36px 190px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
     .workspace.refresh-open > .inspector { display: none; }
     .content.refresh-content { padding: 0; overflow: hidden; display: flex; }
-    #refresh-view { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+    #refresh-view, #propagation-view { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
     .refresh-heading { flex: 0 0 auto; flex-wrap: nowrap; gap: 8px; margin: 0; padding: 7px 12px; min-height: 44px; border-bottom: 1px solid #ccc; }
-    .refresh-heading h1 { flex: 1; min-width: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .refresh-heading h2 { flex: 1; min-width: 0; margin: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .refresh-heading select { width: 190px; max-width: 48%; font-size: 12px; }
     .refresh-heading .icon-button { flex-shrink: 0; }
     .refresh-layout { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr); }
@@ -244,8 +261,28 @@
     .refresh-composer textarea { min-height: 84px; max-height: 180px; }
     .refresh-composer .row { margin-top: 10px; justify-content: flex-end; }
     .refresh-footer { padding: 14px 20px; border-top: 1px solid #ccc; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+    .propagation-document { flex: 1; min-height: 0; }
+    .propagation-file { padding: 16px 0; border-bottom: 1px solid #ddd; }
+    .propagation-file-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .propagation-file input[type="checkbox"] { margin: 0; flex: 0 0 auto; }
+    .triage-content-toggle { display: inline-flex; align-items: baseline; gap: 6px; flex: 1; min-width: 0; padding: 0; border: 0; text-align: left; background: transparent; }
+    .triage-content-toggle span:last-child { overflow-wrap: anywhere; }
+    .triage-content { margin: 24px 0 0 24px; }
+    .triage-content > .entity-section { margin-bottom: 0; }
+    .propagation-file select { font-size: 12px; max-width: 100%; }
+    .triage-reason { margin: 8px 0 0 24px; max-width: 85ch; color: #555; }
+    .triage-status { display: inline-flex; align-items: center; gap: 6px; min-width: 100px; justify-content: flex-end; }
+    .triage-spinner { width: 12px; height: 12px; border: 1.5px solid #ddd; border-top-color: #555; border-radius: 50%; animation: triage-spin 0.8s linear infinite; }
+    @keyframes triage-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .triage-spinner { animation: none; } }
+    @media (max-width: 620px) { .triage-status { min-width: 0; } }
+    .propagation-history { padding-top: 18px; margin-top: 22px; border-top: 1px solid #ddd; }
+    .propagation-history summary { cursor: pointer; }
+    .propagation-history ol { margin: 12px 0 0; padding-left: 18px; }
+    #propagation-status { margin-bottom: 12px; }
     @media (max-width: 1000px) { .workspace.refresh-open { grid-template-columns: 36px 160px minmax(0, 1fr); } .refresh-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 1fr); } }
     @media (max-width: 760px) { .workspace.refresh-open { grid-template-columns: 36px minmax(0, 1fr); } .refresh-open > .sidebar { display: none; } .refresh-document-body { padding: 16px; } }
+    @media (max-width: 1000px) { .change-open .refresh-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(240px, 1fr) minmax(240px, 1fr); overflow: auto; } .change-open .refresh-chat { border-left: 0; border-top: 1px solid #ccc; } }
     @media (max-width: 540px) { .refresh-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(220px, 1fr) minmax(300px, 1fr); overflow: auto; } .refresh-chat { border-left: 0; border-top: 1px solid #ccc; } .refresh-composer textarea { min-height: 55px; } }
   </style>
 </head>
@@ -266,7 +303,7 @@
       <ul class="explorer" id="workspace-tree" aria-label="Workspace tree">
         <li><ul id="model-tree" aria-label="Entity structure"></ul></li>
         <li><details open><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Changes</span></summary><ul>
-          <li><button class="leaf" type="button" id="open-plan"><span class="tree-icon" aria-hidden="true"></span>Update onboarding</button></li>
+          <li><button class="leaf" type="button" id="open-change"><span class="tree-icon" aria-hidden="true"></span>Update onboarding</button></li>
         </ul></details></li>
         <li><details><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Entity types</span></summary><ul id="model-types"></ul></details></li>
       </ul>
@@ -285,6 +322,7 @@
 
     <main class="main">
       <nav class="tabs" id="tabs" aria-label="Open tabs"></nav>
+      <p class="form-error" id="change-feedback" role="status" hidden></p>
       <div class="content">
         <section id="commit-view" aria-labelledby="commit-title" hidden>
           <div class="heading"><h1 id="commit-title"></h1><small>Commit</small></div>
@@ -292,18 +330,21 @@
           <h2>Changed files</h2><ul class="commit-files" id="commit-files"></ul>
           <p class="muted">Illustrative history for this mockup.</p>
         </section>
-        <section id="plan-view" aria-labelledby="plan-heading">
-          <div class="heading"><h1 id="plan-heading">Update onboarding</h1><small id="plan-stage">Plan</small></div>
-          <p class="muted change-context" id="change-context"></p>
+        <section id="plan-view" aria-label="Plan">
           <div class="row history-notice" id="history-notice" hidden><small id="history-label"></small><button type="button" id="latest-iteration">Latest iteration</button></div>
+          <details class="box plan-scope">
+            <summary><h2 id="plan-scope-title">Entities to plan</h2><small>Required</small></summary>
+            <textarea id="plan-scope" form="composer" rows="2" required aria-labelledby="plan-scope-title" placeholder="For example: Update product documentation and design">Update product documentation and design</textarea>
+          </details>
           <section class="box" id="plan-preview" aria-labelledby="preview-title">
             <div class="plan-toolbar"><h2 id="preview-title">Plan</h2><small id="plan-iteration"></small></div>
             <p class="plan-document" id="plan-document" data-comment-source="plan" tabindex="0" aria-label="Plan summary"></p>
           </section>
           <section class="box" id="edited-files" aria-labelledby="edited-files-title">
             <h2 id="edited-files-title">Edited files</h2>
-            <p class="muted">First layer of changes. Expand a file to read its proposed content.</p>
+            <p class="muted">Expand a file to read its proposed content.</p>
             <div class="plan-files" id="plan-files"></div>
+            <p class="muted" id="plan-files-empty" hidden>No simulated file proposals for this scope.</p>
           </section>
           <button type="button" class="selection-comment" id="selection-comment" aria-controls="comment-thread" title="Comment on selected text (Ctrl+Alt+M)" hidden>Add comment</button>
           <section class="box" id="required-questions" aria-labelledby="question-title">
@@ -325,8 +366,25 @@
             <ul class="attachments" id="attachments-list" aria-label="Comments attached for the agent"></ul>
             <p class="muted" id="no-attachments" hidden>None</p>
             <textarea rows="2" id="message" placeholder="Message the agent…" aria-label="Message the agent"></textarea>
-            <div class="row"><small id="message-status" aria-live="polite"></small><div class="composer-actions"><button type="button" id="approve-plan" hidden>Approve plan</button><button type="submit" id="send-response" disabled>Send answers</button></div></div>
+            <div class="row"><small id="message-status" aria-live="polite"></small><div class="composer-actions"><button type="submit" class="primary-action" id="send-response" disabled>Send</button></div></div>
           </form>
+        </section>
+        <section id="propagation-view" aria-labelledby="propagation-current-title" hidden>
+          <section class="refresh-document propagation-document" aria-label="Triage results">
+            <header class="refresh-toolbar"><h2 id="propagation-current-title">Files</h2><button type="button" id="propagation-latest" hidden>Current iteration</button></header>
+            <div class="refresh-document-body">
+              <p class="muted" id="propagation-status" role="status"></p>
+              <div id="propagation-files"></div>
+            </div>
+            <footer class="refresh-footer"><small id="propagation-selection-count"></small><div class="row"><button type="button" class="primary-action" id="start-propagation">Start triage</button><button type="button" class="primary-action" id="approve-triage-selection" hidden>Approve selection</button><button type="button" id="open-final-review" hidden>Final review</button></div></footer>
+          </section>
+        </section>
+        <section id="final-review-view" aria-labelledby="final-review-title" hidden>
+          <h2 id="final-review-title">Changed files</h2>
+          <p class="muted final-review-status" id="final-review-status"></p>
+          <div id="final-review-files"></div>
+          <details class="propagation-history" id="final-unchanged"><summary id="final-unchanged-title">No content change</summary><ul id="final-unchanged-files"></ul></details>
+          <div class="dialog-actions"><button type="button" class="primary-action" id="complete-change">Approve</button></div>
         </section>
         <section id="entity-view" aria-labelledby="entity-title" hidden>
           <div class="heading entity-heading"><h1 id="entity-title">Entity 1</h1><div class="freshness" id="entity-freshness"><button type="button" class="freshness-button" id="freshness-status" aria-expanded="false" aria-controls="freshness-menu">Fresh</button><div class="freshness-menu" id="freshness-menu" hidden><p id="freshness-detail"></p><button type="button" id="start-refresh">Refresh</button></div></div></div>
@@ -336,7 +394,7 @@
         <section id="refresh-view" aria-labelledby="refresh-title" hidden>
           <div class="refresh-layout">
             <section class="refresh-document" aria-label="Entity content and changes">
-              <header class="heading refresh-heading"><button type="button" class="icon-button" id="refresh-back" aria-label="View entity" title="View entity">←</button><h1 id="refresh-title">Refresh</h1><select id="refresh-iteration" aria-label="Iteration"></select><button type="button" id="refresh-latest" hidden>Latest</button></header>
+              <header class="heading refresh-heading"><button type="button" class="icon-button" id="refresh-back" aria-label="View entity" title="View entity">←</button><h2 id="refresh-title">Refresh</h2><select id="refresh-iteration" aria-label="Iteration"></select><button type="button" id="refresh-latest" hidden>Latest</button></header>
               <div class="refresh-document-body">
                 <div class="content-skeleton" id="refresh-skeleton" role="img" aria-label="Entity content placeholder"><span class="skeleton-title"></span><div class="skeleton-paragraph"><span></span><span></span><span></span></div><div class="skeleton-paragraph"><span></span><span></span><span></span></div><div class="skeleton-paragraph"><span></span><span></span><span></span></div></div>
                 <div id="refresh-diff"></div>
@@ -364,7 +422,12 @@
     </main>
 
     <aside class="inspector" aria-label="Context">
-      <section id="plan-history" aria-labelledby="history-title"><h2 id="history-title">Iterations</h2><ol class="history-list" id="iteration-list" aria-label="Plan history"></ol></section>
+      <section id="change-history" aria-labelledby="history-title">
+        <h2 id="history-title">Change history</h2>
+        <section class="history-stage" aria-labelledby="plan-history-title"><h3 id="plan-history-title">Plan</h3><ol class="history-list" id="iteration-list" aria-label="Plan history"></ol></section>
+        <section class="history-stage" aria-labelledby="propagation-history-title"><h3 id="propagation-history-title">Propagation</h3><ol class="history-list" id="propagation-history" aria-label="Propagation history"></ol></section>
+        <section class="history-stage" aria-labelledby="review-history-title"><h3 id="review-history-title">Final review</h3><ol class="history-list" id="review-history" aria-label="Final review history"></ol></section>
+      </section>
       <section id="question-context" hidden><h2>Questions</h2><p class="muted">Answers needed before a plan.</p></section>
       <section id="plan-comments" aria-labelledby="comments-title"><h2 id="comments-title">Comments</h2><ul class="comment-list" id="plan-comment-list"></ul><p class="muted" id="empty-plan-comments">No comments yet.</p></section>
       <section id="context-panel" hidden>
@@ -396,7 +459,7 @@
   </div>
   <dialog class="mock-configuration" id="mock-configuration" aria-labelledby="mock-configuration-title">
     <div class="heading"><h2 id="mock-configuration-title">Mock configuration</h2><button type="button" class="icon-button" id="close-mock-configuration" aria-label="Close mock configuration">×</button></div>
-    <div id="preview-controls"><p class="muted">Illustrative change with simulated agent responses. Feedback is carried into the next plan revision.</p><label for="response-state">Plan response</label><select id="response-state"><option value="questions">Questions only</option><option value="draft" selected>Draft + questions</option><option value="ready">Ready plan</option></select></div>
+    <div id="preview-controls"><p class="muted">Illustrative change with simulated agent responses. Scope examples: “Update product documentation”, “Update design”, or “Update product documentation and design”. Other scopes are saved without simulated file proposals.</p><label for="response-state">Plan response</label><select id="response-state"><option value="questions">Questions only</option><option value="draft" selected>Draft + questions</option><option value="ready">Ready plan</option></select></div>
     <div id="mock-refresh-controls" hidden><label for="refresh-response">Next agent response</label><select id="refresh-response"><option value="ready">Ready for review</option><option value="context">Needs context</option><option value="error">Error</option></select></div>
     <p class="muted" id="mock-configuration-empty">Open a change or start an agent chat to configure responses.</p>
   </dialog>
@@ -482,12 +545,22 @@
         'entity-4': entity('Type 4', { 'Field 2': { 'Entity 5': 'entity-5', 'Entity 6': 'entity-6' } }),
         'entity-5': entity('Type 4'),
         'entity-6': entity('Type 4'),
-        'entity-7': entity('Type 5', { 'Field 2': { 'Entity 8': 'entity-8', 'Entity 9': 'entity-9' } }),
+        'entity-7': entity('Type 5', { 'Field 2': { 'Entity 8': 'entity-8', 'Entity 9': 'entity-9', 'Entity 10': 'entity-10' } }),
         'entity-8': entity('Type 6'),
-        'entity-9': entity('Type 6')
+        'entity-9': entity('Type 6'),
+        'entity-10': entity('Type 6')
       };
 
-      entities['entity-2'].content['Field 1'] = 'Use the current parent requirements.';
+      entities['entity-2'].filePath = 'docs/product/onboarding.md';
+      entities['entity-7'].filePath = 'docs/design/onboarding.md';
+      entities['entity-8'].filePath = 'apps/web/onboarding.tsx';
+      entities['entity-9'].filePath = 'docs/product/existing-members.md';
+      entities['entity-10'].filePath = 'docs/design/onboarding-copy.md';
+      entities['entity-2'].content['Field 1'] = '# Onboarding\n\n## Audience\nShow onboarding to every workspace member.\n\n## Completion\nRequire members to finish all setup steps.';
+      entities['entity-7'].content['Field 1'] = '# Onboarding flow\n\nShow the setup form immediately.\n\nOpen the workspace when setup is complete.';
+      entities['entity-8'].content['Field 1'] = 'export const onboarding = {\n  audience: "all-members",\n  allowSkip: false,\n  showProgress: false,\n};';
+      entities['entity-9'].content['Field 1'] = 'Preserve existing items.';
+      entities['entity-10'].content['Field 1'] = '# Onboarding copy\n\nTitle: Set up your workspace\nPrimary action: Continue';
 
       function childFields(id) {
         return Object.entries(schemas[entities[id].type].children);
@@ -504,13 +577,13 @@
         }
         return null;
       }
-      function label(id) { return parentOf(id)?.name || (entities[id] ? 'Entity 1' : id); }
+      function label(id) { return entities[id]?.filePath || parentOf(id)?.name || (entities[id] ? 'Entity 1' : id); }
       function item(id, field = '') { return { entity: id, scope: 'Workspace', kind: 'Entity', field }; }
 
       const versions = {
         'entity-1': 'a71c9e2', 'entity-2': 'b62e8f4', 'entity-3': '8e4f2a1',
         'entity-4': 'c94a1f7', 'entity-5': 'd83b6a9', 'entity-6': 'e52c7b3',
-        'entity-7': 'f28b4d6', 'entity-8': '61d2c08', 'entity-9': '7f20de5'
+        'entity-7': 'f28b4d6', 'entity-8': '61d2c08', 'entity-9': '7f20de5', 'entity-10': '9ab41c2'
       };
       Object.entries(entities).forEach(([id, entity]) => { entity.version = versions[id]; });
       Object.entries(entities).forEach(([id, entity]) => {
@@ -616,6 +689,22 @@
         return page;
       }
 
+      function renderContent(target, values, activeField) {
+        const content = el('section', undefined, 'entity-section');
+        content.setAttribute('aria-label', 'Content');
+        content.append(el('h2', 'Content'));
+        let activeSection;
+        Object.entries(values).forEach(([field, value]) => {
+          const node = el('section', undefined, 'entity-field');
+          node.setAttribute('aria-label', field);
+          node.append(el('h3', field), value ? el('p', value, 'entity-text') : pagePlaceholder());
+          content.append(node);
+          if (activeField === field) activeSection = node;
+        });
+        target.append(content);
+        return activeSection;
+      }
+
       function renderView(active) {
         const target = document.getElementById('entity-content');
         const known = active.scope === 'Workspace' && entities[active.entity];
@@ -644,16 +733,7 @@
           });
         }
         let activeSection;
-        if (schema.content.length) {
-          const content = section('Content');
-          target.append(content);
-          schema.content.forEach(field => {
-            const node = section(field, 'entity-field', 'h3');
-            node.append(entities[active.entity].content[field] ? el('p', entities[active.entity].content[field]) : pagePlaceholder());
-            content.append(node);
-            if (active.field === field) activeSection = node;
-          });
-        }
+        if (schema.content.length) activeSection = renderContent(target, entities[active.entity].content, active.field);
         if (Object.keys(schema.children).length) {
           const children = section('Children');
           target.append(children);
@@ -666,7 +746,7 @@
         }
         activeSection?.scrollIntoView({ block: 'start' });
       }
-      window.entityModel = { entities, schemas, label, renderTree, renderView };
+      window.entityModel = { entities, schemas, label, renderTree, renderView, renderContent };
     })();
 
     (() => {
@@ -677,7 +757,11 @@
         if (className) node.className = className;
         return node;
       };
-      let policies = new Map();
+      function defaultPolicies() {
+        return new Map([[JSON.stringify(['Workspace', 'entity-10', '']), 'Act independently']]);
+      }
+      let policies = defaultPolicies();
+      let changeRun = null;
       // Each current entity version stores the dependency versions used to generate it.
       const entities = entityModel.entities;
       const entityLabel = item => item.scope === 'Workspace' ? entityModel.label(item.entity) : item.entity;
@@ -688,7 +772,9 @@
         kind: button.dataset.kind || 'Entity',
         field: button.dataset.field || ''
       });
-      const plan = { page: 'plan', entity: 'Update onboarding', scope: 'Changes', field: '' };
+      const plan = { change: true, page: 'plan', entity: 'Update onboarding', scope: 'Changes', field: '' };
+      const propagationPage = { change: true, page: 'propagation', entity: 'Update onboarding', scope: 'Changes', field: '' };
+      const finalReviewPage = { change: true, page: 'final-review', entity: 'Update onboarding', scope: 'Changes', field: '' };
       let openTabs = [{ entity: 'entity-1', scope: 'Workspace', kind: 'Entity', field: '' }, plan];
       let activeKey = keyFor(openTabs[0]);
       let renderedKey = null;
@@ -1008,11 +1094,12 @@
         if (id === currentBranchId) { render(); return; }
         saveBranchContext();
         currentBranchId = id;
+        syncRefreshBranch();
         get('merge-target').value = id;
         get('merge-source').value = [...gitBranches].find(name => name !== id) || '';
         get('merge-feedback').textContent = '';
         const context = currentBranch().context || {
-          openTabs: [], activeKey: null, iterations: [newIteration('draft')], iterationIndex: 0, policies: new Map(), commentOpen: false
+          openTabs: [], activeKey: null, iterations: [newIteration('draft')], iterationIndex: 0, policies: defaultPolicies(), commentOpen: false
         };
         ({ openTabs, activeKey, iterations, iterationIndex, policies } = context);
         renderedKey = null;
@@ -1030,7 +1117,7 @@
         renderedKey = null;
         iterations = [newIteration('draft')];
         iterationIndex = 0;
-        policies = new Map();
+        policies = defaultPolicies();
         commentOpen = false;
         get('merge-target').value = '';
         showIteration(0, false);
@@ -1345,16 +1432,29 @@
 
       function newIteration(state, values = {}) {
         return {
+          scope: 'Update product documentation and design', scopeDraft: values.scope || 'Update product documentation and design',
           responseState: state, approved: false, answers: ['', ''], customAnswers: ['', ''], expandedFiles: [],
           messageDraft: '', messageStatus: '', attachedCommentIds: [],
           replyAnswers: [], replyMessage: '', replyComments: [],
           summary: 'Define who sees onboarding and whether completion is required.',
           files: [
-            { path: 'docs/product/onboarding.md', before: '# Onboarding\n\n## Audience\nShow onboarding to every workspace member.\n\n## Completion\nRequire members to finish all setup steps.', content: '# Onboarding\n\n## Audience\nShow onboarding after a member joins the workspace.\n\n## Completion\nHelp members finish their initial setup.' },
-            { path: 'docs/design/onboarding.md', before: '# Onboarding flow\n\nShow the setup form immediately.\n\nOpen the workspace when setup is complete.', content: '# Onboarding flow\n\nWelcome the member and explain the setup steps.\n\nShow progress as each step is completed.\n\nOpen the workspace when setup is complete.' }
+            { entity: 'entity-2', path: 'docs/product/onboarding.md', before: entities['entity-2'].content['Field 1'], content: '# Onboarding\n\n## Audience\nShow onboarding after a member joins the workspace.\n\n## Completion\nHelp members finish their initial setup.' },
+            { entity: 'entity-7', path: 'docs/design/onboarding.md', before: entities['entity-7'].content['Field 1'], content: '# Onboarding flow\n\nWelcome the member and explain the setup steps.\n\nShow progress as each step is completed.\n\nOpen the workspace when setup is complete.' }
           ],
           comments: [], commentDrafts: {}, guidance: [], ...values
         };
+      }
+
+      function filesForPlanScope(scope, previousFiles) {
+        // Fixed demo responses, not a natural-language scope resolver.
+        const examples = {
+          'update product documentation': ['product'],
+          'update design': ['design'],
+          'update product documentation and design': ['product', 'design']
+        };
+        const targets = examples[scope.toLowerCase().replace(/[.!]$/, '').replace(/\s+/g, ' ').trim()] || [];
+        return newIteration('draft').files.filter(file => targets.some(target => file.path.startsWith('docs/' + target + '/')))
+          .map(file => structuredClone(previousFiles.find(previous => previous.path === file.path) || file));
       }
 
       function isLatestIteration() { return iterationIndex === iterations.length - 1; }
@@ -1382,33 +1482,88 @@
         renderReview();
       }
 
+      const historyExpansion = new WeakMap();
       function renderHistory() {
-        get('plan-history').hidden = activeKey !== 'plan';
-        get('iteration-list').replaceChildren();
+        const active = openTabs.find(item => keyFor(item) === activeKey);
+        get('change-history').hidden = !active?.change;
+        if (!active?.change) return;
+        function entry(list, title, status, current, action, disabled = false) {
+          const li = el('li');
+          const row = el('div', undefined, 'history-row');
+          const spacer = el('span', undefined, 'history-spacer'); spacer.setAttribute('aria-hidden', 'true');
+          const button = propagationButton('', action); button.className = 'history-entry';
+          button.disabled = disabled;
+          button.title = title;
+          button.append(el('span', title), el('small', status));
+          if (current) button.setAttribute('aria-current', 'page');
+          row.append(spacer, button); li.append(row); list.append(li);
+          return { li, row, spacer };
+        }
+        const plans = get('iteration-list'); plans.replaceChildren();
         iterations.forEach((item, index) => {
-          const li = document.createElement('li');
-          const button = document.createElement('button');
-          button.type = 'button';
-          const title = document.createElement('span');
-          title.textContent = (index + 1) + ': ' + { questions: 'Questions', draft: 'Draft', ready: 'Plan' }[item.responseState];
-          const detail = document.createElement('small');
-          detail.textContent = item.approved ? 'Approved' : index === iterations.length - 1 ? 'Current' : '';
-          detail.hidden = !detail.textContent;
-          if (index === iterationIndex) button.setAttribute('aria-current', 'page');
-          button.append(title, detail);
-          button.addEventListener('click', () => {
-            showIteration(index);
-            get('iteration-list').querySelector('[aria-current="page"]').focus();
-          });
-          li.append(button);
-          get('iteration-list').append(li);
+          entry(plans, 'Iteration ' + (index + 1), item.approved ? 'Approved' :
+            { questions: 'Questions', draft: 'Draft', ready: 'Ready' }[item.responseState],
+            activeKey === 'plan' && index === iterationIndex,
+            () => { showIteration(index); openItem(plan); });
         });
+        const history = get('propagation-history'); history.replaceChildren();
+        propagation.iterations.forEach((round, index) => {
+          const title = 'Iteration ' + (index + 1);
+          const status = round.complete ? 'Complete' : round.files.some(file => file.status === 'analyzing') ? 'Triaging'
+            : round.files.some(file => !file.confirmed) ? 'Review' : 'Refreshing';
+          const openRound = () => { propagation.selected = index; openItem(propagationPage); };
+          const { li, row, spacer } = entry(history, title, status,
+            activeKey === 'propagation' && index === propagation.selected, openRound);
+          const files = el('ol', undefined, 'history-list history-files');
+          files.id = 'history-propagation-files-' + index;
+          round.files.forEach(file => {
+            const status = file.session?.approved ? 'Approved' : file.status === 'unchanged' ? 'No change'
+              : file.status === 'analyzing' ? 'Triaging' : file.session ? refreshLabels[file.session.iterations.at(-1)?.state] : 'Pending';
+            entry(files, entityModel.label(file.id), status,
+              !!active.refresh && active.session === file.session,
+              () => file.session ? openPropagationFile(file) : openRound());
+          });
+          let expansion = historyExpansion.get(round);
+          if (!expansion || expansion.complete !== round.complete) {
+            expansion = { complete: round.complete, open: !round.complete };
+            historyExpansion.set(round, expansion);
+          }
+          const toggle = propagationButton('', () => {
+            expansion.open = !expansion.open;
+            updateExpansion();
+          });
+          toggle.className = 'history-toggle';
+          toggle.setAttribute('aria-controls', files.id);
+          function updateExpansion() {
+            files.hidden = !expansion.open;
+            toggle.textContent = expansion.open ? '▾' : '▸';
+            toggle.setAttribute('aria-expanded', String(expansion.open));
+            toggle.setAttribute('aria-label', (expansion.open ? 'Collapse ' : 'Expand ') + 'propagation ' + title.toLowerCase());
+          }
+          updateExpansion();
+          row.replaceChild(toggle, spacer);
+          li.append(files);
+        });
+        if (!propagation.iterations.length) entry(history, 'Iteration 1', 'Not started', activeKey === 'propagation',
+          () => openItem(propagationPage), !changeRun && !eligibleFiles().length);
+        const review = get('review-history'); review.replaceChildren();
+        const available = canReviewChange();
+        entry(review, 'Review', changeRun?.complete ? 'Approved' : available ? 'Ready' : 'Not started',
+          activeKey === 'final-review', () => openItem(finalReviewPage), !available);
       }
 
       function openItem(item) {
         if (!currentBranch() && !item.commit) return;
+        if (item.refresh) {
+          const session = item.session || refreshSessions.get(item.entity);
+          if (session?.propagation) item = { ...item, change: true, session };
+        }
         activeKey = keyFor(item);
-        if (!openTabs.some(open => keyFor(open) === activeKey)) openTabs.push(item);
+        if (item.change) {
+          const index = openTabs.findIndex(open => open.change);
+          if (index >= 0) openTabs[index] = item;
+          else openTabs.push(item);
+        } else if (!openTabs.some(open => keyFor(open) === activeKey)) openTabs.push(item);
         render();
       }
 
@@ -1499,20 +1654,350 @@
       const refreshBranches = new Map();
       let refreshBranchId = null;
       let refreshSessions = new Map();
+      let propagation = { iterations: [], selected: -1, running: false };
       function syncRefreshBranch() {
         if (refreshBranchId === currentBranchId) return;
-        if (refreshBranchId) refreshBranches.set(refreshBranchId, { entities: structuredClone(entities), sessions: refreshSessions });
+        if (refreshBranchId) refreshBranches.set(refreshBranchId, { entities: structuredClone(entities), sessions: refreshSessions, propagation, changeRun });
         const saved = refreshBranches.get(currentBranchId);
         Object.assign(entities, structuredClone(saved?.entities || initialEntities));
         refreshSessions = saved?.sessions || new Map();
+        propagation = saved?.propagation || { iterations: [], selected: -1, running: false };
+        changeRun = saved?.changeRun || null;
         refreshBranchId = currentBranchId;
       }
       function isOutdated(id) {
         return entities[id].dependencies.some(dependency => dependency.version !== entities[dependency.entity].version);
       }
+      const entityItem = id => ({ entity: id, scope: 'Workspace', kind: 'Entity', field: '' });
+      const dependencyVersions = id => entities[id].dependencies.map(dependency => ({ entity: dependency.entity, version: entities[dependency.entity].version }));
+      const dependenciesMatch = (id, versions) => JSON.stringify(dependencyVersions(id)) === JSON.stringify(versions);
+      const unfinishedRefresh = id => refreshSessions.has(id) && !refreshSessions.get(id).approved;
+      function freshForPropagation(id, visiting = new Set()) {
+        if (visiting.has(id) || isOutdated(id) || unfinishedRefresh(id)) return false;
+        return entities[id].dependencies.every(dependency => freshForPropagation(dependency.entity, new Set([...visiting, id])));
+      }
+      function eligibleFiles() {
+        return Object.keys(entities).filter(id => isOutdated(id) && !unfinishedRefresh(id)
+          && entities[id].dependencies.every(dependency => freshForPropagation(dependency.entity)));
+      }
+      function triageFile(id) {
+        // Illustrative agent analysis: the last leaf already satisfies the changed requirement.
+        const noChange = id === 'entity-9' && !onboardingIncludesExistingMembers();
+        const policy = policies.get(keyFor(entityItem(id))) || 'Ask first';
+        return { id, policy, decision: noChange ? 'unchanged' : 'change', confirmed: policy !== 'Ask first',
+          reason: noChange ? 'Existing-member behavior is unchanged.' : id === 'entity-10' ? 'Update the welcome text and action labels to match the onboarding flow.' : id === 'entity-8' ? 'Apply the updated onboarding flow.' : id === 'entity-9' ? 'Update the guidance for existing members.' : 'Align this file with its updated requirements.',
+          dependencies: dependencyVersions(id), status: 'triage', session: null };
+      }
+      function resolveTriageApproval(round) {
+        if (round.files.some(file => file.status === 'analyzing')) return;
+        round.triageResolved = true;
+        const requiresApproval = round.files.some(file => file.policy === 'Ask first');
+        round.files.filter(file => !file.session && !['approved', 'unchanged'].includes(file.status)).forEach(file => {
+          file.confirmed = !requiresApproval;
+          file.approvedBy = requiresApproval ? null : 'agent';
+        });
+      }
+      function queueFileTriage(round, file, index = 0) {
+        const owner = propagation;
+        const result = triageFile(file.id);
+        const request = (file.triageRequest || 0) + 1;
+        Object.assign(file, { policy: result.policy, status: 'analyzing', decision: null, reason: '', confirmed: false,
+          dependencies: result.dependencies, triageRequest: request, triageContent: structuredClone(entities[file.id].content) });
+        round.triageResolved = false;
+        // Independent mock responses arrive at different times.
+        setTimeout(() => {
+          if (file.triageRequest !== request) return;
+          Object.assign(file, result, { triageRequest: request, confirmed: false });
+          if (!round.files.some(entry => entry.status === 'analyzing')) resolveTriageApproval(round);
+          if (propagation !== owner) return;
+          const follow = activeKey === 'propagation' && propagation.selected === propagation.iterations.length - 1;
+          advancePropagation();
+          if (follow) continueChange();
+          else render();
+        }, 1800 + index * 2200);
+      }
+      function advancePropagation() {
+        if (!propagation.running) return;
+        let round = propagation.iterations.at(-1);
+        if (round && !round.complete) {
+          if (round.files.some(file => file.status === 'analyzing')) return;
+          if (!round.triageResolved) resolveTriageApproval(round);
+          if (round.files.some(file => !file.confirmed)) return;
+          for (const file of round.files) {
+            if (file.status === 'approved' || file.status === 'unchanged') continue;
+            if (file.session) {
+              if (!file.session.approved) return;
+              file.status = 'approved';
+              continue;
+            }
+            if (!dependenciesMatch(file.id, file.dependencies)
+              || !entities[file.id].dependencies.every(dependency => freshForPropagation(dependency.entity))) {
+              file.confirmed = false;
+              file.status = 'stale';
+              return;
+            }
+            if (file.decision === 'unchanged') {
+              entities[file.id].dependencies = structuredClone(file.dependencies);
+              currentBranch().dirty = true;
+              file.status = 'unchanged';
+              continue;
+            }
+            const previous = refreshSessions.get(file.id);
+            file.session = previous && !previous.approved ? previous : {
+              entity: file.id, manual: false, before: structuredClone(entities[file.id].content),
+              iterations: [], messages: [], selected: 0, draft: '', response: 'ready', approved: false,
+              revision: previous?.revision || 0, propagation: true
+            };
+            file.session.propagation = true;
+            refreshSessions.set(file.id, file.session);
+            if (!file.session.iterations.length) addRefreshIteration(file.session, 'ready');
+            file.status = 'review';
+            return;
+          }
+          round.complete = true;
+        }
+        const ready = eligibleFiles();
+        if (!ready.length) { propagation.running = false; return; }
+        round = { files: ready.map(id => ({ id, session: null })), complete: false, triageResolved: false };
+        propagation.iterations.push(round);
+        propagation.selected = propagation.iterations.length - 1;
+        round.files.forEach((file, index) => queueFileTriage(round, file, index));
+      }
+      function propagationButton(text, action) {
+        const button = el('button', text);
+        button.type = 'button';
+        button.addEventListener('click', action);
+        return button;
+      }
+      function entityGraphError() {
+        const edges = new Map(Object.entries(entities).map(([id, entity]) => [id, entity.dependencies.map(dependency => dependency.entity)]));
+        for (const [id, entity] of Object.entries(entities)) {
+          for (const dependency of entity.dependencies) {
+            if (!entities[dependency.entity] || (dependency.field && !(dependency.field in entities[dependency.entity].content))) return 'A dependency reference is invalid.';
+          }
+          for (const children of Object.values(entity.children)) {
+            for (const child of typeof children === 'string' ? [children] : Object.values(children)) {
+              if (!entities[child]) return 'A child reference is invalid.';
+              edges.get(child).push(id);
+            }
+          }
+        }
+        const done = new Set(), visiting = new Set();
+        function visit(id) {
+          if (visiting.has(id)) return false;
+          if (done.has(id)) return true;
+          visiting.add(id);
+          if (!edges.get(id).every(visit)) return false;
+          visiting.delete(id); done.add(id); return true;
+        }
+        return [...edges.keys()].every(visit) ? '' : 'The entity graph contains a cycle.';
+      }
+      function showChangeError(message) {
+        get('change-feedback').textContent = message;
+        get('change-feedback').hidden = !message;
+      }
+      function newChangeRun(planIndex = null) {
+        return { before: structuredClone(entities), planIndex, complete: false };
+      }
+      function applyPlan() {
+        const item = iterations[iterationIndex];
+        if (changeRun || !currentBranch() || !isLatestIteration() || approved || responseState !== 'ready'
+          || !item.scope.trim() || !item.files.length || item.scopeDraft.trim() !== item.scope || get('message').value.trim() || attachedCommentIds.length) return;
+        const graphError = entityGraphError();
+        if (graphError) { showChangeError(graphError); return; }
+        if (item.files.some(file => !entities[file.entity] || unfinishedRefresh(file.entity))) {
+          showChangeError('Finish existing refreshes before applying this plan.'); return;
+        }
+        showChangeError('');
+        changeRun = newChangeRun(iterationIndex);
+        item.files.forEach(file => {
+          const entity = entities[file.entity];
+          if (entity.content['Field 1'] !== file.content) {
+            entity.content['Field 1'] = file.content;
+            entity.version += '-plan-' + (iterationIndex + 1);
+          }
+        });
+        // All planned files are applied before recording their current inputs.
+        item.files.forEach(file => { entities[file.entity].dependencies = dependencyVersions(file.entity); });
+        currentBranch().dirty = true;
+        item.approved = true;
+        approved = true;
+        saveIteration();
+        propagation.running = true;
+        advancePropagation();
+        continueChange();
+      }
+      function startPropagation() {
+        if (!currentBranch() || propagation.running || changeRun?.complete) return;
+        const graphError = entityGraphError();
+        if (graphError) { showChangeError(graphError); return; }
+        showChangeError('');
+        if (!changeRun) changeRun = newChangeRun();
+        propagation.running = true;
+        advancePropagation();
+        continueChange();
+      }
+      function canReviewChange() {
+        return !!changeRun && !propagation.running && !Object.keys(entities).some(isOutdated)
+          && ![...refreshSessions.values()].some(session => !session.approved);
+      }
+      function continueChange() {
+        const next = propagation.iterations.at(-1)?.files.find(file => file.session && !file.session.approved);
+        if (next) openPropagationFile(next);
+        else openItem(canReviewChange() ? finalReviewPage : propagationPage);
+      }
+      function renderEntityDiff(target, before, after) {
+        target.replaceChildren();
+        let changes = 0;
+        Object.entries(after).forEach(([field, content]) => {
+          if (before[field] === content) return;
+          changes++;
+          const section = el('section', undefined, 'diff-field');
+          section.append(el('h3', field === 'Field 1' ? 'Content' : field));
+          [['removed', '−', before[field] || '(Empty)'], ['added', '+', content || '(Empty)']].forEach(([kind, sign, text]) => {
+            const line = el('div', undefined, 'diff-line diff-' + kind);
+            line.setAttribute('aria-label', kind === 'removed' ? 'Removed content' : 'Added content');
+            const marker = el('span', sign); marker.setAttribute('aria-hidden', 'true');
+            line.append(marker, el('p', text)); section.append(line);
+          });
+          target.append(section);
+        });
+        if (!changes) target.append(el('p', 'No content changes.', 'muted'));
+      }
+      function changedEntities() {
+        if (!changeRun) return [];
+        return Object.keys(entities).filter(id => JSON.stringify(changeRun.before[id]?.content) !== JSON.stringify(entities[id].content));
+      }
+      function renderFinalReview() {
+        get('complete-change').disabled = !canReviewChange() || !!changeRun?.complete;
+        const target = get('final-review-files'); target.replaceChildren();
+        const changed = changedEntities();
+        get('final-review-status').textContent = changeRun?.complete ? 'Change approved.' : changed.length + ' files changed.';
+        const planned = new Set(changeRun && changeRun.planIndex !== null ? iterations[changeRun.planIndex].files.map(file => file.entity) : []);
+        changed.forEach(id => {
+          const detail = el('details', undefined, 'final-file');
+          const summary = el('summary');
+          summary.append(el('span', entityModel.label(id)), el('small', planned.has(id) ? 'Applied from plan' : 'Refreshed · Approved'));
+          detail.append(summary);
+          const diff = el('div'); renderEntityDiff(diff, changeRun.before[id]?.content || {}, entities[id].content);
+          detail.append(diff); target.append(detail);
+        });
+        const unchanged = [...new Set(propagation.iterations.flatMap(round => round.files.filter(file => file.status === 'unchanged').map(file => file.id)))];
+        get('final-unchanged').hidden = !unchanged.length;
+        get('final-unchanged-title').textContent = 'No content change (' + unchanged.length + ')';
+        get('final-unchanged-files').replaceChildren(...unchanged.map(id => el('li', entityModel.label(id))));
+        if (!changed.length) target.append(el('p', 'No content changes.', 'muted'));
+      }
+      get('open-final-review').addEventListener('click', () => { if (canReviewChange()) openItem(finalReviewPage); });
+      get('complete-change').addEventListener('click', () => {
+        if (!canReviewChange() || changeRun.complete) return;
+        changeRun.complete = true;
+        render();
+      });
+
+      function openPropagationFile(file) {
+        if (!file.session) return;
+        openItem({ ...entityItem(file.id), page: 'refresh:' + file.id, refresh: true, change: true, session: file.session });
+      }
+      const triageContentExpanded = new Map();
+      function renderPropagation() {
+        const current = propagation.iterations.at(-1);
+        const round = propagation.iterations[propagation.selected];
+        const historic = !!round && (round !== current || round.complete);
+        const loading = !!round?.files.some(file => file.status === 'analyzing');
+        const awaitingApproval = !!round && !historic && !loading && round.files.some(file => !file.confirmed);
+        const ready = eligibleFiles();
+        const files = round?.files || ready.map(id => ({ id }));
+        get('approve-triage-selection').hidden = !awaitingApproval;
+        get('approve-triage-selection').disabled = loading || !!round?.files.some(file => file.status === 'stale');
+        get('start-propagation').hidden = propagation.running || !ready.length;
+        get('open-final-review').hidden = !canReviewChange();
+        get('propagation-status').textContent = historic ? 'Completed' : loading ? 'Triaging files…' : awaitingApproval ? 'Review triage results.' : propagation.running ? 'Refresh in progress' : ready.length ? ready.length + ' files to analyze' : 'All files are fresh.';
+        get('propagation-current-title').textContent = round ? 'Iteration ' + (propagation.selected + 1) : 'Files';
+        get('propagation-latest').hidden = !round || round === current;
+        get('propagation-selection-count').textContent = loading ? files.filter(file => file.status !== 'analyzing').length + ' of ' + files.length + ' analyzed' : round ? files.filter(file => file.decision === 'change').length + ' of ' + files.length + ' selected' : '';
+        const target = get('propagation-files'); target.replaceChildren();
+        files.forEach(file => {
+          const article = el('article', undefined, 'propagation-file');
+          const row = el('div', undefined, 'propagation-file-heading');
+          article.append(row);
+          if (round) {
+            const analyzing = file.status === 'analyzing';
+            article.setAttribute('aria-busy', String(analyzing));
+            const checkbox = el('input');
+            checkbox.type = 'checkbox';
+            checkbox.dataset.triageFile = file.id;
+            checkbox.checked = file.decision === 'change';
+            checkbox.disabled = !awaitingApproval || !!file.session || ['approved', 'unchanged', 'stale'].includes(file.status);
+            checkbox.setAttribute('aria-label', 'Refresh ' + entityModel.label(file.id));
+            checkbox.addEventListener('change', () => {
+              file.decision = checkbox.checked ? 'change' : 'unchanged'; render();
+              get('propagation-files').querySelector('[data-triage-file="' + file.id + '"]')?.focus();
+            });
+            row.append(checkbox);
+            row.append(el('small', file.policy));
+            const status = el('small', undefined, 'triage-status');
+            status.setAttribute('role', 'status');
+            if (analyzing) {
+              const spinner = el('span', undefined, 'triage-spinner'); spinner.setAttribute('aria-hidden', 'true');
+              status.append(spinner, document.createTextNode('Triaging…'));
+            } else status.textContent = file.status === 'stale' ? 'Triage again' : file.session ? (file.session.approved ? 'Approved' : refreshLabels[file.session.iterations.at(-1)?.state]) : '';
+            if (analyzing || status.textContent) row.append(status);
+            if (!analyzing) article.append(el('p', file.reason, 'triage-reason'));
+            if (!historic && file.status === 'stale') row.append(propagationButton('Retry triage', () => {
+              if (!entities[file.id].dependencies.every(dependency => freshForPropagation(dependency.entity))) return;
+              queueFileTriage(round, file); render();
+            }));
+          } else {
+            const policy = el('select'); policy.setAttribute('aria-label', 'Agent autonomy for ' + entityModel.label(file.id));
+            ['Ask first', 'Keep me informed', 'Act independently'].forEach(value => policy.append(el('option', value)));
+            policy.value = policies.get(keyFor(entityItem(file.id))) || 'Ask first';
+            policy.addEventListener('change', () => policies.set(keyFor(entityItem(file.id)), policy.value));
+            row.append(policy);
+          }
+          const previewKey = JSON.stringify([currentBranchId, round ? propagation.selected : -1, file.id]);
+          const content = el('div', undefined, 'triage-content');
+          content.id = 'triage-content-' + file.id;
+          entityModel.renderContent(content, file.triageContent || entities[file.id].content);
+          const toggle = propagationButton('', () => {
+            triageContentExpanded.set(previewKey, !triageContentExpanded.get(previewKey));
+            updatePreview();
+          });
+          toggle.className = 'triage-content-toggle';
+          toggle.setAttribute('aria-controls', content.id);
+          const chevron = el('span'); chevron.setAttribute('aria-hidden', 'true');
+          toggle.append(chevron, el('span', entityModel.label(file.id)));
+          function updatePreview() {
+            const expanded = !!triageContentExpanded.get(previewKey);
+            content.hidden = !expanded;
+            chevron.textContent = expanded ? '▾' : '▸';
+            toggle.setAttribute('aria-expanded', String(expanded));
+          }
+          updatePreview();
+          row.insertBefore(toggle, round ? row.children[1] : row.firstChild);
+          if (file.session) row.append(propagationButton('Open refresh', () => openPropagationFile(file)));
+          article.append(content);
+          target.append(article);
+        });
+        if (!files.length) target.append(el('p', 'No files to refresh.', 'muted'));
+
+      }
+      get('start-propagation').addEventListener('click', startPropagation);
+      get('approve-triage-selection').addEventListener('click', () => {
+        const round = propagation.iterations.at(-1);
+        if (!propagation.running || !round || round.complete || propagation.selected !== propagation.iterations.length - 1
+          || !round.files.some(file => !file.confirmed) || round.files.some(file => ['stale', 'analyzing'].includes(file.status))) return;
+        round.files.filter(file => !file.session && !['approved', 'unchanged'].includes(file.status)).forEach(file => {
+          file.confirmed = true;
+          file.approvedBy = 'you';
+        });
+        advancePropagation();
+        continueChange();
+      });
+      get('propagation-latest').addEventListener('click', () => { propagation.selected = propagation.iterations.length - 1; render(); });
       function activeRefresh() {
         const active = openTabs.find(item => keyFor(item) === activeKey);
-        return active?.refresh ? refreshSessions.get(active.entity) : null;
+        return active?.refresh ? active.session || refreshSessions.get(active.entity) : null;
       }
       function closeFreshness() {
         get('freshness-menu').hidden = true;
@@ -1531,13 +2016,34 @@
         get('start-refresh').textContent = unfinished ? (session.manual ? 'Continue chat' : 'Continue refresh') : outdated ? 'Refresh' : 'Start chat';
       }
       const refreshLabels = { waiting: 'What would you like to change?', context: 'Needs context', error: 'Error', ready: 'Ready for review' };
+      function onboardingIncludesExistingMembers() {
+        return /## Audience\s+(All members|Show onboarding to every workspace member)/.test(entities['entity-2'].content['Field 1']);
+      }
+      function simulatedRefreshContent(id) {
+        const product = entities['entity-2'].content['Field 1'];
+        const design = entities['entity-7'].content['Field 1'];
+        if (id === 'entity-8') return 'export const onboarding = {\n  audience: "' + (onboardingIncludesExistingMembers() ? 'all-members' : 'new-members')
+          + '",\n  allowSkip: ' + /skip action|Allow members to skip/.test(design + product)
+          + ',\n  showProgress: ' + /Show progress/.test(design) + ',\n};';
+        if (id === 'entity-10') return '# Onboarding copy\n\nTitle: Welcome to your workspace\nPrimary action: Continue'
+          + (/skip action|Allow members to skip/.test(design + product) ? '\nSecondary action: Skip for now' : '')
+          + (/Show progress/.test(design) ? '\nProgress: Step {current} of {total}' : '');
+        if (id === 'entity-9') return onboardingIncludesExistingMembers() ? 'Show onboarding to existing members.' : 'Preserve existing items.';
+        if (id === 'entity-7') return '# Onboarding flow\n\nWelcome ' + (onboardingIncludesExistingMembers() ? 'all members' : 'new members')
+          + ' and explain the setup steps.\n\nShow progress as each step is completed.\n\n'
+          + (/Allow members to skip/.test(product) ? 'Include a skip action that opens the workspace.' : 'Show the required steps before members can continue.');
+        return 'Follow the updated parent requirements. Preserve existing items.';
+      }
       function addRefreshIteration(session, state, message = '') {
         const current = entities[session.entity];
         const first = session.iterations.length === 0;
         const field = Object.keys(current.content)[0];
         const previousContent = structuredClone(current.content);
-        if (first && !session.manual) current.content[field] = 'Follow the updated parent requirements. Preserve existing items.';
-        if (message && state !== 'error') current.content[field] = [current.content[field], (session.manual ? 'Edit request: ' : 'Refresh guidance: ') + message].filter(Boolean).join('\n');
+        if (first && !session.manual) current.content[field] = simulatedRefreshContent(session.entity);
+        if (message && state !== 'error') {
+          const guidance = current.filePath?.endsWith('.tsx') ? message.split('\n').map(line => '// Guidance: ' + line).join('\n') : (session.manual ? 'Edit request: ' : 'Refresh guidance: ') + message;
+          current.content[field] = [current.content[field], guidance].filter(Boolean).join('\n');
+        }
         const reply = state === 'context' ? (session.manual ? 'I started the requested edit. Should this change also apply to existing items?' : 'I updated the content using the current context. Should existing items keep their current behavior or follow the updated requirements?') : state === 'error' ? 'I could not run the validation check because the check service was unavailable. Changes made so far are shown on the left. Retry the check, or send more context.' : 'I included your guidance in the content. Validation passed. You can request another change or approve this result.';
         if (first && !session.manual) session.messages.push({ role: 'You', text: 'Refresh ' + entityModel.label(session.entity) + '.' });
         if (message) session.messages.push({ role: 'You', text: message });
@@ -1552,11 +2058,15 @@
         }
       }
       function renderRefresh(active) {
-        const session = refreshSessions.get(active.entity);
+        const session = active.session || refreshSessions.get(active.entity);
         const waiting = session.iterations.length === 0;
         const iteration = session.iterations[session.selected] || { state: 'waiting', content: session.before, messages: session.messages };
         const latest = session.selected === session.iterations.length - 1;
-        get('refresh-title').textContent = (session.manual ? 'Chat · ' : 'Refresh · ') + entityModel.label(active.entity);
+        const stale = !waiting && (!dependenciesMatch(session.entity, iteration.dependencies)
+          || (session.propagation && !entities[session.entity].dependencies.every(dependency => freshForPropagation(dependency.entity))));
+        get('refresh-back').setAttribute('aria-label', session.propagation ? 'Back to files' : 'View entity');
+        get('refresh-back').title = session.propagation ? 'Back to files' : 'View entity';
+        get('refresh-title').textContent = (session.propagation ? '' : session.manual ? 'Chat · ' : 'Refresh · ') + entityModel.label(active.entity);
         const select = get('refresh-iteration');
         select.replaceChildren();
         session.iterations.forEach((entry, index) => {
@@ -1576,36 +2086,10 @@
         get('refresh-skeleton').hidden = !waiting;
         get('refresh-diff').hidden = waiting;
         get('refresh-latest').hidden = latest;
-        get('refresh-diff').replaceChildren();
-        let changes = 0;
-        Object.entries(iteration.content).forEach(([field, after]) => {
-          const before = session.before[field];
-          if (waiting || before === after) return;
-          changes++;
-          const section = document.createElement('section');
-          section.className = 'diff-field';
-          const heading = document.createElement('h3');
-          heading.textContent = 'Content / ' + field;
-          section.append(heading);
-          const lines = [['removed', '−', before || '(Empty)'], ['added', '+', after || '(Empty)']];
-          for (const [kind, sign, text] of lines) {
-            const line = document.createElement('div');
-            line.className = 'diff-line diff-' + kind;
-            line.setAttribute('aria-label', kind === 'removed' ? 'Removed content' : 'Added content');
-            const marker = document.createElement('span');
-            marker.textContent = sign;
-            marker.setAttribute('aria-hidden', 'true');
-            const content = document.createElement('p');
-            content.textContent = text;
-            line.append(marker, content);
-            section.append(line);
-          }
-          get('refresh-diff').append(section);
-        });
-        if (!changes) get('refresh-diff').textContent = 'No content changes in this iteration.';
-        get('refresh-approval-note').textContent = !latest ? 'Viewing a previous iteration' : '';
+        renderEntityDiff(get('refresh-diff'), session.before, iteration.content);
+        get('refresh-approval-note').textContent = !latest ? 'Viewing a previous iteration' : stale ? 'Dependencies changed. Check again before approving.' : session.approved ? 'Approved by you' : '';
         get('approve-refresh').hidden = session.approved;
-        get('approve-refresh').disabled = !latest || iteration.state !== 'ready';
+        get('approve-refresh').disabled = !latest || iteration.state !== 'ready' || stale;
         get('refresh-messages').replaceChildren();
         iteration.messages.forEach(message => {
           const article = document.createElement('article');
@@ -1623,7 +2107,7 @@
         get('refresh-response').value = session.response;
         get('refresh-response').disabled = readOnly;
         get('send-refresh').disabled = readOnly || !session.draft.trim();
-        get('retry-refresh').hidden = readOnly || iteration.state !== 'error';
+        get('retry-refresh').hidden = readOnly || (iteration.state !== 'error' && !stale);
         if (latest) get('refresh-messages').scrollTop = get('refresh-messages').scrollHeight;
       }
       get('mock-configuration-button').addEventListener('click', () => get('mock-configuration').showModal());
@@ -1654,6 +2138,7 @@
       });
       get('refresh-back').addEventListener('click', () => {
         const session = activeRefresh();
+        if (session.propagation) { openItem(propagationPage); return; }
         openItem({ entity: session.entity, scope: 'Workspace', kind: 'Entity', field: '' });
         get('freshness-status').focus();
       });
@@ -1689,15 +2174,22 @@
       get('approve-refresh').addEventListener('click', () => {
         const session = activeRefresh();
         const latest = session.iterations.at(-1);
-        if (session.approved || session.selected !== session.iterations.length - 1 || latest?.state !== 'ready') return;
+        if (session.approved || session.selected !== session.iterations.length - 1 || latest?.state !== 'ready' || !dependenciesMatch(session.entity, latest.dependencies)
+          || (session.propagation && !entities[session.entity].dependencies.every(dependency => freshForPropagation(dependency.entity)))) return;
         session.approved = true;
         if (!session.manual) entities[session.entity].dependencies = structuredClone(latest.dependencies);
+        if (session.propagation) {
+          advancePropagation();
+          continueChange();
+          return;
+        }
         render();
         get('refresh-back').focus();
       });
 
       function render() {
         syncRefreshBranch();
+        if (propagation.running) advancePropagation();
         closeFreshness();
         hideDependencyTooltip();
         renderBranches();
@@ -1705,13 +2197,13 @@
         renderedKey = activeKey;
         const hasWorkingBranch = !!currentBranch();
         get('workspace-tree').hidden = !hasWorkingBranch;
-        get('open-plan').disabled = !hasWorkingBranch;
+        get('open-change').disabled = !hasWorkingBranch;
         if (hasWorkingBranch) entityModel.renderTree(openItem);
         const active = openTabs.find(item => keyFor(item) === activeKey);
         get('tabs').replaceChildren();
         openTabs.forEach(item => {
           const key = keyFor(item);
-          const label = (item.refresh ? (refreshSessions.get(item.entity)?.manual ? 'Chat · ' : 'Refresh · ') : '') + entityLabel(item) + (item.field ? ' / ' + item.field : '');
+          const label = item.change ? plan.entity : (item.refresh ? (refreshSessions.get(item.entity)?.manual ? 'Chat · ' : 'Refresh · ') : '') + entityLabel(item) + (item.field ? ' / ' + item.field : '');
           const tab = document.createElement('div');
           tab.className = 'workspace-tab' + (key === activeKey ? ' active' : '');
           const select = document.createElement('button');
@@ -1742,15 +2234,23 @@
         });
         const isEntity = !!active && !active.page;
         const isRefresh = !!active?.refresh;
-        document.querySelector('.workspace').classList.toggle('refresh-open', isRefresh);
-        document.querySelector('.content').classList.toggle('refresh-content', isRefresh);
+        const isPropagation = activeKey === 'propagation';
+        const isFinalReview = activeKey === 'final-review';
+        document.querySelector('.workspace').classList.toggle('refresh-open', isRefresh && !active?.change);
+        document.querySelector('.workspace').classList.toggle('change-open', !!active?.change);
+        get('change-feedback').hidden = !active?.change || !get('change-feedback').textContent;
+        document.querySelector('.content').classList.toggle('refresh-content', isRefresh || isPropagation);
+        get('final-review-view').hidden = !isFinalReview;
+        if (isFinalReview) renderFinalReview();
+        get('propagation-view').hidden = !isPropagation;
+        if (isPropagation) renderPropagation();
         get('refresh-view').hidden = !isRefresh;
         if (isRefresh) renderRefresh(active);
         const isPlan = activeKey === 'plan';
         get('mock-refresh-controls').hidden = !isRefresh;
         get('mock-configuration-empty').hidden = isPlan || isRefresh;
-        get('open-plan').toggleAttribute('aria-current', false);
-        if (isPlan) get('open-plan').setAttribute('aria-current', 'page');
+        get('open-change').toggleAttribute('aria-current', false);
+        if (active?.change) get('open-change').setAttribute('aria-current', 'page');
         get('plan-view').hidden = !isPlan;
         get('commit-view').hidden = !active?.commit;
         if (active?.commit) renderCommit(active.commit);
@@ -1807,7 +2307,7 @@
       }
 
       function captureSelection() {
-        if (activeKey !== 'plan' || !isLatestIteration() || responseState === 'questions') { clearSelectionAction(); return; }
+        if (changeRun || activeKey !== 'plan' || !isLatestIteration() || responseState === 'questions') { clearSelectionAction(); return; }
         const selection = window.getSelection();
         if (!selection || selection.isCollapsed || !selection.rangeCount) { clearSelectionAction(); return; }
         const range = selection.getRangeAt(0);
@@ -2024,12 +2524,11 @@
       function renderPlan() {
         clearSelectionAction();
         const item = iterations[iterationIndex];
-        get('change-context').textContent = 'Change · Worktree: ' + (currentBranchId || 'None');
-        get('plan-stage').textContent = approved ? 'Plan approved' : responseState === 'ready' ? 'Plan · Ready' : 'Plan · Draft';
         get('plan-iteration').textContent = 'Iteration ' + (iterationIndex + 1);
         renderAnnotatedText(get('plan-document'), 'plan', item);
         const files = get('plan-files');
         files.replaceChildren();
+        get('plan-files-empty').hidden = !!item.files.length;
         item.files.forEach(file => {
           const details = el('details', undefined, 'plan-file');
           details.open = item.expandedFiles.includes(file.path);
@@ -2101,32 +2600,33 @@
         saveIteration();
         const latest = isLatestIteration();
         const iteration = iterations[iterationIndex];
+        const scopeChanged = iteration.scopeDraft.trim() !== iteration.scope;
+        get('plan-scope').value = iteration.scopeDraft;
+        get('plan-scope').disabled = !latest || !!changeRun;
         const needsAnswers = responseState !== 'ready';
         const hasPlan = responseState !== 'questions';
-        const hasFeedback = !!get('message').value.trim() || !!attachedCommentIds.length;
+        const hasFeedback = scopeChanged || !!get('message').value.trim() || !!attachedCommentIds.length;
         const answersComplete = resolvedAnswers().every(Boolean);
-        get('plan-heading').textContent = 'Update onboarding';
         get('response-state').value = responseState;
-        get('response-state').disabled = !latest;
+        get('response-state').disabled = !latest || scopeChanged || !!changeRun;
         get('preview-controls').hidden = activeKey !== 'plan';
         get('history-notice').hidden = latest;
         get('history-label').textContent = 'Iteration ' + (iterationIndex + 1) + ' (Earlier version)';
         get('plan-preview').hidden = !hasPlan;
         get('edited-files').hidden = !hasPlan;
         get('required-questions').hidden = !needsAnswers;
-        document.querySelectorAll('[name^="answer-"]').forEach(input => { input.disabled = !latest; });
+        document.querySelectorAll('[name^="answer-"]').forEach(input => { input.disabled = !latest || !!changeRun; });
         selectedAnswers().forEach((answer, index) => {
           get('custom-answer-' + (index + 1)).hidden = answer !== 'custom';
-          get('custom-reply-' + (index + 1)).disabled = !latest;
+          get('custom-reply-' + (index + 1)).disabled = !latest || !!changeRun;
         });
-        get('composer').hidden = !latest;
+        get('composer').hidden = !latest || !!changeRun;
         get('plan-comments').hidden = activeKey !== 'plan' || !hasPlan;
         get('question-context').hidden = activeKey !== 'plan' || hasPlan;
-        get('approve-plan').hidden = needsAnswers || hasFeedback;
-        get('approve-plan').disabled = approved;
-        get('send-response').hidden = !needsAnswers && !hasFeedback;
-        get('send-response').textContent = hasFeedback ? 'Send' : 'Send answers';
-        get('send-response').disabled = !hasFeedback && !answersComplete;
+        const approving = !needsAnswers && !hasFeedback;
+        get('send-response').textContent = approving ? 'Approve' : 'Send';
+        get('send-response').disabled = !latest || approved || !!changeRun || !iteration.scopeDraft.trim()
+          || (approving ? !iteration.files.length : !hasFeedback && !answersComplete);
         get('iteration-reply').hidden = !iteration.replyAnswers.length && !iteration.replyMessage && !iteration.replyComments.length;
         get('reply-answers').hidden = !iteration.replyAnswers.length;
         get('reply-answers').textContent = iteration.replyAnswers.length ? iteration.replyAnswers.join(' · ') : '';
@@ -2149,23 +2649,27 @@
         openItem(itemFor(button));
       }));
       get('autonomy').addEventListener('change', () => { if (activeKey) policies.set(activeKey, get('autonomy').value); });
-      get('open-plan').addEventListener('click', () => openItem(plan));
+      get('open-change').addEventListener('click', () => {
+        const existing = openTabs.find(item => item.change);
+        if (existing) openItem(existing);
+        else if (changeRun) continueChange();
+        else openItem(plan);
+      });
+      get('plan-scope').addEventListener('input', () => {
+        if (changeRun || !isLatestIteration()) return;
+        iterations[iterationIndex].scopeDraft = get('plan-scope').value;
+        renderReview();
+      });
       get('latest-iteration').addEventListener('click', () => {
         showIteration(iterations.length - 1);
         get('message').focus();
       });
       get('response-state').addEventListener('change', () => {
-        if (!isLatestIteration()) return;
+        if (changeRun || !isLatestIteration() || iterations[iterationIndex].scopeDraft.trim() !== iterations[iterationIndex].scope) return;
         const state = get('response-state').value;
         saveIteration();
-        iterations.push(newIteration(state, { summary: iterations[iterationIndex].summary, files: structuredClone(iterations[iterationIndex].files), guidance: [...iterations[iterationIndex].guidance], comments: structuredClone(iterations[iterationIndex].comments) }));
+        iterations.push(newIteration(state, { scope: iterations[iterationIndex].scope, scopeDraft: iterations[iterationIndex].scopeDraft, summary: iterations[iterationIndex].summary, files: structuredClone(iterations[iterationIndex].files), guidance: [...iterations[iterationIndex].guidance], comments: structuredClone(iterations[iterationIndex].comments) }));
         showIteration(iterations.length - 1, false);
-      });
-      get('approve-plan').addEventListener('click', () => {
-        if (!isLatestIteration() || responseState !== 'ready' || get('message').value.trim() || attachedCommentIds.length) return;
-        approved = true;
-        get('message-status').textContent = 'Plan approved. Implementation is not available in this mockup.';
-        renderReview();
       });
       document.querySelectorAll('[name^="answer-"]').forEach(input => input.addEventListener('change', () => {
         renderReview();
@@ -2227,12 +2731,17 @@
       });
       get('composer').addEventListener('submit', event => {
         event.preventDefault();
-        if (!isLatestIteration()) return;
+        if (changeRun || !isLatestIteration()) return;
+        const item = iterations[iterationIndex];
+        const scope = item.scopeDraft.trim();
+        if (!scope) return;
+        const scopeChanged = scope !== item.scope;
         const needsAnswers = responseState !== 'ready';
         const answers = selectedAnswers();
         const replies = resolvedAnswers();
         const hasAnswers = needsAnswers && replies.every(Boolean);
-        const hasFeedback = !!get('message').value.trim() || !!attachedCommentIds.length;
+        const hasFeedback = scopeChanged || !!get('message').value.trim() || !!attachedCommentIds.length;
+        if (!needsAnswers && !hasFeedback) { applyPlan(); return; }
         if (!hasAnswers && !hasFeedback) return;
         saveIteration();
         Object.assign(iterations[iterationIndex], {
@@ -2242,25 +2751,28 @@
           messageDraft: '', attachedCommentIds: [], messageStatus: ''
         });
         const previous = iterations[iterationIndex];
+        previous.scopeDraft = previous.scope;
+        const scopedFiles = scopeChanged ? filesForPlanScope(scope, previous.files) : previous.files;
         const audience = answers[0] === 'custom' ? replies[0] : answers[0] === 'a' ? 'New members' : 'All members';
         const completion = answers[1] === 'custom' ? replies[1] : answers[1] === 'a' ? 'Allow members to skip onboarding.' : 'Require members to complete onboarding.';
         const guidance = [...previous.guidance];
         if (previous.replyMessage) guidance.push(previous.replyMessage);
         previous.replyComments.forEach(comment => guidance.push(commentTargetLabel(comment.anchor.target, comment.anchor.side) + ' · “' + comment.anchor.quote + '”: ' + comment.text));
-        iterations.push(newIteration(hasAnswers ? 'ready' : responseState, {
+        iterations.push(newIteration(hasAnswers ? 'ready' : scopeChanged ? 'draft' : responseState, {
+          scope,
           summary: hasAnswers ? 'Onboarding audience: ' + audience + '\nCompletion: ' + completion : previous.summary,
-          files: hasAnswers ? [
-            { ...previous.files[0], content: '# Onboarding\n\n## Audience\n' + audience + '\n\n## Completion\n' + completion },
-            { ...previous.files[1], content: '# Onboarding flow\n\nWelcome the member and explain the setup steps.\n\nShow progress as each step is completed.\n\n' + (answers[1] === 'custom' ? 'Completion guidance: ' + completion : answers[1] === 'a' ? 'Include a skip action that opens the workspace.' : 'Show the required steps before members can continue.') }
-          ] : structuredClone(previous.files),
+          files: hasAnswers ? scopedFiles.map(file => ({ ...file, content: file.path.startsWith('docs/product/')
+            ? '# Onboarding\n\n## Audience\n' + audience + '\n\n## Completion\n' + completion
+            : '# Onboarding flow\n\nWelcome the member and explain the setup steps.\n\nShow progress as each step is completed.\n\n' + (answers[1] === 'custom' ? 'Completion guidance: ' + completion : answers[1] === 'a' ? 'Include a skip action that opens the workspace.' : 'Show the required steps before members can continue.')
+          })) : structuredClone(scopedFiles),
           guidance: [...new Set(guidance)], comments: structuredClone(previous.comments),
           answers: hasAnswers ? ['', ''] : [...answers],
           customAnswers: hasAnswers ? ['', ''] : [...previous.customAnswers],
           expandedFiles: [...previous.expandedFiles],
-          messageStatus: hasAnswers ? 'Simulated plan updated from your answers.' : needsAnswers ? 'Feedback added to the plan. Answers still needed.' : 'Feedback added to the plan.'
+          messageStatus: scopeChanged ? 'Simulated plan regenerated for the specified entities.' : hasAnswers ? 'Simulated plan updated from your answers.' : needsAnswers ? 'Feedback added to the plan. Answers still needed.' : 'Feedback added to the plan.'
         }));
         showIteration(iterations.length - 1, false);
-        if (responseState === 'ready') get('approve-plan').focus();
+        get('send-response').focus();
       });
       document.addEventListener('scroll', hideDependencyTooltip, true);
       window.addEventListener('resize', hideDependencyTooltip);
