@@ -10,6 +10,12 @@ A change is a group of file changes within one [branch worktree](branch.md).
 
 If the agent finds a problem during propagation, it stops and returns to the previous step with feedback. The affected [entities](entity-structure.md) are updated at that step before propagation resumes.
 
+## Work sessions
+
+Changes run only in [active branches](branch.md).
+
+Stopping a change stops its running agents. Closing the app stops all running agents. After reopening the app, the user can continue work in the same agent sessions.
+
 ## Final review
 
 Final review becomes available when propagation has finished and all refreshes in the change have been approved.

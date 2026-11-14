@@ -1,10 +1,12 @@
 # Branch
 
-A Speca branch is an active Git branch with its own worktree: a separate working directory in the workspace's repository.
+A branch in Speca is a Git branch. It is active when it has an isolated worktree: a separate working directory in the workspace's repository.
 
 ## Branch context
 
-A branch's context consists of its open tabs. Switching between active branches saves the current branch's context and restores the selected branch's context. Active branches are Git branches the user has created or explicitly made active whose worktrees have not been removed.
+A branch's context consists of its open tabs. Switching between active branches saves the current branch's context and restores the selected branch's context.
+
+Running agents continue in their branch's worktree when the user switches branches. Pending reviews remain available in their branch.
 
 Active branches and saved branch contexts persist across Speca restarts.
 
@@ -18,7 +20,7 @@ Creating a branch uses the Git branch name entered by the user and creates its w
 
 An inactive Git branch can be inspected temporarily without creating a worktree or changing the current working branch. Inspection provides access to its history and ends when another branch is selected.
 
-Activation requires an explicit user action. It creates the branch's worktree and opens its context. If a context was saved previously, activation restores it.
+Making a branch active requires an explicit user action that creates its isolated worktree and opens its context. If a context was saved previously, activation restores it.
 
 When a Git branch already has a Speca worktree, opening it returns to that context instead of creating another worktree.
 
