@@ -1,9 +1,11 @@
 # Workspace
 
-A workspace uses a directory to store all its files. It contains:
+A workspace uses a directory backed by a Git repository by default. It contains:
 
 - Entities content.
 - Installed entity types.
+
+Work happens in [branches](branch.md), each with its own Git worktree.
 
 ## Configuration
 

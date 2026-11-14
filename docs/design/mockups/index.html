@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mockup</title>
+  <title>Speca · Branch mockup</title>
   <style>
     * { box-sizing: border-box; }
     :root { color-scheme: light; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -29,6 +29,34 @@
     .sidebar { padding: 8px 6px; border-right: 1px solid #ccc; }
     .brand { padding: 2px 8px; margin-bottom: 6px; }
     .brand strong { font-size: 14px; font-weight: 500; }
+    .sidebar-section { padding: 8px 4px; border-bottom: 1px solid #ddd; margin-bottom: 8px; }
+    .sidebar-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .sidebar-heading h2 { margin: 0; font-size: 12px; color: #666; }
+    .icon-button { border: 0; padding: 0 6px; font-size: 18px; line-height: 24px; background: transparent; }
+    .navigation-list { list-style: none; padding: 0; margin: 0; }
+    .navigation-list button { width: 100%; border: 0; border-radius: 4px; text-align: left; padding: 5px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+    .navigation-list button[aria-current="page"] { font-weight: 500; }
+    .explorer.archive-list { margin-top: 8px; }
+    .archive-list summary small { padding-right: 6px; font-size: 11px; }
+    .archive-list p { padding: 4px 0 4px 24px; font-size: 12px; }
+    dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 24px; border: 1px solid #aaa; color: #222; background: white; }
+    dialog::backdrop { background: rgb(0 0 0 / 25%); }
+    dialog h2 { font-size: 18px; margin-bottom: 20px; }
+    dialog label { display: block; margin-bottom: 6px; }
+    dialog input, dialog select { width: 100%; }
+    dialog p { margin-top: 8px; }
+    dialog details { margin-top: 20px; }
+    dialog summary { cursor: pointer; }
+    .advanced-fields { margin-top: 14px; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
+    .primary-action { background: #222; color: white; border-color: #222; }
+    .primary-action:hover { background: #444; }
+    .form-error { color: #a12222; font-size: 12px; }
+    .chat-messages { list-style: none; margin: 0; padding: 0; max-width: 720px; }
+    .chat-messages li { margin-bottom: 18px; border-left: 2px solid #ccc; padding-left: 12px; }
+    .chat-messages p { white-space: pre-wrap; overflow-wrap: anywhere; }
+    #chat-composer { max-width: 720px; }
+    #chat-composer button { margin-top: 8px; }
     .explorer, .explorer ul { list-style: none; margin: 0; padding: 0; }
     .explorer { color: #555; font-size: 13px; line-height: 22px; }
     .explorer ul { padding-left: 12px; }
@@ -129,6 +157,11 @@
   <div class="workspace">
     <aside class="sidebar" aria-label="Navigation">
       <div class="brand"><strong>App</strong></div>
+      <section class="sidebar-section" aria-labelledby="branches-heading">
+        <div class="sidebar-heading"><h2 id="branches-heading">Branches</h2><button class="icon-button" id="new-branch" type="button" aria-label="New branch">+</button></div>
+        <ul class="navigation-list" id="branch-list"></ul>
+        <ul class="explorer archive-list"><li><details id="archived-branches"><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Archived</span><small id="archive-count"></small></summary><ul id="archive-list"></ul><p id="archive-empty">No archived branches.</p></details></li></ul>
+      </section>
       <ul class="explorer" aria-label="Workspace tree">
         <li><ul id="model-tree" aria-label="Entity structure"></ul></li>
         <li><details open><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Changes</span></summary><ul>
@@ -141,6 +174,12 @@
     <main class="main">
       <nav class="tabs" id="tabs" aria-label="Open tabs"></nav>
       <div class="content">
+        <section id="chat-view" aria-labelledby="chat-title" hidden>
+          <div class="heading"><h1 id="chat-title">New chat</h1><small id="chat-branch"></small></div>
+          <ul class="chat-messages" id="chat-messages" aria-live="polite"></ul>
+          <p class="muted" id="chat-empty">Start a conversation about this branch.</p>
+          <form class="composer" id="chat-composer"><label for="chat-message">Message</label><textarea id="chat-message" rows="3" placeholder="What would you like to work on?"></textarea><div class="row"><small class="muted">Mockup · messages stay in this session. No agent is connected.</small><button type="submit" id="send-chat" disabled>Send</button></div></form>
+        </section>
         <section id="plan-view" aria-labelledby="plan-heading">
           <div class="heading"><h1 id="plan-heading">Plan</h1><div class="preview-controls" id="preview-controls"><label for="response-state">Preview</label><select id="response-state" aria-label="Preview agent response"><option value="questions">Questions only</option><option value="draft" selected>Draft + questions</option><option value="ready">Ready plan</option></select></div></div>
           <div class="row history-notice" id="history-notice" hidden><small id="history-label"></small><button type="button" id="latest-iteration">Latest iteration</button></div>
@@ -196,6 +235,15 @@
       </section>
     </aside>
   </div>
+  <dialog id="branch-dialog" aria-labelledby="branch-dialog-title">
+    <form id="branch-form">
+      <h2 id="branch-dialog-title">New branch</h2>
+      <div id="new-branch-fields"><label for="branch-title">What are you working on?</label><input id="branch-title" autocomplete="off" maxlength="80" placeholder="Add billing page"><p class="muted">Creates a branch from main.</p><p class="muted" id="branch-name-preview"></p></div>
+      <details id="branch-advanced"><summary>Advanced</summary><div class="advanced-fields"><label for="git-branch">Use an existing Git branch</label><select id="git-branch"><option value="">Create a new branch from main</option></select><p class="muted" id="git-branch-help">Only Git branches without an associated Speca branch are available.</p></div></details>
+      <p class="form-error" id="branch-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" id="cancel-branch">Cancel</button><button class="primary-action" type="submit" id="create-branch" disabled>Create branch</button></div>
+    </form>
+  </dialog>
   <div class="dependency-tooltip" id="dependency-tooltip" role="tooltip" hidden></div>
   <script>
     (() => {
@@ -415,10 +463,10 @@
 
     (() => {
       const get = id => document.getElementById(id);
-      const policies = new Map();
+      let policies = new Map();
       // Each current entity version stores the dependency versions used to generate it.
       const entities = entityModel.entities;
-      const entityLabel = item => item.scope === 'Workspace' ? entityModel.label(item.entity) : item.entity;
+      const entityLabel = item => item.chat ? currentBranch().chats.find(chat => chat.id === item.chat)?.title || 'Chat' : item.scope === 'Workspace' ? entityModel.label(item.entity) : item.entity;
       const keyFor = item => item.page || JSON.stringify([item.scope, item.entity, item.field]);
       const itemFor = button => ({
         entity: button.dataset.entity,
@@ -427,7 +475,7 @@
         field: button.dataset.field || ''
       });
       const plan = { page: 'plan', entity: 'Plan', scope: 'Changes', field: '' };
-      const openTabs = [{ entity: 'entity-1', scope: 'Workspace', kind: 'Entity', field: '' }, plan];
+      let openTabs = [{ entity: 'entity-1', scope: 'Workspace', kind: 'Entity', field: '' }, plan];
       let activeKey = keyFor(openTabs[0]);
       let renderedKey = null;
       let responseState = 'draft';
@@ -436,11 +484,147 @@
       let commentOpen = false;
       let commentAttached = true;
       let fileAttachments = ['Attachment 1'];
-      const iterations = [
+      let iterations = [
         newIteration('questions', { answers: ['a', 'a'], replyAnswers: ['a', 'a'] }),
         newIteration('draft')
       ];
       let iterationIndex = iterations.length - 1;
+      let currentBranchId = 'main';
+      const gitBranches = new Set(['main', 'add-billing-page', 'fix-login-redirect', 'update-onboarding']);
+      const branches = [
+        { id: 'main', title: 'main', gitName: 'main', chats: [], archived: false, context: null },
+        { id: 'add-billing-page', title: 'Add billing page', gitName: 'add-billing-page', chats: [], archived: false, context: null }
+      ];
+
+      function currentBranch() { return branches.find(branch => branch.id === currentBranchId); }
+
+      function saveBranchContext() {
+        saveIteration();
+        currentBranch().context = { openTabs, activeKey, iterations, iterationIndex, policies, commentOpen };
+      }
+
+      function switchBranch(id) {
+        if (id === currentBranchId) return;
+        saveBranchContext();
+        currentBranchId = id;
+        const context = currentBranch().context || {
+          openTabs: [], activeKey: null, iterations: [newIteration('draft')], iterationIndex: 0, policies: new Map(), commentOpen: false
+        };
+        ({ openTabs, activeKey, iterations, iterationIndex, policies } = context);
+        renderedKey = null;
+        showIteration(iterationIndex, false);
+        commentOpen = context.commentOpen;
+        render();
+      }
+
+      function renderBranches() {
+        get('branch-list').replaceChildren();
+        get('archive-list').replaceChildren();
+        branches.forEach(branch => {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = branch.title;
+          button.title = branch.gitName;
+          button.dataset.branch = branch.id;
+          if (branch.archived) {
+            const icon = document.createElement('span');
+            icon.className = 'tree-icon';
+            icon.setAttribute('aria-hidden', 'true');
+            button.prepend(icon);
+          }
+          if (branch.id === currentBranchId) button.setAttribute('aria-current', 'page');
+          button.addEventListener('click', () => {
+            switchBranch(branch.id);
+            [...document.querySelectorAll('[data-branch]')].find(button => button.dataset.branch === branch.id)?.focus();
+          });
+          li.append(button);
+          get(branch.archived ? 'archive-list' : 'branch-list').append(li);
+        });
+        const archivedCount = branches.filter(branch => branch.archived).length;
+        get('archive-count').textContent = archivedCount ? '(' + archivedCount + ')' : '';
+        get('archive-empty').hidden = !!archivedCount;
+      }
+
+      function renderChat(active) {
+        const chat = currentBranch().chats.find(chat => chat.id === active.chat);
+        get('chat-title').textContent = chat.title;
+        get('chat-branch').textContent = currentBranch().title;
+        get('chat-empty').hidden = !!chat.messages.length;
+        get('chat-messages').replaceChildren();
+        chat.messages.forEach(message => {
+          const li = document.createElement('li');
+          const author = document.createElement('small');
+          author.textContent = 'You';
+          const text = document.createElement('p');
+          text.textContent = message;
+          li.append(author, text);
+          get('chat-messages').append(li);
+        });
+        get('chat-message').value = chat.draft;
+        get('send-chat').disabled = !chat.draft.trim();
+      }
+
+      function branchName(title) {
+        return title.trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '');
+      }
+
+      function updateBranchForm() {
+        const existing = get('git-branch').value;
+        const name = branchName(get('branch-title').value);
+        get('new-branch-fields').hidden = !!existing;
+        get('branch-name-preview').textContent = name ? 'Git branch: ' + name : '';
+        get('create-branch').textContent = existing ? 'Open branch' : 'Create branch';
+        const conflict = !existing && gitBranches.has(name);
+        get('branch-error').hidden = !conflict;
+        get('branch-error').textContent = conflict ? 'That Git branch already exists. Choose another name or open it under Advanced.' : '';
+        get('create-branch').disabled = !existing && (!name || conflict);
+      }
+
+      get('new-branch').addEventListener('click', () => {
+        get('branch-form').reset();
+        get('branch-advanced').open = false;
+        get('git-branch').replaceChildren(new Option('Create a new branch from main', ''));
+        const available = [...gitBranches].filter(name => !branches.some(branch => branch.gitName === name));
+        available.forEach(name => get('git-branch').append(new Option(name, name)));
+        get('git-branch-help').textContent = available.length ? 'Only Git branches without an associated Speca branch are available.' : 'No Git branches available.';
+        updateBranchForm();
+        get('branch-dialog').showModal();
+        get('branch-title').focus();
+      });
+      get('cancel-branch').addEventListener('click', () => get('branch-dialog').close());
+      get('branch-title').addEventListener('input', updateBranchForm);
+      get('git-branch').addEventListener('change', updateBranchForm);
+      get('branch-advanced').addEventListener('toggle', () => {
+        if (!get('branch-advanced').open) { get('git-branch').value = ''; updateBranchForm(); }
+      });
+      get('branch-form').addEventListener('submit', event => {
+        event.preventDefault();
+        updateBranchForm();
+        if (get('create-branch').disabled) return;
+        const existing = get('git-branch').value;
+        const name = existing || branchName(get('branch-title').value);
+        branches.push({ id: name, title: existing || get('branch-title').value.trim(), gitName: name, chats: [], archived: false, context: null });
+        gitBranches.add(name);
+        get('branch-dialog').close();
+        switchBranch(name);
+      });
+      get('chat-message').addEventListener('input', () => {
+        const chat = currentBranch().chats.find(chat => activeKey === 'chat:' + chat.id);
+        if (!chat) return;
+        chat.draft = get('chat-message').value;
+        get('send-chat').disabled = !chat.draft.trim();
+      });
+      get('chat-composer').addEventListener('submit', event => {
+        event.preventDefault();
+        const chat = currentBranch().chats.find(chat => activeKey === 'chat:' + chat.id);
+        if (!chat?.draft.trim()) return;
+        if (!chat.messages.length) chat.title = chat.draft.trim().slice(0, 48);
+        chat.messages.push(chat.draft.trim());
+        chat.draft = '';
+        render();
+        get('chat-message').focus();
+      });
 
       function newIteration(state, values = {}) {
         return { responseState: state, approved: false, answers: ['', ''], submittedAnswers: [], messageDraft: '', messageStatus: '', commentAttached: false, fileAttachments: [], replyAnswers: [], replyMessage: '', replyAttachment: false, replyFiles: [], ...values };
@@ -585,6 +769,7 @@
 
       function render() {
         hideDependencyTooltip();
+        renderBranches();
         if (renderedKey !== activeKey) document.querySelector('.content').scrollTop = 0;
         renderedKey = activeKey;
         entityModel.renderTree(openItem);
@@ -626,6 +811,8 @@
         get('open-plan').toggleAttribute('aria-current', false);
         if (isPlan) get('open-plan').setAttribute('aria-current', 'page');
         get('plan-view').hidden = !isPlan;
+        get('chat-view').hidden = !active?.chat;
+        if (active?.chat) renderChat(active);
         get('entity-view').hidden = !isEntity;
         get('context-panel').hidden = !isEntity;
         get('empty-view').hidden = !!active;
