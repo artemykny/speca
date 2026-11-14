@@ -19,7 +19,7 @@ Every entity has:
 
 Every field in an entity's brief or content also has its own version ID.
 
-If a dependency changes, the entity's generated content becomes outdated but stays in place until it is updated.
+If a dependency changes, the entity's generated content becomes outdated but stays in place until it is [refreshed](entity-refresh.md).
 
 ## Brief
 

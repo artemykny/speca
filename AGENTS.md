@@ -15,8 +15,6 @@ Write Markdown under `docs/` for human readers. Use descriptive titles and lower
 
 Keep documentation concise. Use the fewest words needed to convey useful information.
 
-Before adding content, check whether its meaning is already covered, even in different words
-
 ### Scope and structure
 
 - Describe directory structure in its README as an unordered list of links to immediate children, with short descriptions of their contents.
@@ -26,14 +24,13 @@ Before adding content, check whether its meaning is already covered, even in dif
 
 ### Duplication and links
 
-- Keep one authoritative explanation of each concept. Remove repeated definitions, rules, examples, and summaries within and across pages.
-- Keep pages understandable without opening other files. Include the minimum local context; leave detailed explanations in their authoritative location.
+- **Hard rule: NO duplication of any information, within a file or across files.** Before adding content, read the relevant documentation and check whether its meaning is already covered, even in different words. Keep each piece of information in one authoritative location; link to it instead of repeating, paraphrasing, or summarizing it. Remove duplication found in affected content. Context and standalone readability do not justify exceptions.
 - Add links only when they help the reader go deeper or take a next step. Use descriptive text and relative paths for repository links. Avoid repeated links, reference chains, and lists of loosely related files.
 
 ### Language and formatting
 
 - Use familiar words, active voice, explicit actors, and short sentences. Keep each paragraph focused on one idea.
-- Use the same term for the same concept. Define unfamiliar terms on first use; avoid invented jargon and unnecessary acronyms.
+- Use the same term for the same concept. Link unfamiliar terms to their authoritative definitions; avoid invented jargon and unnecessary acronyms.
 - Delete filler, promotional claims, and obvious statements. Avoid phrases such as “This document explains,” “Implementation documents belong here,” “It is important to note,” “seamlessly,” and “simply.”
 - Replace vague labels such as “simple,” “complex,” or “advanced” with the specific capabilities, constraints, or criteria that distinguish them. State what readers can do or what a feature supports.
 - State behavior directly. Keep conversation history, agent progress reports, rhetorical contrasts, and repeated introductions or conclusions out of documentation.
@@ -46,4 +43,4 @@ Before adding content, check whether its meaning is already covered, even in dif
 - Match detail to the page's purpose. Explain necessary prerequisites, conditions, outcomes, and relevant limitations without cataloguing hypothetical edge cases or unrelated implementation details.
 - Use minimal, realistic examples with consistent names. Verify commands, paths, APIs, and expected results; label illustrative pseudocode. Use placeholders instead of real credentials or personal data.
 - Rewrite affected passages when behavior changes; remove obsolete statements instead of appending corrections. Preserve useful decision rationale without retaining an editing diary.
-- Review the complete page after editing. Check terminology, contradictions, links, and examples; remove anything that adds no useful information. Ensure readers can understand the topic or complete the task without reconstructing context from other pages.
+- Review the complete page after editing. Check terminology, contradictions, links, and examples; remove anything that adds no useful information.
