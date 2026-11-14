@@ -57,6 +57,8 @@
     .vc-menu [role="separator"] { border-top: 1px solid #ccc; margin: 4px; }
     .vc-submenu { z-index: 21; }
     .command-fields { display: grid; gap: 14px; }
+    .new-change-form { max-width: 720px; }
+    .new-change-form label { display: grid; gap: 6px; }
     .command-check { display: flex; align-items: start; gap: 8px; margin-top: 14px; }
     .command-check input { width: auto; margin-top: 5px; flex: 0 0 auto; }
     .history-heading { display: flex; align-items: center; gap: 6px; padding: 2px 4px 6px; }
@@ -89,6 +91,8 @@
     .explorer li { margin: 0; }
     .explorer button, .explorer .tree-label { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; width: 100%; height: 22px; padding: 0 4px; border: 0; border-radius: 0; text-align: left; white-space: nowrap; overflow: hidden; }
     .explorer button:hover, .explorer summary:hover { background: #f5f5f5; }
+    .change-actions { display: grid; gap: 6px; padding: 8px 4px 12px; }
+    .change-actions button { width: 100%; padding: 6px 8px; text-align: left; white-space: normal; }
     .explorer summary > button { background: transparent; }
     .explorer button[aria-current="page"], .explorer summary:has(> button[aria-current="page"]) { background: #eee; color: #222; }
     .explorer summary { display: flex; align-items: center; height: 22px; border-radius: 0; list-style: none; cursor: pointer; }
@@ -290,6 +294,7 @@
   <div class="workspace">
     <nav class="activity-bar" aria-label="Activity bar">
       <button type="button" id="activity-explorer" aria-label="Explorer" title="Explorer" aria-pressed="true" aria-controls="explorer-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h11v15H8zM5 6H3v15h12v-1"/></svg></button>
+      <button type="button" id="activity-changes" aria-label="Changes" title="Changes" aria-pressed="false" aria-controls="changes-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h11v18H5V6h3M9 11h6M9 15h6M9 7h3"/></svg></button>
       <button type="button" id="activity-vc" aria-label="Version control" title="Version control" aria-pressed="false" aria-controls="version-control-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M6 7.5v9M18 7.5v2a5 5 0 0 1-5 5H6"/></svg></button>
       <button type="button" id="mock-configuration-button" aria-label="Mock configuration" title="Mock configuration" aria-haspopup="dialog" aria-controls="mock-configuration"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h7m4 0h5M4 17h3m4 0h9"/><circle cx="13" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
     </nav>
@@ -302,12 +307,19 @@
       </section>
       <ul class="explorer" id="workspace-tree" aria-label="Workspace tree">
         <li><ul id="model-tree" aria-label="Entity structure"></ul></li>
-        <li><details open><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Changes</span></summary><ul id="changes-list">
-          <li id="change-entry"><button class="leaf" type="button" id="open-change"><span class="tree-icon" aria-hidden="true"></span>Update onboarding</button></li>
-          <li id="archived-changes-entry"><details id="archived-changes"><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Archived</span></summary><ul id="archived-changes-list"></ul></details></li>
-        </ul></details></li>
         <li><details><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Entity types</span></summary><ul id="model-types"></ul></details></li>
       </ul>
+      </div>
+      <div id="changes-panel" hidden>
+        <div class="brand"><strong>Changes</strong><p class="muted" id="changes-branch"></p></div>
+        <div class="change-actions">
+          <button type="button" id="start-planned-change">Start planned change</button>
+          <button type="button" id="start-change-propagation">Start change propagation</button>
+        </div>
+        <ul class="explorer" id="changes-list" aria-label="Changes">
+          <li id="change-entry"><button class="leaf" type="button" id="open-change"><span class="tree-icon" aria-hidden="true"></span><span id="change-label">Update onboarding</span></button></li>
+          <li id="archived-changes-entry"><details id="archived-changes"><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Archived</span></summary><ul id="archived-changes-list"></ul></details></li>
+        </ul>
       </div>
       <div id="version-control-panel" hidden>
         <div class="brand vc-heading"><strong>Version control</strong><button class="icon-button" id="vc-more" type="button" aria-label="Version control actions" aria-haspopup="menu" aria-expanded="false" aria-controls="vc-menu">···</button></div>
@@ -331,7 +343,15 @@
           <h2>Changed files</h2><ul class="commit-files" id="commit-files"></ul>
           <p class="muted">Illustrative history for this mockup.</p>
         </section>
-        <section id="plan-view" aria-label="Plan">
+        <section id="new-planned-change-view" aria-labelledby="new-planned-change-title" hidden>
+          <div class="heading"><h1 id="new-planned-change-title">Start planned change</h1></div>
+          <form id="new-planned-change-form" class="command-fields new-change-form">
+            <label>Entities to plan<textarea id="new-plan-entities" rows="2" required placeholder="For example: Update product documentation and design"></textarea></label>
+            <label>Message<textarea id="new-plan-message" rows="5" required placeholder="What would you like to change?"></textarea></label>
+            <div class="dialog-actions"><button type="submit" class="primary-action" id="submit-planned-change" disabled>Send</button></div>
+          </form>
+        </section>
+        <section id="plan-view" aria-label="Plan" hidden>
           <div class="row history-notice" id="history-notice" hidden><small id="history-label"></small><button type="button" id="latest-iteration">Latest iteration</button></div>
           <details class="box plan-scope">
             <summary><h2 id="plan-scope-title">Entities to plan</h2><small>Required</small></summary>
@@ -762,6 +782,10 @@
       }
       let policies = defaultPolicies();
       let changeRun = null;
+      let changeMode = null;
+      let archivedChanges = [];
+      let viewedArchive = null;
+      let liveChange = null;
       // Each current entity version stores the dependency versions used to generate it.
       const entities = entityModel.entities;
       const entityLabel = item => item.scope === 'Workspace' ? entityModel.label(item.entity) : item.entity;
@@ -773,9 +797,10 @@
         field: button.dataset.field || ''
       });
       const plan = { change: true, page: 'plan', entity: 'Update onboarding', scope: 'Changes', field: '' };
+      const plannedChangeForm = { ...plan, page: 'new-planned-change' };
       const propagationPage = { change: true, page: 'propagation', entity: 'Update onboarding', scope: 'Changes', field: '' };
       const finalReviewPage = { change: true, page: 'final-review', entity: 'Update onboarding', scope: 'Changes', field: '' };
-      let openTabs = [{ entity: 'entity-1', scope: 'Workspace', kind: 'Entity', field: '' }, plan];
+      let openTabs = [{ entity: 'entity-1', scope: 'Workspace', kind: 'Entity', field: '' }];
       let activeKey = keyFor(openTabs[0]);
       let renderedKey = null;
       let responseState = 'draft';
@@ -783,10 +808,7 @@
       let commentOpen = false;
       let attachedCommentIds = [];
       let pendingSelection = null;
-      let iterations = [
-        newIteration('questions', { answers: ['a', 'a'], replyAnswers: ['New members', 'Allow skipping'] }),
-        newIteration('draft')
-      ];
+      let iterations = [newIteration('draft')];
       let iterationIndex = iterations.length - 1;
       let currentBranchId = 'main';
       let selectedGitBranchId = currentBranchId;
@@ -814,11 +836,14 @@
       function setActivity(next) {
         closeVersionMenu();
         get('explorer-panel').hidden = next !== 'explorer';
+        get('changes-panel').hidden = next !== 'changes';
         get('version-control-panel').hidden = next !== 'vc';
         get('activity-explorer').setAttribute('aria-pressed', String(next === 'explorer'));
+        get('activity-changes').setAttribute('aria-pressed', String(next === 'changes'));
         get('activity-vc').setAttribute('aria-pressed', String(next === 'vc'));
       }
       get('activity-explorer').addEventListener('click', () => setActivity('explorer'));
+      get('activity-changes').addEventListener('click', () => setActivity('changes'));
       get('activity-vc').addEventListener('click', () => setActivity('vc'));
 
       const gitMenuGroups = {
@@ -1485,8 +1510,8 @@
       const historyExpansion = new WeakMap();
       function renderHistory() {
         const active = openTabs.find(item => keyFor(item) === activeKey);
-        get('change-history').hidden = !active?.change;
-        if (!active?.change) return;
+        get('change-history').hidden = !active?.change || activeKey === 'new-planned-change';
+        if (get('change-history').hidden) return;
         function entry(list, title, status, current, action, disabled = false) {
           const li = el('li');
           const row = el('div', undefined, 'history-row');
@@ -1500,6 +1525,7 @@
           return { li, row, spacer };
         }
         const plans = get('iteration-list'); plans.replaceChildren();
+        plans.closest('.history-stage').hidden = !!changeRun && changeRun.planIndex === null;
         iterations.forEach((item, index) => {
           entry(plans, 'Iteration ' + (index + 1), item.approved ? 'Approved' :
             { questions: 'Questions', draft: 'Draft', ready: 'Ready' }[item.responseState],
@@ -1657,12 +1683,16 @@
       let propagation = { iterations: [], selected: -1, running: false };
       function syncRefreshBranch() {
         if (refreshBranchId === currentBranchId) return;
-        if (refreshBranchId) refreshBranches.set(refreshBranchId, { entities: structuredClone(entities), sessions: refreshSessions, propagation, changeRun });
+        if (refreshBranchId) refreshBranches.set(refreshBranchId, { entities: structuredClone(entities), sessions: refreshSessions, propagation, changeRun, changeMode, archivedChanges, viewedArchive, liveChange });
         const saved = refreshBranches.get(currentBranchId);
         Object.assign(entities, structuredClone(saved?.entities || initialEntities));
         refreshSessions = saved?.sessions || new Map();
         propagation = saved?.propagation || { iterations: [], selected: -1, running: false };
         changeRun = saved?.changeRun || null;
+        changeMode = saved?.changeMode || null;
+        archivedChanges = saved?.archivedChanges || [];
+        viewedArchive = saved?.viewedArchive ?? null;
+        liveChange = saved?.liveChange || null;
         refreshBranchId = currentBranchId;
       }
       function isOutdated(id) {
@@ -1799,6 +1829,63 @@
       function newChangeRun(planIndex = null) {
         return { before: structuredClone(entities), planIndex, complete: false };
       }
+      function hasActiveChange() {
+        return !!liveChange || (viewedArchive === null && !!changeMode && !changeRun?.complete);
+      }
+      function captureChange() {
+        return { iterations, iterationIndex, propagation, changeRun, changeMode };
+      }
+      function restoreChange(saved) {
+        ({ iterations, iterationIndex, propagation, changeRun, changeMode } = saved);
+        showIteration(iterationIndex, false);
+      }
+      function openArchivedChange(index) {
+        saveIteration();
+        if (viewedArchive === null && hasActiveChange()) liveChange = captureChange();
+        viewedArchive = index;
+        restoreChange(archivedChanges[index]);
+        openItem(finalReviewPage);
+      }
+      function beginChange(mode) {
+        if (!currentBranch() || hasActiveChange() || (mode === 'propagation' && !eligibleFiles().length)) return;
+        liveChange = null;
+        viewedArchive = null;
+        changeMode = mode;
+        changeRun = null;
+        propagation = { iterations: [], selected: -1, running: false };
+        iterations = [newIteration('draft', mode === 'planned' ? { request: { entities: '', message: '', submitted: false } } : {})];
+        iterationIndex = 0;
+        showIteration(0, false);
+        showChangeError('');
+        openItem(mode === 'planned' ? plannedChangeForm : propagationPage);
+        if (mode === 'propagation') startPropagation();
+      }
+      function currentPlanPage() {
+        return iterations[0].request?.submitted === false ? plannedChangeForm : plan;
+      }
+      function updatePlannedChangeForm() {
+        get('submit-planned-change').disabled = !get('new-plan-entities').value.trim() || !get('new-plan-message').value.trim();
+      }
+      ['new-plan-entities', 'new-plan-message'].forEach(id => get(id).addEventListener('input', () => {
+        const request = iterations[0].request;
+        if (activeKey !== 'new-planned-change' || !request || request.submitted) return;
+        request.entities = get('new-plan-entities').value;
+        request.message = get('new-plan-message').value;
+        updatePlannedChangeForm();
+      }));
+      get('new-planned-change-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const request = iterations[0].request;
+        if (!currentBranch() || activeKey !== 'new-planned-change' || changeRun || !request || request.submitted) return;
+        const scope = request.entities.trim(), message = request.message.trim();
+        if (!scope || !message) return;
+        iterations = [newIteration('draft', {
+          scope, files: filesForPlanScope(scope, []), guidance: [message],
+          request: { entities: scope, message, submitted: true }
+        })];
+        showIteration(0, false);
+        openItem(plan);
+      });
       function applyPlan() {
         const item = iterations[iterationIndex];
         if (changeRun || !currentBranch() || !isLatestIteration() || approved || responseState !== 'ready'
@@ -1895,6 +1982,8 @@
         if (!canReviewChange() || changeRun.complete) return;
         changeRun.after = structuredClone(entities);
         changeRun.complete = true;
+        archivedChanges.push(structuredClone(captureChange()));
+        viewedArchive = archivedChanges.length - 1;
         get('archived-changes').open = true;
         render();
       });
@@ -2201,15 +2290,31 @@
         renderedKey = activeKey;
         const hasWorkingBranch = !!currentBranch();
         get('workspace-tree').hidden = !hasWorkingBranch;
+        get('changes-branch').textContent = hasWorkingBranch ? currentBranchId : 'No active branch';
+        get('changes-list').hidden = !hasWorkingBranch;
         get('open-change').disabled = !hasWorkingBranch;
-        if (changeRun?.complete) get('archived-changes-list').append(get('change-entry'));
-        else get('changes-list').insertBefore(get('change-entry'), get('archived-changes-entry'));
+        const activeChange = hasActiveChange();
+        get('start-planned-change').disabled = !hasWorkingBranch || activeChange;
+        get('start-change-propagation').disabled = !hasWorkingBranch || activeChange || !eligibleFiles().length;
+        const changeLabel = changeMode === 'propagation' ? 'Change propagation' : plan.entity;
+        get('change-label').textContent = (liveChange?.changeMode || changeMode) === 'propagation' ? 'Change propagation' : plan.entity;
+        get('change-entry').hidden = !activeChange;
+        const archiveList = get('archived-changes-list'); archiveList.replaceChildren();
+        archivedChanges.forEach((archive, index) => {
+          const li = el('li');
+          const title = (archive.changeMode === 'propagation' ? 'Change propagation' : plan.entity) + ' · ' + (index + 1);
+          const button = propagationButton(title, () => openArchivedChange(index));
+          button.className = 'leaf';
+          button.title = title;
+          if (viewedArchive === index) button.setAttribute('aria-current', 'page');
+          li.append(button); archiveList.append(li);
+        });
         if (hasWorkingBranch) entityModel.renderTree(openItem);
         const active = openTabs.find(item => keyFor(item) === activeKey);
         get('tabs').replaceChildren();
         openTabs.forEach(item => {
           const key = keyFor(item);
-          const label = item.change ? plan.entity : (item.refresh ? (refreshSessions.get(item.entity)?.manual ? 'Chat · ' : 'Refresh · ') : '') + entityLabel(item) + (item.field ? ' / ' + item.field : '');
+          const label = item.change ? changeLabel : (item.refresh ? (refreshSessions.get(item.entity)?.manual ? 'Chat · ' : 'Refresh · ') : '') + entityLabel(item) + (item.field ? ' / ' + item.field : '');
           const tab = document.createElement('div');
           tab.className = 'workspace-tab' + (key === activeKey ? ' active' : '');
           const select = document.createElement('button');
@@ -2253,6 +2358,13 @@
         get('refresh-view').hidden = !isRefresh;
         if (isRefresh) renderRefresh(active);
         const isPlan = activeKey === 'plan';
+        const isNewPlan = activeKey === 'new-planned-change';
+        get('new-planned-change-view').hidden = !isNewPlan;
+        if (isNewPlan) {
+          get('new-plan-entities').value = iterations[0].request.entities;
+          get('new-plan-message').value = iterations[0].request.message;
+          updatePlannedChangeForm();
+        }
         get('mock-refresh-controls').hidden = !isRefresh;
         get('mock-configuration-empty').hidden = isPlan || isRefresh;
         get('open-change').toggleAttribute('aria-current', false);
@@ -2653,12 +2765,23 @@
         openItem(itemFor(button));
       }));
       get('autonomy').addEventListener('change', () => { if (activeKey) policies.set(activeKey, get('autonomy').value); });
+      get('start-planned-change').addEventListener('click', () => beginChange('planned'));
+      get('start-change-propagation').addEventListener('click', () => beginChange('propagation'));
       get('open-change').addEventListener('click', () => {
-        if (changeRun?.complete) { openItem(finalReviewPage); return; }
+        if (!hasActiveChange()) return;
+        if (liveChange) {
+          const saved = liveChange;
+          liveChange = null;
+          viewedArchive = null;
+          restoreChange(saved);
+          if (changeRun) continueChange();
+          else openItem(currentPlanPage());
+          return;
+        }
         const existing = openTabs.find(item => item.change);
         if (existing) openItem(existing);
         else if (changeRun) continueChange();
-        else openItem(plan);
+        else openItem(currentPlanPage());
       });
       get('plan-scope').addEventListener('input', () => {
         if (changeRun || !isLatestIteration()) return;

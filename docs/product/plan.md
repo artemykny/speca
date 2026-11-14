@@ -1,6 +1,11 @@
 # Plan
 
-The user specifies which entities to plan changes for, using instructions such as “Update product documentation and design.” Other affected entities are handled through [change propagation](change-propagation.md).
+Starting a planned change opens a form with two inputs:
+
+- **Entities to plan** — the scope, such as “Update product documentation and design.”
+- **Message** — what the user wants to change.
+
+The user fills in both inputs and submits the form to start the first planning iteration. Other affected entities are handled through [change propagation](change-propagation.md).
 
 The plan is a Markdown file containing:
 

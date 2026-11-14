@@ -1,6 +1,6 @@
 # Change propagation
 
-The user can start change propagation in a branch. A file needs triage only if a dependency, its parent, or its brief has changed.
+Propagation handles the affected files in a [change](change.md). A file needs triage only if a dependency, its parent, or its brief has changed.
 
 ## Propagation iterations
 
