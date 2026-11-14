@@ -1,8 +1,8 @@
-# Entity API
+# Entity operations
 
-Agents use the speca entity API to work with workspace entities.
+Agents use the Speca entity API to work with workspace entities.
 
-## Entity operations
+## Default operations
 
 Every entity supports these default operations:
 
@@ -17,7 +17,11 @@ Every entity supports these default operations:
 - Open a referenced entity.
 - List dependencies and their recorded version IDs.
 
-The [entity type](entity-type.md) defines supported content edits and operations for creating, deleting, and renaming children. A child's content is edited through the child's own operations.
+Additional operations depend on the [entity type](../entity-types/definition.md). A child's content is edited through the child's own operations.
+
+## Integrations
+
+Integrations carry out API operations using the underlying tools and services.
 
 Integrations can expose any operation. For example, a code integration can:
 
@@ -26,9 +30,7 @@ Integrations can expose any operation. For example, a code integration can:
 - Format source files.
 - Generate code from a schema.
 
-## Integrations
-
-Integrations carry out API operations using the underlying tools and services. For example:
+Example mappings:
 
 - A code integration maps a code entity to a tree of directories and files.
 - A Figma integration maps a design entity to a document, screen, or component.

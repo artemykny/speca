@@ -1,6 +1,6 @@
 # Change propagation
 
-Propagation handles the affected files in a [change](change.md). A file needs triage only if a dependency, its parent, or its brief has changed.
+Propagation handles the affected files in a [change](lifecycle.md). A file needs triage only if a dependency, its parent, or its brief has changed.
 
 ## Propagation iterations
 
@@ -13,7 +13,7 @@ Each iteration follows this sequence:
 5. Launch the [entity refresh workflow](entity-refresh.md) for each selected file.
 6. After the current files are resolved, recompute eligible files and return to step 1.
 
-Propagation finishes when no affected files remain [outdated](entity-structure.md#metadata).
+Propagation finishes when no affected files remain [outdated](../entities/dependencies.md#freshness).
 
 ## History and future plan
 

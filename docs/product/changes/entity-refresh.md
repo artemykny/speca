@@ -1,6 +1,6 @@
 # Entity refresh
 
-Refresh uses an agent to update an [entity](entity-structure.md) from its context.
+Refresh uses an agent to update an [entity](../entities/structure.md) from its context.
 
 ## Context
 
@@ -33,7 +33,7 @@ The agent ends each iteration with one of two calls.
 
 ### Success
 
-`success(summary)` reports the completed changes and validation results. The user can request another iteration or approve the result to finish the refresh. Approval is required at every agent autonomy setting. On approval, the system records the dependency versions used during the refresh.
+`success(summary)` reports the completed changes, validation results, and any differences between the intended result and what the agent produced. The user can request another iteration or approve the result to finish the refresh. Approval is required at every agent autonomy setting. On approval, the system records the dependency versions used during the refresh.
 
 Changes to dependencies during review do not block approval. If their current versions differ from the recorded versions, the entity remains outdated.
 
