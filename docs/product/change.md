@@ -19,3 +19,5 @@ The user reviews the combined diff from before the change began to its final res
 ## Persistence and archival
 
 Speca stores every change on disk. Approval of the final review completes the change. Speca then moves its record to a Git-ignored directory and moves its UI entry into the Archived folder under Changes.
+
+The user can inspect the whole archived change. Its record is temporary local data.

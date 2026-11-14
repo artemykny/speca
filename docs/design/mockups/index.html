@@ -302,8 +302,9 @@
       </section>
       <ul class="explorer" id="workspace-tree" aria-label="Workspace tree">
         <li><ul id="model-tree" aria-label="Entity structure"></ul></li>
-        <li><details open><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Changes</span></summary><ul>
-          <li><button class="leaf" type="button" id="open-change"><span class="tree-icon" aria-hidden="true"></span>Update onboarding</button></li>
+        <li><details open><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Changes</span></summary><ul id="changes-list">
+          <li id="change-entry"><button class="leaf" type="button" id="open-change"><span class="tree-icon" aria-hidden="true"></span>Update onboarding</button></li>
+          <li id="archived-changes-entry"><details id="archived-changes"><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Archived</span></summary><ul id="archived-changes-list"></ul></details></li>
         </ul></details></li>
         <li><details><summary><span class="tree-label"><span class="tree-icon" aria-hidden="true"></span>Entity types</span></summary><ul id="model-types"></ul></details></li>
       </ul>
@@ -435,7 +436,7 @@
         <p class="muted entity-version">Type: <span id="entity-kind">Entity</span></p>
         <p class="muted entity-version" id="entity-version"></p>
         <label for="autonomy">Agent autonomy</label>
-        <select id="autonomy"><option>Ask first</option><option>Keep me informed</option><option>Act independently</option></select>
+        <select id="autonomy"><option>Ask first</option><option>Act independently</option></select>
         <div id="entity-dependencies">
           <hr><h2 id="depends-on-title">Depends on</h2><ul class="dependency-list" id="depends-on" aria-labelledby="depends-on-title"></ul>
           <hr><h2 id="used-by-title">Used by</h2><ul class="dependency-list" id="used-by" aria-labelledby="used-by-title"></ul>
@@ -446,7 +447,6 @@
   <div class="comment-thread" id="comment-thread" role="dialog" aria-modal="false" aria-labelledby="comment-target" aria-describedby="comment-quote" hidden>
     <span class="visually-hidden" id="comment-target"></span>
     <span class="visually-hidden" id="comment-quote"></span>
-    <p id="comment-origin" hidden></p>
     <form id="comment-form">
       <label class="visually-hidden" for="comment-message">Comment</label>
       <textarea id="comment-message" rows="2" placeholder="Write a comment…" required></textarea>
@@ -1838,6 +1838,7 @@
         continueChange();
       }
       function canReviewChange() {
+        if (changeRun?.complete) return true;
         return !!changeRun && !propagation.running && !Object.keys(entities).some(isOutdated)
           && ![...refreshSessions.values()].some(session => !session.approved);
       }
@@ -1866,20 +1867,21 @@
       }
       function changedEntities() {
         if (!changeRun) return [];
-        return Object.keys(entities).filter(id => JSON.stringify(changeRun.before[id]?.content) !== JSON.stringify(entities[id].content));
+        const result = changeRun.after || entities;
+        return Object.keys(result).filter(id => JSON.stringify(changeRun.before[id]?.content) !== JSON.stringify(result[id].content));
       }
       function renderFinalReview() {
         get('complete-change').disabled = !canReviewChange() || !!changeRun?.complete;
         const target = get('final-review-files'); target.replaceChildren();
         const changed = changedEntities();
-        get('final-review-status').textContent = changeRun?.complete ? 'Change approved.' : changed.length + ' files changed.';
+        get('final-review-status').textContent = changeRun?.complete ? 'Archived · Change approved.' : changed.length + ' files changed.';
         const planned = new Set(changeRun && changeRun.planIndex !== null ? iterations[changeRun.planIndex].files.map(file => file.entity) : []);
         changed.forEach(id => {
           const detail = el('details', undefined, 'final-file');
           const summary = el('summary');
           summary.append(el('span', entityModel.label(id)), el('small', planned.has(id) ? 'Applied from plan' : 'Refreshed · Approved'));
           detail.append(summary);
-          const diff = el('div'); renderEntityDiff(diff, changeRun.before[id]?.content || {}, entities[id].content);
+          const diff = el('div'); renderEntityDiff(diff, changeRun.before[id]?.content || {}, (changeRun.after || entities)[id].content);
           detail.append(diff); target.append(detail);
         });
         const unchanged = [...new Set(propagation.iterations.flatMap(round => round.files.filter(file => file.status === 'unchanged').map(file => file.id)))];
@@ -1891,7 +1893,9 @@
       get('open-final-review').addEventListener('click', () => { if (canReviewChange()) openItem(finalReviewPage); });
       get('complete-change').addEventListener('click', () => {
         if (!canReviewChange() || changeRun.complete) return;
+        changeRun.after = structuredClone(entities);
         changeRun.complete = true;
+        get('archived-changes').open = true;
         render();
       });
 
@@ -1910,7 +1914,7 @@
         const files = round?.files || ready.map(id => ({ id }));
         get('approve-triage-selection').hidden = !awaitingApproval;
         get('approve-triage-selection').disabled = loading || !!round?.files.some(file => file.status === 'stale');
-        get('start-propagation').hidden = propagation.running || !ready.length;
+        get('start-propagation').hidden = !!changeRun?.complete || propagation.running || !ready.length;
         get('open-final-review').hidden = !canReviewChange();
         get('propagation-status').textContent = historic ? 'Completed' : loading ? 'Triaging files…' : awaitingApproval ? 'Review triage results.' : propagation.running ? 'Refresh in progress' : ready.length ? ready.length + ' files to analyze' : 'All files are fresh.';
         get('propagation-current-title').textContent = round ? 'Iteration ' + (propagation.selected + 1) : 'Files';
@@ -1950,7 +1954,7 @@
             }));
           } else {
             const policy = el('select'); policy.setAttribute('aria-label', 'Agent autonomy for ' + entityModel.label(file.id));
-            ['Ask first', 'Keep me informed', 'Act independently'].forEach(value => policy.append(el('option', value)));
+            ['Ask first', 'Act independently'].forEach(value => policy.append(el('option', value)));
             policy.value = policies.get(keyFor(entityItem(file.id))) || 'Ask first';
             policy.addEventListener('change', () => policies.set(keyFor(entityItem(file.id)), policy.value));
             row.append(policy);
@@ -2062,8 +2066,7 @@
         const waiting = session.iterations.length === 0;
         const iteration = session.iterations[session.selected] || { state: 'waiting', content: session.before, messages: session.messages };
         const latest = session.selected === session.iterations.length - 1;
-        const stale = !waiting && (!dependenciesMatch(session.entity, iteration.dependencies)
-          || (session.propagation && !entities[session.entity].dependencies.every(dependency => freshForPropagation(dependency.entity))));
+        const stale = !waiting && !dependenciesMatch(session.entity, iteration.dependencies);
         get('refresh-back').setAttribute('aria-label', session.propagation ? 'Back to files' : 'View entity');
         get('refresh-back').title = session.propagation ? 'Back to files' : 'View entity';
         get('refresh-title').textContent = (session.propagation ? '' : session.manual ? 'Chat · ' : 'Refresh · ') + entityModel.label(active.entity);
@@ -2087,9 +2090,11 @@
         get('refresh-diff').hidden = waiting;
         get('refresh-latest').hidden = latest;
         renderEntityDiff(get('refresh-diff'), session.before, iteration.content);
-        get('refresh-approval-note').textContent = !latest ? 'Viewing a previous iteration' : stale ? 'Dependencies changed. Check again before approving.' : session.approved ? 'Approved by you' : '';
+        get('refresh-approval-note').textContent = !latest ? 'Viewing a previous iteration' : stale
+          ? (session.approved ? 'Approved · Dependencies changed; entity remains outdated.' : 'Dependencies changed. You can approve; the entity will remain outdated.')
+          : session.approved ? 'Approved by you' : '';
         get('approve-refresh').hidden = session.approved;
-        get('approve-refresh').disabled = !latest || iteration.state !== 'ready' || stale;
+        get('approve-refresh').disabled = !latest || iteration.state !== 'ready';
         get('refresh-messages').replaceChildren();
         iteration.messages.forEach(message => {
           const article = document.createElement('article');
@@ -2174,10 +2179,9 @@
       get('approve-refresh').addEventListener('click', () => {
         const session = activeRefresh();
         const latest = session.iterations.at(-1);
-        if (session.approved || session.selected !== session.iterations.length - 1 || latest?.state !== 'ready' || !dependenciesMatch(session.entity, latest.dependencies)
-          || (session.propagation && !entities[session.entity].dependencies.every(dependency => freshForPropagation(dependency.entity)))) return;
+        if (session.approved || session.selected !== session.iterations.length - 1 || latest?.state !== 'ready') return;
         session.approved = true;
-        if (!session.manual) entities[session.entity].dependencies = structuredClone(latest.dependencies);
+        entities[session.entity].dependencies = structuredClone(latest.dependencies);
         if (session.propagation) {
           advancePropagation();
           continueChange();
@@ -2198,6 +2202,8 @@
         const hasWorkingBranch = !!currentBranch();
         get('workspace-tree').hidden = !hasWorkingBranch;
         get('open-change').disabled = !hasWorkingBranch;
+        if (changeRun?.complete) get('archived-changes-list').append(get('change-entry'));
+        else get('changes-list').insertBefore(get('change-entry'), get('archived-changes-entry'));
         if (hasWorkingBranch) entityModel.renderTree(openItem);
         const active = openTabs.find(item => keyFor(item) === activeKey);
         get('tabs').replaceChildren();
@@ -2561,11 +2567,9 @@
         get('comment-target').textContent = commentOpen ? commentTargetLabel(commentOpen.target, commentOpen.side) : '';
         get('comment-quote').textContent = commentOpen ? commentOpen.quote : '';
         const currentAnchor = commentOpen && anchorMatches(item, commentOpen);
-        get('comment-origin').hidden = !commentOpen || currentAnchor;
-        get('comment-origin').textContent = commentOpen ? 'Quoted from iteration ' + commentOpen.iteration + '. This text has changed in the current revision.' : '';
         const existing = commentOpen ? item.comments.find(comment => comment.id === commentOpen.commentId) : null;
         get('comment-message').value = commentOpen ? item.commentDrafts[commentDraftKey()] ?? existing?.text ?? '' : '';
-        const editable = isLatestIteration() && !!(currentAnchor || existing);
+        const editable = !changeRun && isLatestIteration() && !!(currentAnchor || existing);
         get('comment-message').readOnly = !editable;
         get('add-comment').hidden = !editable;
         get('delete-comment').hidden = !editable || !existing;
@@ -2650,6 +2654,7 @@
       }));
       get('autonomy').addEventListener('change', () => { if (activeKey) policies.set(activeKey, get('autonomy').value); });
       get('open-change').addEventListener('click', () => {
+        if (changeRun?.complete) { openItem(finalReviewPage); return; }
         const existing = openTabs.find(item => item.change);
         if (existing) openItem(existing);
         else if (changeRun) continueChange();
@@ -2699,7 +2704,7 @@
       });
       get('close-comment').addEventListener('click', cancelComment);
       get('delete-comment').addEventListener('click', () => {
-        if (!commentOpen?.commentId || !isLatestIteration()) return;
+        if (changeRun || !commentOpen?.commentId || !isLatestIteration()) return;
         const item = iterations[iterationIndex];
         item.comments = item.comments.filter(comment => comment.id !== commentOpen.commentId);
         attachedCommentIds = attachedCommentIds.filter(id => id !== commentOpen.commentId);
@@ -2708,13 +2713,13 @@
         closeComment(true);
       });
       get('comment-message').addEventListener('input', () => {
-        if (isLatestIteration() && commentOpen) iterations[iterationIndex].commentDrafts[commentDraftKey()] = get('comment-message').value;
+        if (!changeRun && isLatestIteration() && commentOpen) iterations[iterationIndex].commentDrafts[commentDraftKey()] = get('comment-message').value;
         syncCommentEditor();
       });
       get('comment-form').addEventListener('submit', event => {
         event.preventDefault();
         const text = get('comment-message').value.trim();
-        if (!isLatestIteration() || !commentOpen || !text) return;
+        if (changeRun || !isLatestIteration() || !commentOpen || !text) return;
         const item = iterations[iterationIndex];
         const existing = item.comments.find(comment => comment.id === commentOpen.commentId);
         if (!existing && !anchorMatches(item, commentOpen)) return;
@@ -2765,7 +2770,7 @@
             ? '# Onboarding\n\n## Audience\n' + audience + '\n\n## Completion\n' + completion
             : '# Onboarding flow\n\nWelcome the member and explain the setup steps.\n\nShow progress as each step is completed.\n\n' + (answers[1] === 'custom' ? 'Completion guidance: ' + completion : answers[1] === 'a' ? 'Include a skip action that opens the workspace.' : 'Show the required steps before members can continue.')
           })) : structuredClone(scopedFiles),
-          guidance: [...new Set(guidance)], comments: structuredClone(previous.comments),
+          guidance: [...new Set(guidance)],
           answers: hasAnswers ? ['', ''] : [...answers],
           customAnswers: hasAnswers ? ['', ''] : [...previous.customAnswers],
           expandedFiles: [...previous.expandedFiles],
