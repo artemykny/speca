@@ -26,7 +26,7 @@ const preview: Preview = {
   parameters: {
     layout: "centered",
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
-    options: { storySort: { order: ["Foundations", "Components"] } },
+    options: { storySort: { order: ["Foundations", ["Overview", "Colors"], "Patterns", "Components"] } },
     a11y: { test: "todo" },
   },
   tags: ["autodocs"],
