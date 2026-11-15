@@ -1,11 +1,101 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { useId, useState } from "react"
-import { CheckIcon, CaretRightIcon, GitDiffIcon, FilesIcon, GitBranchIcon, MagnifyingGlassIcon } from "@phosphor-icons/react"
+import { useId, useState, type CSSProperties } from "react"
 import {
-  Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Checkbox, Dialog, DialogClose, DialogContent,
-  DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
-  Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-  Tabs, TabsContent, TabsList, TabsTrigger,
+  CheckIcon,
+  CheckCircleIcon,
+  CircleIcon,
+  FileCodeIcon,
+  FilesIcon,
+  FolderIcon,
+  GitBranchIcon,
+  GitDiffIcon,
+  MagnifyingGlassIcon,
+  StackIcon,
+  XIcon,
+} from "@phosphor-icons/react"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  Badge,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  Button,
+  Checkbox,
+  CodeBlock,
+  CodeBlockActions,
+  CodeBlockContent,
+  CodeBlockCopyButton,
+  CodeBlockHeader,
+  CodeBlockLine,
+  CodeBlockTitle,
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+  Label,
+  Progress,
+  ProgressLabel,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Separator,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  ToggleGroup,
+  ToggleGroupItem,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "../index"
 
 const files = [
@@ -90,9 +180,285 @@ const diffs = [
   ],
 ]
 
+const activities = [
+  { value: "explorer", label: "Explorer", Icon: FilesIcon },
+  { value: "changes", label: "Changes", Icon: GitDiffIcon },
+  { value: "version-control", label: "Version control", Icon: GitBranchIcon },
+]
+const totals = files.reduce(
+  (sum, file) => ({
+    added: sum.added + file.added,
+    removed: sum.removed + file.removed,
+  }),
+  { added: 0, removed: 0 }
+)
+
+function DiffStats({ added, removed }: { added: number; removed: number }) {
+  return (
+    <span
+      className="inline-flex shrink-0 gap-2 text-xs tabular-nums"
+      aria-label={`${added} additions, ${removed} deletions`}
+    >
+      <span className="text-primary">+{added}</span>
+      <span className="text-destructive">−{removed}</span>
+    </span>
+  )
+}
+
+function ReviewNavigation({
+  panel,
+  setPanel,
+  expanded,
+  reviewed,
+  completed,
+  onFile,
+  onView,
+}: {
+  panel: string
+  setPanel: (panel: string) => void
+  expanded: string[]
+  reviewed: string[]
+  completed: boolean
+  onFile: (path: string) => void
+  onView: (view: string) => void
+}) {
+  const id = useId()
+  const { setOpenMobile } = useSidebar()
+  const navigate = (view: string) => {
+    onView(view)
+    setOpenMobile(false)
+  }
+
+  return (
+    <Sidebar aria-label="Workspace navigation">
+      <div className="flex h-full min-h-0">
+        <nav
+          aria-label="Activity bar"
+          className="flex w-14 shrink-0 flex-col items-center border-r py-3"
+        >
+          <span
+            className="mb-5 grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground"
+            aria-label="Speca"
+          >
+            <StackIcon className="size-5" />
+          </span>
+          <ToggleGroup
+            orientation="vertical"
+            aria-label="Workspace panels"
+            value={[panel]}
+            onValueChange={(next) => {
+              if (next.length) setPanel(next[0])
+            }}
+          >
+            {activities.map(({ value, label, Icon }) => (
+              <Tooltip key={value}>
+                <TooltipTrigger
+                  render={
+                    <ToggleGroupItem
+                      value={value}
+                      aria-label={label}
+                      aria-controls={`${id}-panel`}
+                      className="size-9 p-0"
+                    />
+                  }
+                >
+                  <Icon className="size-5" />
+                </TooltipTrigger>
+                <TooltipContent side="right">{label}</TooltipContent>
+              </Tooltip>
+            ))}
+          </ToggleGroup>
+        </nav>
+        <div id={`${id}-panel`} className="flex min-w-0 flex-1 flex-col">
+          <SidebarHeader className="gap-3 p-4">
+            <h2 className="font-semibold">
+              {activities.find((activity) => activity.value === panel)?.label}
+            </h2>
+            <span className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+              <GitBranchIcon className="size-4 shrink-0" />
+              <span className="truncate" title="feature/navigation">
+                feature/navigation
+              </span>
+            </span>
+          </SidebarHeader>
+          <SidebarSeparator className="mx-0" />
+          <SidebarContent>
+            {panel === "changes" && (
+              <SidebarGroup>
+                <SidebarGroupLabel>Current change</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        isActive
+                        size="lg"
+                        className="h-auto items-start py-3"
+                        onClick={() => navigate("files")}
+                      >
+                        <GitDiffIcon />
+                        <span className="whitespace-normal!">
+                          Improve workspace navigation
+                        </span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
+            {panel === "version-control" && (
+              <SidebarGroup>
+                <SidebarGroupLabel>Working tree</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        onClick={() => navigate("files")}
+                        className="pr-8"
+                      >
+                        <GitDiffIcon />
+                        <span>Changed files</span>
+                      </SidebarMenuButton>
+                      <SidebarMenuBadge>{files.length}</SidebarMenuBadge>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                  <div className="px-3 py-2">
+                    <DiffStats {...totals} />
+                  </div>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
+            <SidebarGroup>
+              <SidebarGroupLabel>
+                {panel === "explorer"
+                  ? "Workspace files"
+                  : "Files in this change"}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {files.map((file) => (
+                    <SidebarMenuItem key={file.path}>
+                      <SidebarMenuButton
+                        size="sm"
+                        isActive={expanded.includes(file.path)}
+                        onClick={() => {
+                          onFile(file.path)
+                          setOpenMobile(false)
+                        }}
+                        title={file.path}
+                        className="pr-8"
+                      >
+                        <FileCodeIcon />
+                        <span>{file.name}</span>
+                      </SidebarMenuButton>
+                      {reviewed.includes(file.path) && (
+                        <SidebarMenuBadge>
+                          <CheckIcon
+                            aria-label="Reviewed"
+                            className="size-3.5 text-primary"
+                          />
+                        </SidebarMenuBadge>
+                      )}
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+          <SidebarSeparator className="mx-0" />
+          <SidebarFooter className="gap-3 p-4">
+            <Badge
+              variant={completed ? "default" : "outline"}
+              className="self-start"
+            >
+              {completed ? "Approved" : "Final review"}
+            </Badge>
+            <p className="text-xs text-muted-foreground">Speca workspace</p>
+          </SidebarFooter>
+        </div>
+      </div>
+    </Sidebar>
+  )
+}
+
+function ReviewHistory({
+  reviewedCount,
+  completed,
+}: {
+  reviewedCount: number
+  completed: boolean
+}) {
+  const headingId = useId()
+  return (
+    <aside
+      aria-label="Change context"
+      className="space-y-6 border-t p-5 xl:w-64 xl:shrink-0 xl:border-t-0 xl:border-l"
+    >
+      <Progress value={reviewedCount} max={files.length} className="gap-2">
+        <ProgressLabel className="text-xs">Files reviewed</ProgressLabel>
+        <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+          {reviewedCount} / {files.length}
+        </span>
+      </Progress>
+      <Separator />
+      <section aria-labelledby={headingId}>
+        <h2 id={headingId} className="mb-3 text-sm font-medium">
+          Change history
+        </h2>
+        <ItemGroup>
+          {[
+            {
+              title: "Plan approved",
+              description: "Workspace navigation",
+              done: true,
+            },
+            {
+              title: "Propagation complete",
+              description:
+                "Branch switcher and tests updated; refreshes approved.",
+              done: true,
+            },
+            {
+              title: completed ? "Change approved" : "Final review",
+              description: completed
+                ? "Approval recorded locally."
+                : "Review the combined changes before approving.",
+              done: completed,
+            },
+          ].map(({ title, description, done }) => (
+            <Item
+              key={title}
+              size="xs"
+              role="listitem"
+              className="items-start px-0"
+            >
+              <ItemMedia variant="icon">
+                {done ? (
+                  <CheckCircleIcon className="text-primary" />
+                ) : (
+                  <CircleIcon className="text-muted-foreground" />
+                )}
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{title}</ItemTitle>
+                <ItemDescription className="line-clamp-none text-xs leading-5">
+                  {description}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+          ))}
+        </ItemGroup>
+      </section>
+      <Separator />
+      <p className="text-xs leading-5 text-muted-foreground">
+        This preview uses local state. Approval does not change a repository.
+      </p>
+    </aside>
+  )
+}
+
 function WorkspaceReview() {
   const id = useId()
-  const [selected, setSelected] = useState<number | null>(0)
+  const [expanded, setExpanded] = useState<string[]>([files[0].path])
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<string | null>("all")
   const [reviewed, setReviewed] = useState<string[]>([])
@@ -100,193 +466,404 @@ function WorkspaceReview() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [panel, setPanel] = useState("changes")
   const [view, setView] = useState("files")
-  const visibleFiles = files.filter((file) =>
-    file.path.toLowerCase().includes(query.toLowerCase()) &&
-    (filter === "all" || file.origin === filter)
+  const visibleFiles = files.filter(
+    (file) =>
+      file.path.toLowerCase().includes(query.toLowerCase()) &&
+      (filter === "all" || file.origin === filter)
   )
+  const clearFilters = () => {
+    setQuery("")
+    setFilter("all")
+  }
   const toggleReviewed = (path: string, checked: boolean) =>
-    setReviewed((previous) => checked
-      ? [...new Set([...previous, path])]
-      : previous.filter((item) => item !== path))
+    setReviewed((previous) =>
+      checked
+        ? [...new Set([...previous, path])]
+        : previous.filter((item) => item !== path)
+    )
+  const openFile = (path: string) => {
+    setExpanded([path])
+    setView("files")
+    clearFilters()
+    requestAnimationFrame(() =>
+      document
+        .getElementById(`${id}-${path}`)
+        ?.scrollIntoView({ block: "nearest" })
+    )
+  }
 
   return (
-    <div className="grid min-h-dvh grid-cols-[3rem_minmax(0,1fr)] text-sm md:h-dvh md:grid-cols-[3rem_13rem_minmax(0,1fr)] md:grid-rows-[minmax(0,1fr)_auto] md:overflow-hidden xl:grid-cols-[3rem_13rem_minmax(0,1fr)_15rem] xl:grid-rows-[minmax(0,1fr)]">
-      <nav className="row-span-3 flex flex-col items-center gap-3 border-r p-2 md:row-span-2 xl:row-span-1" aria-label="Activity bar">
-        {[
-          { value: "explorer", label: "Explorer", Icon: FilesIcon },
-          { value: "changes", label: "Changes", Icon: GitDiffIcon },
-          { value: "version-control", label: "Version control", Icon: GitBranchIcon },
-        ].map(({ value, label, Icon }) => (
-          <Button key={value} size="icon" variant={panel === value ? "default" : "outline"}
-            aria-label={label} title={label} aria-pressed={panel === value}
-            aria-controls={`${id}-navigation`} onClick={() => setPanel(value)}>
-            <Icon />
-          </Button>
-        ))}
-      </nav>
-      <aside id={`${id}-navigation`} className="min-w-0 space-y-4 border-b bg-sidebar p-4 md:row-span-2 md:overflow-y-auto md:border-r md:border-b-0 xl:row-span-1" aria-label="Navigation">
-        <h2 className="text-lg font-medium">{panel === "changes" ? "Changes" : panel === "explorer" ? "Explorer" : "Version control"}</h2>
-        <p className="mt-2 flex items-start gap-2 text-xs"><GitBranchIcon className="size-3.5 shrink-0" /><span className="break-all">feature/navigation</span></p>
-        {panel === "changes" && (
-          <div className="mt-6">
-            <Button variant="secondary" className="h-auto w-full justify-start whitespace-normal text-left" aria-current="page" onClick={() => setView("files")}>
-              <GitDiffIcon className="size-4 shrink-0" />
-              <span>Improve workspace navigation</span>
-            </Button>
-            <p className="mt-3 px-2 text-xs">{completed ? "Approved" : "Final review"}</p>
-          </div>
-        )}
-        {panel === "explorer" && (
-          <nav className="mt-6" aria-label="Workspace files">
-            {files.map((file, index) => (
-              <Button key={file.path} variant={view === "files" && selected === index ? "secondary" : "ghost"} className="h-auto w-full justify-start whitespace-normal text-left"
-                aria-current={view === "files" && selected === index ? "page" : undefined}
-                onClick={() => { setSelected(index); setView("files"); setQuery(""); setFilter("all") }}>
-                <FilesIcon className="size-3.5 shrink-0" /><span className="break-all">{file.name}</span>
-              </Button>
-            ))}
-          </nav>
-        )}
-        {panel === "version-control" && (
-          <section className="mt-6 space-y-3 text-xs">
-            <h3 className="font-medium">Working tree</h3>
-            <p>{files.length} changed files</p>
-            <p><span className="text-primary">+86</span><span className="ml-3 text-destructive">−19</span></p>
-            <Button variant="outline" size="sm" onClick={() => setView("files")}>View changes</Button>
-          </section>
-        )}
-      </aside>
-      <main className="col-start-2 min-w-0 p-4 md:col-start-3 md:min-h-0 md:overflow-y-auto md:p-6">
-        <Tabs value={view} onValueChange={(value) => setView(String(value))} className="min-w-0 gap-6">
-          <TabsList aria-label="Review view" className="max-w-full">
-            <TabsTrigger value="files">Final review</TabsTrigger>
-            <TabsTrigger value="summary">Summary</TabsTrigger>
-          </TabsList>
-          <TabsContent value="files" className="min-w-0 space-y-6">
-            <header className="flex flex-wrap items-center justify-between gap-3 text-lg font-medium">
-              <h1>Changed files</h1>
-              <span className="text-xs">{files.length} files</span>
-            </header>
-            <Card size="sm" role="status">
-              <CardContent className="flex flex-wrap items-center justify-between gap-3">
-              <span className="flex items-center gap-2"><CheckIcon className="size-4" />{completed ? "Change approved" : "Ready for final review"}</span>
-              <span className="text-xs text-muted-foreground">{reviewed.length} of {files.length} reviewed</span>
-              </CardContent>
-            </Card>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative min-w-0 flex-1">
-                <MagnifyingGlassIcon aria-hidden="true" className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
-                <Input aria-label="Filter files" placeholder="Filter files…" className="pl-9 text-xs"
-                  value={query} onChange={(event) => setQuery(event.target.value)} />
-              </div>
-              <Select items={filters} value={filter} onValueChange={setFilter}>
-                <SelectTrigger aria-label="Change origin" className="text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{filters.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <section aria-label="Changed files" className="space-y-4">
-              {visibleFiles.map((file) => {
-                const index = files.indexOf(file)
-                const expanded = selected === index
-                return (
-                  <Card key={file.path} size="sm">
-                    <CardHeader className="flex flex-wrap items-center justify-between gap-4">
-                      <Button variant="ghost" className="h-auto min-w-0 justify-start whitespace-normal text-left" aria-label={file.name}
-                        aria-expanded={expanded} aria-controls={`${id}-diff-${index}`}
-                        onClick={() => setSelected(expanded ? null : index)}>
-                        <CaretRightIcon aria-hidden="true" className={`size-4 shrink-0 ${expanded ? "rotate-90" : ""}`} />
-                        <span className="min-w-0"><span className="block break-all font-medium">{file.path}</span>
-                          <span className="mt-1 block text-xs">{file.origin === "Plan" ? "Applied from plan" : "Approved refresh"}</span>
-                        </span>
-                      </Button>
-                      <div className="flex items-center gap-2">
-                        <Checkbox id={`${id}-reviewed-${index}`} checked={reviewed.includes(file.path)} disabled={completed}
-                          aria-label={`Mark ${file.name} reviewed`} onCheckedChange={(checked) => toggleReviewed(file.path, checked)} />
-                        <Label htmlFor={`${id}-reviewed-${index}`} className="text-xs">Reviewed</Label>
-                      </div>
-                    </CardHeader>
-                    <CardContent id={`${id}-diff-${index}`} hidden={!expanded} aria-label={`Diff for ${file.name}`} className="space-y-3">
-                      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-                        <span>Working tree / Combined diff</span>
-                        <span><span className="text-primary">+{file.added}</span><span className="ml-3 text-destructive">−{file.removed}</span></span>
-                      </div>
-                      <div className="max-w-full overflow-x-auto" tabIndex={0} role="region" aria-label={`Illustrative diff for ${file.name}`}>
-                        <pre className="min-w-max text-xs leading-6">{diffs[index].map((line, lineIndex) => (
-                          <div key={lineIndex} className={line.startsWith("+") ? "bg-primary/10 text-primary" : line.startsWith("-") ? "text-destructive" : "text-foreground"}>
-                            <span aria-hidden="true" className="mr-3 inline-block w-10 border-r pr-3 text-right text-muted-foreground select-none">{lineIndex + 1}</span>
-                            <code>{line || " "}</code>
-                          </div>
-                        ))}</pre>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-              {visibleFiles.length === 0 && (
-                <div className="py-8">
-                  <p className="font-medium">No matching files</p>
-                  <p className="mt-1 text-xs">Try a different name or origin.</p>
-                  <Button variant="outline" size="sm" className="mt-3" onClick={() => { setQuery(""); setFilter("all") }}>Clear filters</Button>
+    <TooltipProvider>
+      <SidebarProvider
+        style={{ "--sidebar-width": "19.5rem" } as CSSProperties}
+        className="text-sm"
+      >
+        <ReviewNavigation
+          panel={panel}
+          setPanel={setPanel}
+          expanded={expanded}
+          reviewed={reviewed}
+          completed={completed}
+          onFile={openFile}
+          onView={setView}
+        />
+        <SidebarInset className="min-w-0">
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b px-4 md:px-6">
+            <Tooltip>
+              <TooltipTrigger render={<SidebarTrigger />} />
+              <TooltipContent>Toggle navigation</TooltipContent>
+            </Tooltip>
+            <Separator
+              orientation="vertical"
+              className="h-4 data-vertical:self-center"
+            />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden sm:block">
+                  Workspace
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden sm:block" />
+                <BreadcrumbItem>Changes</BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Final review</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+            <Badge variant="outline" className="ml-auto hidden sm:inline-flex">
+              Local preview
+            </Badge>
+          </header>
+          <div className="flex min-w-0 flex-1 flex-col xl:flex-row">
+            <div className="min-w-0 flex-1">
+              <div className="space-y-5 px-4 pt-6 md:px-8 md:pt-8">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant={completed ? "default" : "secondary"}>
+                    {completed ? "Approved" : "Ready for review"}
+                  </Badge>
+                  <span className="text-xs text-muted-foreground">
+                    Plan and approved refreshes
+                  </span>
                 </div>
-              )}
-            </section>
-            <footer className="flex flex-wrap items-center justify-between gap-4">
-              <p className="text-xs">{completed ? "Approval recorded locally." : "Plan and approved refreshes included."}</p>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger render={<Button disabled={completed} />}><CheckIcon />{completed ? "Change completed" : "Approve change"}</DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Complete this change?</DialogTitle>
-                    <DialogDescription>{reviewed.length} of {files.length} files marked reviewed. This preview records approval locally.</DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose render={<Button variant="outline" />}>Keep reviewing</DialogClose>
-                    <Button onClick={() => { setCompleted(true); setDialogOpen(false) }}>Approve change</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </footer>
-          </TabsContent>
-          <TabsContent value="summary" className="min-w-0 space-y-6">
-            <header className="flex flex-wrap items-center justify-between gap-3 text-lg font-medium"><h1>Keep branch context visible</h1></header>
-            <p className="max-w-xl leading-6">The active branch now appears above the entity tree. The branch switcher, navigation tests, and workspace documentation were updated together.</p>
-            <div className="my-6 flex flex-wrap gap-3"><Badge variant="default">Planning complete</Badge><Badge variant="default">Propagation complete</Badge></div>
-            <p className="text-xs">Example content for evaluating the design system.</p>
-          </TabsContent>
-        </Tabs>
-      </main>
-      <aside className="col-start-2 space-y-4 border-t bg-sidebar p-4 md:col-start-3 md:max-h-64 md:overflow-y-auto xl:col-start-4 xl:row-start-1 xl:max-h-none xl:border-t-0 xl:border-l" aria-label="Context">
-        <h2 className="font-medium">Change history</h2>
-        <Card size="sm">
-          <CardHeader>
-            <CardTitle>Plan</CardTitle>
-            <CardDescription>Workspace navigation</CardDescription>
-          </CardHeader>
-          <CardContent><Badge>Approved</Badge></CardContent>
-        </Card>
-        <Card size="sm">
-          <CardHeader>
-            <CardTitle>Propagation</CardTitle>
-            <CardDescription>Branch switcher and tests</CardDescription>
-          </CardHeader>
-          <CardContent><Badge>Refreshes approved</Badge></CardContent>
-        </Card>
-        <Card size="sm">
-          <CardHeader>
-            <CardTitle>Final review</CardTitle>
-            <CardDescription>{reviewed.length} of {files.length} files reviewed</CardDescription>
-          </CardHeader>
-          <CardContent><Badge variant={completed ? "default" : "outline"}>{completed ? "Approved" : "Needs review"}</Badge></CardContent>
-        </Card>
-      </aside>
-    </div>
+                <h1 className="text-2xl font-semibold tracking-tight">
+                  Improve workspace navigation
+                </h1>
+                <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+                  Keep the active branch visible above the entity tree. Review
+                  the combined diff before completing this change.
+                </p>
+              </div>
+              <Tabs
+                value={view}
+                onValueChange={(value) => setView(String(value))}
+                className="mt-6 min-w-0 gap-0"
+              >
+                <div className="border-b px-4 md:px-8">
+                  <TabsList
+                    variant="line"
+                    aria-label="Review view"
+                    className="gap-4"
+                  >
+                    <TabsTrigger value="files">
+                      <GitDiffIcon />
+                      Changed files{" "}
+                      <Badge variant="secondary">{files.length}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="summary">Summary</TabsTrigger>
+                  </TabsList>
+                </div>
+                <TabsContent
+                  value="files"
+                  className="min-w-0 space-y-5 p-4 md:p-8"
+                >
+                  {completed && (
+                    <Alert role="status">
+                      <CheckCircleIcon />
+                      <AlertTitle>Change approved</AlertTitle>
+                      <AlertDescription>
+                        Approval recorded locally. Your review markers are
+                        preserved.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <InputGroup className="min-w-40 flex-1">
+                      <InputGroupAddon>
+                        <MagnifyingGlassIcon />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        aria-label="Filter files"
+                        placeholder="Filter files…"
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                      />
+                      {query && (
+                        <InputGroupAddon align="inline-end">
+                          <InputGroupButton
+                            size="icon-xs"
+                            aria-label="Clear file search"
+                            onClick={() => setQuery("")}
+                          >
+                            <XIcon />
+                          </InputGroupButton>
+                        </InputGroupAddon>
+                      )}
+                    </InputGroup>
+                    <Select
+                      items={filters}
+                      value={filter}
+                      onValueChange={setFilter}
+                    >
+                      <SelectTrigger aria-label="Change origin">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {filters.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+                    <span role="status">
+                      {visibleFiles.length} of {files.length} files
+                    </span>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      disabled={!visibleFiles.length}
+                      onClick={() =>
+                        setExpanded(
+                          visibleFiles.every((file) =>
+                            expanded.includes(file.path)
+                          )
+                            ? []
+                            : visibleFiles.map((file) => file.path)
+                        )
+                      }
+                    >
+                      {visibleFiles.length > 0 &&
+                      visibleFiles.every((file) => expanded.includes(file.path))
+                        ? "Collapse all"
+                        : "Expand all"}
+                    </Button>
+                  </div>
+                  {visibleFiles.length ? (
+                    <Accordion
+                      multiple
+                      value={expanded}
+                      onValueChange={(value) => setExpanded(value as string[])}
+                      aria-label="Changed files"
+                    >
+                      {visibleFiles.map((file) => {
+                        const index = files.indexOf(file)
+                        return (
+                          <AccordionItem
+                            key={file.path}
+                            value={file.path}
+                            id={`${id}-${file.path}`}
+                          >
+                            <div className="grid grid-cols-1 items-center gap-x-3 pr-4 sm:grid-cols-[minmax(0,1fr)_auto] [&>h3]:min-w-0">
+                              <AccordionTrigger
+                                className="min-w-0 items-center gap-3 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                                aria-label={file.name}
+                              >
+                                <FileCodeIcon className="size-4 shrink-0 text-muted-foreground" />
+                                <span className="min-w-0 flex-1 space-y-1">
+                                  <span className="block break-all text-xs sm:text-sm">
+                                    {file.path}
+                                  </span>
+                                  <span className="flex flex-wrap items-center gap-2 text-xs font-normal text-muted-foreground">
+                                    {file.origin === "Plan"
+                                      ? "From plan"
+                                      : "Approved refresh"}
+                                    <DiffStats
+                                      added={file.added}
+                                      removed={file.removed}
+                                    />
+                                  </span>
+                                </span>
+                              </AccordionTrigger>
+                              <div className="ml-auto flex items-center gap-2 pb-3 pl-4 sm:py-3">
+                                <Checkbox
+                                  id={`${id}-reviewed-${index}`}
+                                  checked={reviewed.includes(file.path)}
+                                  disabled={completed}
+                                  aria-label={`Mark ${file.name} reviewed`}
+                                  onCheckedChange={(checked) =>
+                                    toggleReviewed(file.path, checked)
+                                  }
+                                />
+                                <Label
+                                  htmlFor={`${id}-reviewed-${index}`}
+                                  className="text-xs"
+                                >
+                                  Reviewed
+                                </Label>
+                              </div>
+                            </div>
+                            <AccordionContent>
+                              <CodeBlock size="sm">
+                                <CodeBlockHeader>
+                                  <CodeBlockTitle>Combined diff</CodeBlockTitle>
+                                  <CodeBlockActions>
+                                    <CodeBlockCopyButton
+                                      value={diffs[index].join("\n")}
+                                      aria-label={`Copy diff for ${file.name}`}
+                                    />
+                                  </CodeBlockActions>
+                                </CodeBlockHeader>
+                                <CodeBlockContent
+                                  lineNumbers
+                                  role="region"
+                                  aria-label={`Illustrative diff for ${file.name}`}
+                                >
+                                  {diffs[index].map((line, lineIndex) => (
+                                    <CodeBlockLine
+                                      key={lineIndex}
+                                      variant={
+                                        line.startsWith("+")
+                                          ? "added"
+                                          : line.startsWith("-")
+                                            ? "removed"
+                                            : "default"
+                                      }
+                                    >
+                                      {line.startsWith("+") ||
+                                      line.startsWith("-")
+                                        ? line.slice(1)
+                                        : line}
+                                    </CodeBlockLine>
+                                  ))}
+                                </CodeBlockContent>
+                              </CodeBlock>
+                            </AccordionContent>
+                          </AccordionItem>
+                        )
+                      })}
+                    </Accordion>
+                  ) : (
+                    <Empty className="border">
+                      <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                          <MagnifyingGlassIcon />
+                        </EmptyMedia>
+                        <EmptyTitle>No matching files</EmptyTitle>
+                        <EmptyDescription>
+                          Try a different file name or change origin.
+                        </EmptyDescription>
+                      </EmptyHeader>
+                      <EmptyContent>
+                        <Button variant="outline" onClick={clearFilters}>
+                          Clear filters
+                        </Button>
+                      </EmptyContent>
+                    </Empty>
+                  )}
+                </TabsContent>
+                <TabsContent value="summary" className="space-y-6 p-4 md:p-8">
+                  <section className="space-y-3">
+                    <h2 className="text-lg font-medium">
+                      Keep branch context visible
+                    </h2>
+                    <p className="max-w-xl leading-6 text-muted-foreground">
+                      The active branch now appears above the entity tree. The
+                      branch switcher, navigation tests, and workspace
+                      documentation were updated together.
+                    </p>
+                  </section>
+                  <ItemGroup>
+                    {[
+                      {
+                        title: "Navigation",
+                        description:
+                          "Show the active branch and provide a branch switcher.",
+                      },
+                      {
+                        title: "Tests",
+                        description:
+                          "Check that the active branch remains visible.",
+                      },
+                      {
+                        title: "Documentation",
+                        description:
+                          "Describe branch selection in the workspace.",
+                      },
+                    ].map(({ title, description }) => (
+                      <Item
+                        key={title}
+                        variant="outline"
+                        size="sm"
+                        role="listitem"
+                      >
+                        <ItemMedia variant="icon">
+                          <FolderIcon />
+                        </ItemMedia>
+                        <ItemContent>
+                          <ItemTitle>{title}</ItemTitle>
+                          <ItemDescription>{description}</ItemDescription>
+                        </ItemContent>
+                      </Item>
+                    ))}
+                  </ItemGroup>
+                  <Button variant="outline" onClick={() => setView("files")}>
+                    <GitDiffIcon />
+                    Review changed files
+                  </Button>
+                </TabsContent>
+              </Tabs>
+              <footer className="flex flex-wrap items-center justify-between gap-4 border-t px-4 py-4 md:px-8">
+                <p role="status" className="text-xs text-muted-foreground">
+                  {reviewed.length} of {files.length} files reviewed
+                </p>
+                <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <AlertDialogTrigger render={<Button disabled={completed} />}>
+                    <CheckIcon />
+                    {completed ? "Change approved" : "Approve change"}
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Complete this change?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {reviewed.length} of {files.length} files marked
+                        reviewed. This preview records approval locally.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Keep reviewing</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => {
+                          setCompleted(true)
+                          setDialogOpen(false)
+                        }}
+                      >
+                        Approve change
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </footer>
+            </div>
+            <ReviewHistory
+              reviewedCount={reviewed.length}
+              completed={completed}
+            />
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </TooltipProvider>
   )
 }
 
 const meta = {
   title: "Patterns/Change review",
   component: WorkspaceReview,
-  parameters: { layout: "fullscreen" },
+  parameters: {
+    layout: "fullscreen",
+    docs: { story: { inline: false, height: 900 } },
+  },
 } satisfies Meta<typeof WorkspaceReview>
 export default meta
 export const Default: StoryObj<typeof meta> = {}
