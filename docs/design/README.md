@@ -1,4 +1,4 @@
 # Design
 
-- [Design system](design-system.md): run the component catalog and extend the library.
+- [Design system](../../apps/design-system/): UI components.
 - [Mockups](mockups/): interactive workspace prototypes.
