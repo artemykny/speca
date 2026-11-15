@@ -1,6 +1,6 @@
 # Design system
 
-The React library lives in [apps/design-system](../../apps/design-system/). It uses shadcn/ui components, Tailwind CSS, and Storybook for interactive examples.
+The React library lives in [apps/design-system](../../apps/design-system/). It includes all components from the configured shadcn/ui registry, Tailwind CSS, and Storybook for interactive examples.
 
 ## Run locally
 
@@ -12,9 +12,11 @@ npm ci
 npm run storybook
 ```
 
-Open <http://localhost:6006>. Select a story to interact with a component, edit its properties in Controls, or switch the theme in the toolbar.
+Open <http://localhost:6006>. Browse **Components** for the complete catalog, interact with the examples, edit properties in Controls where available, or switch the theme in the toolbar.
 
-Start with **Foundations → Overview** to compare controls together. **Patterns → Change review** demonstrates file filtering, review markers, and local approval using the library components.
+Start with **Foundations → Overview** to compare all components together, grouped by purpose on one page. **Patterns → Change review** demonstrates file filtering, review markers, and local approval.
+
+**Patterns → Agentic chat** demonstrates conversation history, attachments, clarification, plan approval, tool activity, streaming, queued follow-ups, response versions, sources, and artifact review. Use its story variants to start at an empty conversation, approval, clarification, streaming, or a tool error. Agent settings control the next message's tools and simulated failures. All responses and actions use local demo state; no model or workspace is connected.
 
 ## Visual direction
 
@@ -24,10 +26,10 @@ The [interactive mockup](mockups/index.html) loads the built library stylesheet.
 
 ## Extend the library
 
-Add base components with the configured shadcn CLI:
+Install newly available base components with the configured shadcn CLI. Keep existing files when prompted to preserve local customizations:
 
 ```sh
-npx shadcn add tooltip
+npx shadcn add --all --yes
 ```
 
 Export components from `src/index.ts`. Add examples under `src/stories/`. Paths in this section are relative to the library directory.
@@ -40,6 +42,7 @@ Run from the library directory:
 
 ```sh
 npm run typecheck
+npm test
 npm run build
 npm run build-storybook
 ```
@@ -52,3 +55,5 @@ Install the built library directory as a local dependency in a consuming React a
 import { Button } from "@speca/ui"
 import "@speca/ui/styles.css"
 ```
+
+Wrap components that use tooltips in `TooltipProvider`. Mount `Toaster` to display notifications sent through the exported `toast` manager.
