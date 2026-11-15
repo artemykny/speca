@@ -1,33 +1,10 @@
-# Workspace specification
-
-## Purpose
-
-Provide a place for users to organize software work and navigate its content.
+# Workspace navigation specification
 
 ## Requirements
 
-### Requirement: Workspace contents
-
-Speca SHALL use a directory backed by a Git repository by default to hold user-organized entity content and installed entity types.
-
-#### Scenario: Organize software work
-
-- **WHEN** a user organizes a workspace containing ideas, requirements, designs, code, and research
-- **THEN** the user can choose which content belongs in the workspace and how to organize it as entities
-
-### Requirement: Installed type configuration
-
-Speca SHALL keep installed entity type configuration in the workspace's `.speca/` directory.
-
-#### Scenario: Locate workspace configuration
-
-- **GIVEN** a workspace at `/projects/example`
-- **WHEN** its installed type configuration is inspected
-- **THEN** that configuration is located in `/projects/example/.speca/`
-
 ### Requirement: Entity navigation
 
-Speca SHALL let users browse entities and installed types in tabs, with tab state governed by [branch context](../version-control/spec.md#requirement-branch-context).
+Speca SHALL let users browse entities and installed types in tabs, with tab state governed by [branch context](../version-control/branch-context.spec.md#requirement-branch-context).
 
 #### Scenario: Inspect an entity
 
