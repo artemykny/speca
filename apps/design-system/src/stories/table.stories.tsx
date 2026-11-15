@@ -27,21 +27,21 @@ function EntityTable() {
             <TableCell className="font-medium">Workspace navigation</TableCell>
             <TableCell>Specification</TableCell>
             <TableCell>
-              <Badge variant="success">Approved</Badge>
+              <Badge variant="default">Approved</Badge>
             </TableCell>
           </TableRow>
           <TableRow data-state="selected">
             <TableCell className="font-medium">Branch switcher</TableCell>
             <TableCell>Component</TableCell>
             <TableCell>
-              <Badge variant="warning">Needs review</Badge>
+              <Badge variant="outline">Needs review</Badge>
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="font-medium">Entity tree</TableCell>
             <TableCell>Component</TableCell>
             <TableCell>
-              <Badge variant="info">In progress</Badge>
+              <Badge variant="secondary">In progress</Badge>
             </TableCell>
           </TableRow>
         </TableBody>

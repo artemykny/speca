@@ -16,7 +16,7 @@ export default defineConfig({
       cssFileName: "styles",
     },
     rollupOptions: {
-      external: [/^react(?:\/|$)/, /^react-dom(?:\/|$)/, /^@base-ui\/react(?:\/|$)/, /^lucide-react(?:\/|$)/],
+      external: [/^react(?:\/|$)/, /^react-dom(?:\/|$)/, /^@base-ui\/react(?:\/|$)/, /^@phosphor-icons\/react(?:\/|$)/],
     },
   },
 })

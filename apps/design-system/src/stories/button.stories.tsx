@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon } from "@phosphor-icons/react"
 import { Button } from "../components/ui/button"
 
 const meta = {
@@ -7,8 +7,8 @@ const meta = {
   component: Button,
   args: { children: "Create change", variant: "default", size: "default", disabled: false },
   argTypes: {
-    variant: { control: "select", options: ["default", "secondary", "utility", "outline", "ghost", "destructive", "link"] },
-    size: { control: "select", options: ["default", "pad", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"] },
+    variant: { control: "select", options: ["default", "secondary", "outline", "ghost", "destructive", "link"] },
+    size: { control: "select", options: ["default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"] },
   },
 } satisfies Meta<typeof Button>
 
@@ -23,7 +23,7 @@ export const WithIcon: Story = {
 export const Variants: Story = {
   render: () => (
     <div className="flex max-w-xl flex-wrap items-center gap-3">
-      {(["default", "secondary", "utility", "outline", "ghost", "destructive", "link"] as const).map((variant) => (
+      {(["default", "secondary", "outline", "ghost", "destructive", "link"] as const).map((variant) => (
         <Button key={variant} variant={variant}>{variant}</Button>
       ))}
     </div>

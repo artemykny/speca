@@ -18,12 +18,6 @@ const groups = [
   {
     name: "Feedback",
     tokens: [
-      "success",
-      "success-muted",
-      "warning",
-      "warning-muted",
-      "info",
-      "info-muted",
       "destructive",
     ],
   },

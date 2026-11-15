@@ -14,13 +14,13 @@ npm run storybook
 
 Open <http://localhost:6006>. Select a story to interact with a component, edit its properties in Controls, or switch the theme in the toolbar.
 
-Start with **Foundations → Overview** to compare controls together. **Patterns → Change review** demonstrates filtering, file selection, review markers, and approval with local example data.
+Start with **Foundations → Overview** to compare controls together. **Patterns → Change review** demonstrates file filtering, review markers, and local approval using the library components.
 
 ## Visual direction
 
-Use neutral matte gray surfaces, compact controls, and thin dividers. Organize the overview as a component catalog with section navigation. Match workspace layouts to the [interactive mockup](mockups/index.html): an activity rail, navigation sidebar, central document, and context panel that stack on narrow screens. Reserve smoked glass for status or live output; keep documents and forms flat.
+Use the [shadcn preset `b2Dd34kYS`](https://ui.shadcn.com/create?preset=b2Dd34kYS): Rhea components, zinc neutrals, emerald accents and charts, Geist, Phosphor icons, and small radii. `apps/design-system/src/styles.css` contains the preset theme.
 
-Shared material tokens live in `apps/design-system/src/material.css`; semantic theme roles live in `src/styles.css` within that library. Use Helvetica Neue with Arial as a fallback, tabular numerals for values, and monospace for code. Use the shared material colors, with transparency for shadows, highlights, and glass. The accent marks primary actions and active controls. Distinguish status with labels and shapes.
+The [interactive mockup](mockups/index.html) loads the built library stylesheet. Run `npm run build` before opening it.
 
 ## Extend the library
 

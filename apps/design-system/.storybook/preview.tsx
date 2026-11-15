@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/react-vite"
 import { useEffect } from "react"
 import "../src/styles.css"
+import "./docs.css"
 
 const preview: Preview = {
   globalTypes: {
