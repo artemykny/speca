@@ -4,61 +4,57 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Speca · Workspace mockup</title>
-  <link rel="stylesheet" href="../../../apps/design-system/dist/styles.css">
   <style>
     * { box-sizing: border-box; }
-    .icon-definitions { position: absolute; width: 0; height: 0; overflow: hidden; }
-    .ui-icon { display: inline-block; width: 16px; height: 16px; flex-shrink: 0; vertical-align: middle; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    :root { color-scheme: light; font: 14px/1.5 "Geist Variable", sans-serif; font-variant-numeric: tabular-nums; }
+    :root { color-scheme: light; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     html, body { height: 100%; overflow: hidden; }
-    body { margin: 0; color: var(--foreground); background: var(--muted); }
+    body { margin: 0; color: #222; background: white; }
     button, input, textarea, select { font: inherit; color: inherit; }
     button, select { cursor: pointer; }
-    button { background-color: var(--background); border: 1px solid var(--border); border-radius: var(--radius-2xl); min-height: 32px; padding: 5px 12px; transition: background-color 100ms, box-shadow 100ms, transform 100ms; }
-    button:active:not(:disabled) { transform: translateY(1px); }
-    button:hover { background-color: var(--muted); }
-    button:disabled { cursor: default; opacity: .5; box-shadow: none; }
-    button[aria-current="page"] { background-color: var(--muted); border-color: var(--muted-foreground); }
-    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
-    input, textarea, select { background: transparent; border: 1px solid var(--input); border-radius: var(--radius-2xl); padding: 7px 8px; min-width: 0; accent-color: var(--primary); }
+    button { background: white; border: 1px solid #ccc; padding: 4px 10px; }
+    button:hover { background: #eee; }
+    button:disabled { cursor: default; color: #888; background: white; }
+    button[aria-current="page"] { background: #eee; border-color: #888; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid #777; outline-offset: 3px; }
+    input, textarea, select { background: white; border: 1px solid #ccc; padding: 5px 8px; min-width: 0; }
     textarea { width: 100%; resize: vertical; }
-    h1 { font-size: 22px; font-weight: 500; margin: 0; }
-    h2 { font-size: 15px; font-weight: 500; margin: 0 0 12px; }
+    h1 { font-size: 21px; font-weight: normal; margin: 0; }
+    h2 { font-size: 15px; font-weight: normal; margin: 0 0 12px; }
     p { margin: 0; }
-    small, .muted { color: var(--muted-foreground); font-size: 12px; }
-    hr { border: 0; border-top: 1px solid var(--border); margin: 18px 0; }
+    small, .muted { color: #666; font-size: 12px; }
+    hr { border: 0; border-top: 1px solid #aaa; margin: 18px 0; }
     [hidden] { display: none !important; }
-    .workspace { display: grid; grid-template-columns: 48px 190px minmax(0, 1fr) 235px; grid-template-rows: minmax(0, 1fr); width: 100%; height: 100vh; height: 100dvh; overflow: hidden; }
-    .activity-bar { background-color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--background); border-right: 1px solid var(--border); padding-top: 6px; }
-    .activity-bar button { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 0; color: var(--muted-foreground); background-color: transparent; }
-    .activity-bar button:hover { background-color: var(--muted); }
-    .activity-bar button[aria-pressed="true"] { color: var(--foreground); background-color: var(--muted); }
+    .workspace { display: grid; grid-template-columns: 36px 190px minmax(0, 1fr) 235px; grid-template-rows: minmax(0, 1fr); width: 100%; height: 100vh; height: 100dvh; overflow: hidden; }
+    .activity-bar { display: flex; flex-direction: column; align-items: center; gap: 4px; background: white; border-right: 1px solid #ccc; padding-top: 6px; }
+    .activity-bar button { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 0; color: #777; background: transparent; }
+    .activity-bar button:hover { background: #f5f5f5; }
+    .activity-bar button[aria-pressed="true"] { color: #222; background: #eee; }
     .activity-bar svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .activity-bar button:focus-visible { outline-offset: -4px; }
     .sidebar, .inspector { padding: 14px; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; }
-    .sidebar { background: var(--sidebar); padding: 12px 8px; border-right: 1px solid var(--border); }
+    .sidebar { padding: 8px 6px; border-right: 1px solid #ccc; }
     .brand { padding: 2px 8px; margin-bottom: 6px; }
-    .brand strong { font-size: 24px; letter-spacing: -.06em; font-weight: 500; }
-    .sidebar-section { padding: 8px 4px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .brand strong { font-size: 14px; font-weight: 500; }
+    .sidebar-section { padding: 8px 4px; border-bottom: 1px solid #ddd; margin-bottom: 8px; }
     .sidebar-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
-    .sidebar-heading h2 { margin: 0; font-size: 12px; color: var(--muted-foreground); }
-    .icon-button { border: 0; padding: 0 6px; font-size: 18px; line-height: 24px; background-color: transparent; }
+    .sidebar-heading h2 { margin: 0; font-size: 12px; color: #666; }
+    .icon-button { border: 0; padding: 0 6px; font-size: 18px; line-height: 24px; background: transparent; }
     .navigation-list { list-style: none; padding: 0; margin: 0; }
     .navigation-list button { display: flex; align-items: center; gap: 6px; width: 100%; border: 0; border-radius: 0; text-align: left; padding: 2px 8px; overflow: hidden; white-space: nowrap; font-size: 13px; }
     .branch-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
     .branch-preview .branch-label { font-style: italic; }
-    .branch-active { display: inline-flex; flex: 0 0 auto; margin-left: auto; color: var(--muted-foreground); }
+    .branch-active { display: inline-flex; flex: 0 0 auto; margin-left: auto; color: #666; }
     .branch-active svg { display: block; width: 14px; height: 14px; }
     .navigation-list button[aria-current="page"] { font-weight: 500; }
-    .vc-section { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .vc-section { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #ddd; }
     .vc-section summary small { padding-right: 6px; font-size: 11px; }
     .vc-section > details > summary { margin-bottom: 6px; }
     .vc-body { padding: 4px 8px; }
     .vc-heading { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding-right: 0; }
     .vc-heading strong { font-size: 13px; }
-    .vc-menu, .branch-context-menu { position: fixed; z-index: 20; width: 230px; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow-y: auto; padding: 4px; background: var(--background); border: 1px solid var(--border); }
+    .vc-menu, .branch-context-menu { position: fixed; z-index: 20; width: 230px; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow-y: auto; padding: 4px; background: white; border: 1px solid #ccc; }
     .vc-menu button, .branch-context-menu button { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; border: 0; text-align: left; padding: 4px 8px; }
-    .vc-menu [role="separator"] { border-top: 1px solid var(--border); margin: 4px; }
+    .vc-menu [role="separator"] { border-top: 1px solid #ccc; margin: 4px; }
     .vc-submenu { z-index: 21; }
     .command-fields { display: grid; gap: 14px; }
     .new-change-form { max-width: 720px; }
@@ -75,8 +71,8 @@
     .merge-feedback { margin-top: 10px; overflow-wrap: anywhere; }
     .commit-files { padding-left: 20px; }
     .commit-files li { padding: 5px 0; overflow-wrap: anywhere; }
-    dialog { border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl); width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 24px; border: 1px solid var(--border); color: var(--foreground); background: var(--background); }
-    dialog::backdrop { background: rgb(21 21 21 / 25%); }
+    dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 24px; border: 1px solid #aaa; color: #222; background: white; }
+    dialog::backdrop { background: rgb(0 0 0 / 25%); }
     dialog h2 { font-size: 18px; margin-bottom: 20px; }
     dialog label { display: block; margin-bottom: 6px; }
     dialog input, dialog select { width: 100%; }
@@ -85,43 +81,43 @@
     dialog summary { cursor: pointer; }
     .advanced-fields { margin-top: 14px; }
     .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
-    .primary-action { background: var(--primary); color: var(--primary-foreground); border-color: transparent; font-weight: 500; }
-    .primary-action:hover { background-color: color-mix(in oklch, var(--primary) 80%, transparent); }
-    .form-error { color: var(--destructive); font-size: 12px; }
-    #git-command-warning, #merge-discard-warning .form-error { color: var(--muted-foreground); }
+    .primary-action { background: #222; color: white; border-color: #222; }
+    .primary-action:hover { background: #444; }
+    .form-error { color: #a12222; font-size: 12px; }
     .explorer, .explorer ul { list-style: none; margin: 0; padding: 0; }
-    .explorer { color: var(--muted-foreground); font-size: 13px; line-height: 22px; }
+    .explorer { color: #555; font-size: 13px; line-height: 22px; }
     .explorer ul { padding-left: 12px; }
     .explorer #model-tree { padding-left: 0; }
     .explorer li { margin: 0; }
     .explorer button, .explorer .tree-label { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; width: 100%; height: 22px; padding: 0 4px; border: 0; border-radius: 0; text-align: left; white-space: nowrap; overflow: hidden; }
-    .explorer button:hover, .explorer summary:hover { background-color: var(--muted); }
+    .explorer button:hover, .explorer summary:hover { background: #f5f5f5; }
     .change-actions { display: grid; gap: 6px; padding: 8px 4px 12px; }
     .change-actions button { width: 100%; padding: 6px 8px; text-align: left; white-space: normal; }
-    .explorer button[aria-current="page"] { background-color: var(--muted); color: var(--foreground); }
+    .explorer summary > button { background: transparent; }
+    .explorer button[aria-current="page"], .explorer summary:has(> button[aria-current="page"]) { background: #eee; color: #222; }
     .explorer summary { display: flex; align-items: center; height: 22px; border-radius: 0; list-style: none; cursor: pointer; }
     .explorer summary::-webkit-details-marker { display: none; }
-    .explorer summary::before { content: ""; box-sizing: border-box; width: 5px; height: 5px; border-right: 1px solid var(--muted-foreground); border-bottom: 1px solid var(--muted-foreground); transform: rotate(-45deg); margin: 0 3.5px; flex-shrink: 0; }
+    .explorer summary::before { content: ""; box-sizing: border-box; width: 5px; height: 5px; border-right: 1px solid #666; border-bottom: 1px solid #666; transform: rotate(-45deg); margin: 0 3.5px; flex-shrink: 0; }
     .explorer details[open] > summary::before { transform: rotate(45deg); }
     .explorer .leaf { margin-left: 12px; width: calc(100% - 12px); }
-    .tree-icon { display: inline-block; width: 10px; height: 10px; border: 1px solid var(--muted-foreground); flex-shrink: 0; }
-    .main { background: var(--card); display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
-    .tabs { display: flex; align-items: stretch; flex-shrink: 0; min-height: 40px; overflow-x: auto; border-bottom: 1px solid var(--border); background: var(--muted); }
-    .workspace-tab { display: flex; align-items: stretch; flex-shrink: 0; min-width: 125px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: -1px; }
-    .workspace-tab.active { background: var(--card); border-bottom-color: var(--card); }
-    .workspace-tab > button { border: 0; background-color: transparent; }
+    .tree-icon { display: inline-block; width: 10px; height: 10px; border: 1px solid #777; flex-shrink: 0; }
+    .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+    .tabs { display: flex; align-items: stretch; flex-shrink: 0; min-height: 40px; overflow-x: auto; border-bottom: 1px solid #ccc; background: #f3f3f3; }
+    .workspace-tab { display: flex; align-items: stretch; flex-shrink: 0; min-width: 125px; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; margin-bottom: -1px; }
+    .workspace-tab.active { background: white; border-bottom-color: white; }
+    .workspace-tab > button { border: 0; background: transparent; }
     .workspace-tab > .tab-label { flex: 1; padding: 8px 14px; text-align: left; }
-    .workspace-tab > .tab-close { padding: 4px 9px; color: var(--muted-foreground); }
-    .workspace-tab > .tab-close:hover { background-color: var(--border); color: var(--foreground); }
+    .workspace-tab > .tab-close { padding: 4px 9px; color: #666; }
+    .workspace-tab > .tab-close:hover { background: #ddd; color: #222; }
     .content { padding: 24px; flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; }
     .heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; }
-    .placeholder { min-height: 155px; display: grid; place-items: center; border: 1px solid var(--border); }
-    .placeholder span { background: var(--background); padding: 5px 12px; color: var(--muted-foreground); }
+    .placeholder { min-height: 155px; display: grid; place-items: center; border: 1px solid #ddd; }
+    .placeholder span { background: white; padding: 5px 12px; color: #666; }
     .lines { display: grid; gap: 10px; margin: 16px 0; }
-    .lines span { display: block; height: 1px; background: var(--border); width: 88%; }
+    .lines span { display: block; height: 1px; background: #bbb; width: 88%; }
     .lines span:nth-child(2) { width: 65%; }
     .lines span:nth-child(3) { width: 76%; }
-    .box { border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
+    .box { border: 1px solid #ccc; padding: 16px; margin-bottom: 16px; }
     .row, .composer-actions, .question { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .activity-bar #mock-configuration-button { margin-top: auto; margin-bottom: 8px; }
     .mock-configuration { position: fixed; inset: auto auto 12px 44px; margin: 0; width: 320px; max-width: calc(100vw - 56px); }
@@ -132,12 +128,12 @@
     .mock-configuration select { width: 100%; }
     .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
     .question label { display: flex; align-items: center; gap: 5px; }
-    .question-item + .question-item { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .question-item + .question-item { margin-top: 16px; padding-top: 16px; border-top: 1px solid #ddd; }
     .question-item > p { margin-bottom: 8px; }
     #change-feedback { padding: 12px 24px; }
     .final-review-status { margin-bottom: 18px; }
     .final-file summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; padding: 12px 0; }
-    .final-file { border-top: 1px solid var(--border); }
+    .final-file { border-top: 1px solid #ddd; }
     .final-file summary span { overflow-wrap: anywhere; }
     .plan-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
     .plan-toolbar h2 { margin: 0; }
@@ -148,31 +144,31 @@
     .plan-document { max-width: 76ch; white-space: pre-wrap; overflow-wrap: anywhere; }
     .plan-document { margin: 0; }
     .plan-files { margin-top: 14px; }
-    .plan-file { border-top: 1px solid var(--border); }
-    .plan-file:last-child { border-bottom: 1px solid var(--border); }
+    .plan-file { border-top: 1px solid #ddd; }
+    .plan-file:last-child { border-bottom: 1px solid #ddd; }
     .plan-file summary { padding: 12px 0; cursor: pointer; overflow-wrap: anywhere; }
     .plan-file summary code { font-size: 12px; }
-    .file-diff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; border: 1px solid var(--border); margin-bottom: 16px; }
+    .file-diff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; border: 1px solid #ddd; margin-bottom: 16px; }
     .file-diff-pane { min-width: 0; }
-    .file-diff-pane + .file-diff-pane { border-left: 1px solid var(--border); }
-    .file-diff-heading { margin: 0; padding: 8px 12px; font-size: 12px; font-weight: 500; background: var(--muted); border-bottom: 1px solid var(--border); }
+    .file-diff-pane + .file-diff-pane { border-left: 1px solid #ccc; }
+    .file-diff-heading { margin: 0; padding: 8px 12px; font-size: 12px; font-weight: 500; background: #f5f5f5; border-bottom: 1px solid #ddd; }
     .file-diff-content { overflow-x: auto; font: 12px/24px ui-monospace, monospace; padding: 6px 0; }
     .file-diff-line { display: flex; height: 24px; min-width: 100%; width: max-content; white-space: pre; }
-    .file-diff-gutter { position: sticky; left: 0; flex: 0 0 56px; width: 56px; background: var(--card); color: var(--muted-foreground); user-select: none; }
+    .file-diff-gutter { position: sticky; left: 0; flex: 0 0 56px; width: 56px; background: #f7f7f7; color: #888; user-select: none; }
     .file-diff-gutter::before { content: attr(data-line); display: inline-block; width: 32px; text-align: right; }
     .file-diff-gutter::after { content: attr(data-sign); display: inline-block; width: 24px; text-align: center; }
     .file-diff-code { display: block; padding-right: 14px; white-space: pre; font: inherit; }
-    .file-diff-line.removed, .file-diff-line.removed .file-diff-gutter { background: var(--background); color: var(--foreground); }
-    .file-diff-line.added, .file-diff-line.added .file-diff-gutter { background: var(--muted); color: var(--foreground); }
-    .file-diff-line.empty { background: var(--muted); }
+    .file-diff-line.removed, .file-diff-line.removed .file-diff-gutter { background: #fbefed; color: #843f36; }
+    .file-diff-line.added, .file-diff-line.added .file-diff-gutter { background: #edf6ef; color: #2c6540; }
+    .file-diff-line.empty { background: #f5f5f5; }
 
-    .selection-comment { position: fixed; z-index: 30; background-color: var(--foreground); color: var(--background); border-color: var(--foreground); box-shadow: none; }
-    .selection-comment:hover { background-color: var(--foreground); }
-    .comment-highlight { background: var(--muted); color: inherit; border-bottom: 1px solid var(--primary); cursor: pointer; }
-    .comment-highlight:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+    .selection-comment { position: fixed; z-index: 30; background: #222; color: white; border-color: #222; box-shadow: 0 2px 6px #0002; }
+    .selection-comment:hover { background: #444; }
+    .comment-highlight { background: #fff1b8; color: inherit; border-bottom: 1px solid #a18b41; cursor: pointer; }
+    .comment-highlight:focus-visible { outline: 2px solid #777; outline-offset: 2px; }
     .custom-answer { margin-top: 10px; }
     .custom-answer textarea { min-height: 60px; max-width: 76ch; }
-    .comment-thread { position: fixed; z-index: 40; width: min(360px, calc(100vw - 24px)); max-height: min(440px, calc(100dvh - 24px)); margin: 0; padding: 14px; border: 1px solid var(--border); background: var(--background); overflow: auto; overscroll-behavior: contain; }
+    .comment-thread { position: fixed; z-index: 40; width: min(360px, calc(100vw - 24px)); max-height: min(440px, calc(100dvh - 24px)); margin: 0; padding: 14px; border: 1px solid #ccc; background: white; overflow: auto; overscroll-behavior: contain; }
     .comment-thread textarea { display: block; min-height: 52px; max-height: 180px; margin-bottom: 12px; resize: none; }
     .comment-editor-actions { display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
     .comment-editor-actions #delete-comment { display: grid; place-items: center; margin-right: auto; }
@@ -182,27 +178,25 @@
     .composer { margin-top: 16px; }
     .attachments { margin: 8px 0 12px; padding-left: 18px; }
     .attachments li { padding: 2px 0; overflow-wrap: anywhere; }
-    .attachments button { border: 0; padding: 0; background-color: transparent; }
+    .attachments button { border: 0; padding: 0; background: transparent; }
     .attachments .attachment-label:hover { text-decoration: underline; }
-    .attachments .attachment-remove { margin-left: 8px; padding: 0 3px; color: var(--muted-foreground); }
+    .attachments .attachment-remove { margin-left: 8px; padding: 0 3px; color: #777; }
     .composer textarea { min-height: 64px; }
     .composer .row { margin-top: 6px; }
     .comment-list { list-style: none; margin: 0; padding: 0; }
-    .comment-list button { display: grid; gap: 6px; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid var(--border); text-align: left; overflow-wrap: anywhere; }
-    .inspector { background: var(--sidebar); border-left: 1px solid var(--border); }
+    .comment-list button { display: grid; gap: 6px; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid #ddd; text-align: left; overflow-wrap: anywhere; }
+    .inspector { border-left: 1px solid #ccc; }
     .inspector label { display: block; margin-bottom: 7px; }
     .inspector select { width: 100%; }
-    .entity-heading { min-height: 100px; padding: 20px; }
-    .entity-heading .freshness-button { color: var(--foreground); }
     .entity-version { margin: -6px 0 14px; }
     .dependency-list { list-style: disc; margin: 0; padding-left: 18px; }
     .dependency-list li { padding: 2px 0; }
     .dependency-list a { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; color: inherit; text-underline-offset: 2px; white-space: nowrap; vertical-align: top; }
-    .dependency-tooltip { position: fixed; z-index: 10; width: max-content; max-width: min(280px, calc(100vw - 16px)); padding: 5px 8px; border-radius: 3px; background: var(--foreground); color: var(--background); font-size: 12px; font-weight: normal; line-height: 1.4; pointer-events: none; }
+    .dependency-tooltip { position: fixed; z-index: 10; width: max-content; max-width: min(280px, calc(100vw - 16px)); padding: 5px 8px; border-radius: 3px; background: #333; color: white; font-size: 12px; font-weight: normal; line-height: 1.4; pointer-events: none; }
     .dependency-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-    .dependency-warning { flex-shrink: 0; color: var(--muted-foreground); }
+    .dependency-warning { flex-shrink: 0; color: #555; }
     .history-list { list-style: none; margin: 0; padding: 0; }
-    #change-history { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+    #change-history { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #ddd; }
     #change-history h2 { margin-bottom: 14px; }
     .history-stage + .history-stage { margin-top: 18px; }
     .history-stage h3 { margin: 0 0 6px; font-size: 12px; font-weight: 500; }
@@ -217,62 +211,62 @@
     .history-notice { justify-content: space-between; margin-bottom: 16px; }
     .iteration-reply p + p { margin-top: 8px; }
     .entity-section { min-width: 0; margin-bottom: 24px; scroll-margin-top: 24px; }
-    .entity-section + .entity-section { padding-top: 24px; border-top: 1px solid var(--border); }
+    .entity-section + .entity-section { padding-top: 24px; border-top: 1px solid #ddd; }
     .entity-field + .entity-field { margin-top: 20px; }
     .entity-text { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 76ch; }
     .entity-field h3 { font-size: 13px; font-weight: normal; margin: 0 0 12px; }
-    .entity-link { padding: 0; border: 0; background-color: transparent; text-align: left; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
-    .entity-link:hover { background-color: transparent; color: var(--muted-foreground); }
+    .entity-link { padding: 0; border: 0; background: transparent; text-align: left; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+    .entity-link:hover { background: transparent; color: #666; }
     .table-wrap { overflow-x: auto; }
     .children-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .children-table th, .children-table td { width: 33.33%; height: 38px; padding: 8px; border: 1px solid var(--border); text-align: left; }
+    .children-table th, .children-table td { width: 33.33%; height: 38px; padding: 8px; border: 1px solid #ccc; text-align: left; }
     .children-table th { font-weight: 500; }
-    @media (max-width: 1000px) { .workspace { grid-template-columns: 48px 190px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 200px; } .inspector { grid-column: 3; border-left: 0; border-top: 1px solid var(--muted-foreground); } .sidebar, .activity-bar { grid-row: span 2; } }
-    @media (max-width: 620px) { .workspace { grid-template-columns: 48px minmax(0, 1fr); grid-template-rows: 200px minmax(0, 1fr) 140px; } .activity-bar { grid-row: 1 / -1; } .sidebar { grid-row: auto; border-right: 0; border-bottom: 1px solid var(--muted-foreground); } .main, .inspector { grid-column: 2; } .content { padding: 18px 14px; } .inspector { background: var(--sidebar); border-left: 0; } }
+    @media (max-width: 1000px) { .workspace { grid-template-columns: 36px 190px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 200px; } .inspector { grid-column: 3; border-left: 0; border-top: 1px solid #777; } .sidebar, .activity-bar { grid-row: span 2; } }
+    @media (max-width: 620px) { .workspace { grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 200px minmax(0, 1fr) 140px; } .activity-bar { grid-row: 1 / -1; } .sidebar { grid-row: auto; border-right: 0; border-bottom: 1px solid #777; } .main, .inspector { grid-column: 2; } .content { padding: 18px 14px; } .inspector { border-left: 0; } }
     @media (max-width: 460px) { .variant-options { grid-template-columns: 1fr; } }
     .entity-heading { position: relative; justify-content: flex-start; }
     .freshness-button { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; }
-    .freshness-button::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background-color: var(--foreground); }
-    .freshness-button.outdated::before { background-color: var(--primary); }
-    .freshness-menu { position: absolute; left: 0; top: calc(100% + 8px); z-index: 5; width: 260px; max-width: 100%; padding: 14px; background: var(--background); border: 1px solid var(--border); }
-    .freshness-menu p { margin-bottom: 12px; font-size: 12px; color: var(--muted-foreground); }
-    .workspace.refresh-open { grid-template-columns: 48px 190px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+    .freshness-button::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #39714d; }
+    .freshness-button.outdated::before { background: #936515; }
+    .freshness-menu { position: absolute; left: 0; top: calc(100% + 8px); z-index: 5; width: 260px; max-width: 100%; padding: 14px; background: white; border: 1px solid #ccc; }
+    .freshness-menu p { margin-bottom: 12px; font-size: 12px; color: #666; }
+    .workspace.refresh-open { grid-template-columns: 36px 190px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
     .workspace.refresh-open > .inspector { display: none; }
     .content.refresh-content { padding: 0; overflow: hidden; display: flex; }
     #refresh-view, #propagation-view { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
-    .refresh-heading { flex: 0 0 auto; flex-wrap: nowrap; gap: 8px; margin: 0; padding: 7px 12px; min-height: 44px; border-bottom: 1px solid var(--border); }
+    .refresh-heading { flex: 0 0 auto; flex-wrap: nowrap; gap: 8px; margin: 0; padding: 7px 12px; min-height: 44px; border-bottom: 1px solid #ccc; }
     .refresh-heading h2 { flex: 1; min-width: 0; margin: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .refresh-heading select { width: 190px; max-width: 48%; font-size: 12px; }
     .refresh-heading .icon-button { flex-shrink: 0; }
     .refresh-layout { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr); }
     .refresh-document, .refresh-chat { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
-    .refresh-chat { border-left: 1px solid var(--border); }
-    .refresh-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 7px 20px; border-bottom: 1px solid var(--border); min-height: 44px; flex-shrink: 0; }
+    .refresh-chat { border-left: 1px solid #ccc; }
+    .refresh-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 7px 20px; border-bottom: 1px solid #ddd; min-height: 44px; flex-shrink: 0; }
     .refresh-toolbar h2 { margin: 0; }
     .refresh-document-body { padding: 24px; overflow: auto; flex: 1; }
     .content-skeleton { max-width: 680px; padding: 8px 0; }
-    .content-skeleton span { display: block; height: 8px; margin-bottom: 12px; background: var(--muted); border-radius: 2px; }
-    .content-skeleton .skeleton-title { width: 32%; height: 16px; margin-bottom: 28px; background: var(--border); }
+    .content-skeleton span { display: block; height: 8px; margin-bottom: 12px; background: #eee; border-radius: 2px; }
+    .content-skeleton .skeleton-title { width: 32%; height: 16px; margin-bottom: 28px; background: #ddd; }
     .skeleton-paragraph { margin-bottom: 30px; }
     .skeleton-paragraph span:last-child { width: 64%; }
     .skeleton-paragraph:nth-child(3) span:last-child { width: 78%; }
-    .diff-field { border: 1px solid var(--border); margin: 16px 0; }
-    .diff-field h3 { font-size: 12px; font-weight: 500; padding: 10px 14px; margin: 0; border-bottom: 1px solid var(--border); }
+    .diff-field { border: 1px solid #ddd; margin: 16px 0; }
+    .diff-field h3 { font-size: 12px; font-weight: 500; padding: 10px 14px; margin: 0; border-bottom: 1px solid #ddd; }
     .diff-line { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; padding: 12px 14px; overflow-wrap: anywhere; white-space: pre-wrap; }
-    .diff-removed { background: var(--background); color: var(--foreground); }
-    .diff-added { background: var(--muted); color: var(--foreground); }
+    .diff-removed { background: #fbefed; color: #843f36; }
+    .diff-added { background: #edf6ef; color: #2c6540; }
     .diff-line p { max-width: 75ch; }
     .refresh-messages { flex: 1; overflow: auto; padding: 20px; }
     .refresh-message + .refresh-message { margin-top: 24px; }
     .refresh-message strong { font-size: 12px; font-weight: 500; }
     .refresh-message p { margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .refresh-message.user { border-left: 2px solid var(--border); padding-left: 12px; }
-    .refresh-composer { padding: 16px 20px; border-top: 1px solid var(--border); }
+    .refresh-message.user { border-left: 2px solid #ccc; padding-left: 12px; }
+    .refresh-composer { padding: 16px 20px; border-top: 1px solid #ddd; }
     .refresh-composer textarea { min-height: 84px; max-height: 180px; }
     .refresh-composer .row { margin-top: 10px; justify-content: flex-end; }
-    .refresh-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+    .refresh-footer { padding: 14px 20px; border-top: 1px solid #ccc; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
     .propagation-document { flex: 1; min-height: 0; }
-    .propagation-file { padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .propagation-file { padding: 16px 0; border-bottom: 1px solid #ddd; }
     .propagation-file-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
     .propagation-file input[type="checkbox"] { margin: 0; flex: 0 0 auto; }
     .triage-content-toggle { display: inline-flex; align-items: baseline; gap: 6px; flex: 1; min-width: 0; padding: 0; border: 0; text-align: left; background: transparent; }
@@ -280,69 +274,23 @@
     .triage-content { margin: 24px 0 0 24px; }
     .triage-content > .entity-section { margin-bottom: 0; }
     .propagation-file select { font-size: 12px; max-width: 100%; }
-    .triage-reason { margin: 8px 0 0 24px; max-width: 85ch; color: var(--muted-foreground); }
+    .triage-reason { margin: 8px 0 0 24px; max-width: 85ch; color: #555; }
     .triage-status { display: inline-flex; align-items: center; gap: 6px; min-width: 100px; justify-content: flex-end; }
-    .triage-spinner { width: 12px; height: 12px; border: 1.5px solid var(--border); border-top-color: var(--muted-foreground); border-radius: 50%; animation: triage-spin 0.8s linear infinite; }
+    .triage-spinner { width: 12px; height: 12px; border: 1.5px solid #ddd; border-top-color: #555; border-radius: 50%; animation: triage-spin 0.8s linear infinite; }
     @keyframes triage-spin { to { transform: rotate(360deg); } }
     @media (prefers-reduced-motion: reduce) { .triage-spinner { animation: none; } }
     @media (max-width: 620px) { .triage-status { min-width: 0; } }
-    .propagation-history { padding-top: 18px; margin-top: 22px; border-top: 1px solid var(--border); }
+    .propagation-history { padding-top: 18px; margin-top: 22px; border-top: 1px solid #ddd; }
     .propagation-history summary { cursor: pointer; }
     .propagation-history ol { margin: 12px 0 0; padding-left: 18px; }
     #propagation-status { margin-bottom: 12px; }
-    @media (max-width: 1000px) { .workspace.refresh-open { grid-template-columns: 48px 160px minmax(0, 1fr); } .refresh-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 1fr); } }
-    @media (max-width: 760px) { .workspace.refresh-open { grid-template-columns: 48px minmax(0, 1fr); } .refresh-open > .sidebar { display: none; } .refresh-document-body { padding: 16px; } }
-    @media (max-width: 1000px) { .change-open .refresh-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(240px, 1fr) minmax(240px, 1fr); overflow: auto; } .change-open .refresh-chat { border-left: 0; border-top: 1px solid var(--border); } }
-    @media (max-width: 540px) { .refresh-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(220px, 1fr) minmax(300px, 1fr); overflow: auto; } .refresh-chat { border-left: 0; border-top: 1px solid var(--border); } .refresh-composer textarea { min-height: 55px; } }
-
-    .activity-bar { background: var(--muted); gap: 12px; padding-top: 12px; }
-    .activity-bar button { border: 1px solid transparent; border-radius: var(--radius-2xl); background-color: var(--foreground); color: var(--background); }
-    .activity-bar button[aria-pressed="true"] { background-color: var(--primary); color: var(--primary-foreground); border-color: transparent; }
-    .navigation-list button, .explorer button, .history-list button, .comment-list button,
-    .workspace-tab > button, .attachments button, .entity-link, .triage-content-toggle,
-    .vc-menu button, .branch-context-menu button { box-shadow: none; }
-    .navigation-list button, .explorer button, .explorer summary { min-height: 28px; background-color: transparent; }
-    .navigation-list button[aria-current="page"], .explorer button[aria-current="page"] { background-color: var(--background); box-shadow: inset 3px 0 var(--primary); color: var(--foreground); }
-    .tree-branch { position: relative; }
-    .tree-branch > details > summary { width: 24px; }
-    .explorer .tree-branch-label { position: absolute; top: 0; left: 24px; width: calc(100% - 24px); }
-    .workspace-tab.active { box-shadow: inset 0 -2px var(--primary); }
-    .tabs, .refresh-toolbar, .refresh-heading, .refresh-footer { background: var(--muted); }
-    .file-diff-heading { background: var(--muted); }
-    #propagation-status, .final-review-status { padding: 20px; min-height: 72px; font-size: 14px; display: flex; align-items: center; gap: 12px; }
-    #propagation-status::after, .final-review-status::after { content: ""; order: -1; flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
-    .selection-comment { background-color: var(--foreground); color: var(--background); border-color: transparent; }
-    @media (pointer: coarse) {
-      button, select, input:not([type="checkbox"]):not([type="radio"]), summary { min-height: 44px; }
-      input[type="checkbox"], input[type="radio"] { width: 24px; height: 24px; }
-      .activity-bar button { width: 44px; height: 44px; }
-      .navigation-list button, .explorer button, .explorer summary, .vc-history button { min-height: 44px; height: auto; }
-      .tree-branch > details > summary { width: 44px; }
-      .explorer .tree-branch-label { left: 44px; width: calc(100% - 44px); }
-    }
-    @media (max-width: 620px) {
-      html, body { height: auto; overflow: auto; }
-      .workspace, .workspace.refresh-open { height: auto; min-height: 100dvh; overflow: visible; grid-template-columns: 48px minmax(0, 1fr); grid-template-rows: auto minmax(420px, 1fr) auto; }
-      .sidebar { max-height: 220px; }
-      .main { min-height: 65dvh; }
-      .content, .refresh-document-body, .refresh-messages { overflow: visible; }
-      .content.refresh-content { overflow: visible; }
-      .refresh-layout, .change-open .refresh-layout { display: flex; flex-direction: column; overflow: visible; }
-      .refresh-document, .refresh-chat { flex: none; }
-      .refresh-chat { border-left: 0; border-top: 1px solid var(--border); }
-      .inspector { max-height: none; }
-      .workspace.refresh-open > .main { grid-row: 1 / -1; }
-      .refresh-heading { flex-wrap: wrap; }
-      .file-diff { grid-template-columns: minmax(0, 1fr); }
-      .file-diff-pane + .file-diff-pane { border-left: 0; border-top: 1px solid var(--border); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-    }
+    @media (max-width: 1000px) { .workspace.refresh-open { grid-template-columns: 36px 160px minmax(0, 1fr); } .refresh-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 1fr); } }
+    @media (max-width: 760px) { .workspace.refresh-open { grid-template-columns: 36px minmax(0, 1fr); } .refresh-open > .sidebar { display: none; } .refresh-document-body { padding: 16px; } }
+    @media (max-width: 1000px) { .change-open .refresh-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(240px, 1fr) minmax(240px, 1fr); overflow: auto; } .change-open .refresh-chat { border-left: 0; border-top: 1px solid #ccc; } }
+    @media (max-width: 540px) { .refresh-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(220px, 1fr) minmax(300px, 1fr); overflow: auto; } .refresh-chat { border-left: 0; border-top: 1px solid #ccc; } .refresh-composer textarea { min-height: 55px; } }
   </style>
 </head>
 <body>
-  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><defs><symbol id="ui-icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol><symbol id="ui-icon-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M5 12h14"/></symbol><symbol id="ui-icon-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol><symbol id="ui-icon-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol><symbol id="ui-icon-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol><symbol id="ui-icon-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3Z M12 9v4 M12 17h.01"/></symbol></defs></svg>
   <div class="workspace">
     <nav class="activity-bar" aria-label="Activity bar">
       <button type="button" id="activity-explorer" aria-label="Explorer" title="Explorer" aria-pressed="true" aria-controls="explorer-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h11v15H8zM5 6H3v15h12v-1"/></svg></button>
@@ -374,7 +322,7 @@
         </ul>
       </div>
       <div id="version-control-panel" hidden>
-        <div class="brand vc-heading"><strong>Version control</strong><button class="icon-button" id="vc-more" type="button" aria-label="Version control actions" aria-haspopup="menu" aria-expanded="false" aria-controls="vc-menu"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-more"/></svg></button></div>
+        <div class="brand vc-heading"><strong>Version control</strong><button class="icon-button" id="vc-more" type="button" aria-label="Version control actions" aria-haspopup="menu" aria-expanded="false" aria-controls="vc-menu">···</button></div>
         <ul class="explorer">
           <li class="vc-section"><div class="history-heading"><h2>History</h2></div>
             <ul class="vc-history" id="git-history"></ul>
@@ -446,7 +394,7 @@
           <section class="refresh-document propagation-document" aria-label="Triage results">
             <header class="refresh-toolbar"><h2 id="propagation-current-title">Files</h2><button type="button" id="propagation-latest" hidden>Current iteration</button></header>
             <div class="refresh-document-body">
-              <p class="rounded-2xl border bg-muted text-foreground" id="propagation-status" role="status"></p>
+              <p class="muted" id="propagation-status" role="status"></p>
               <div id="propagation-files"></div>
             </div>
             <footer class="refresh-footer"><small id="propagation-selection-count"></small><div class="row"><button type="button" class="primary-action" id="start-propagation">Start triage</button><button type="button" class="primary-action" id="approve-triage-selection" hidden>Approve selection</button><button type="button" id="open-final-review" hidden>Final review</button></div></footer>
@@ -454,7 +402,7 @@
         </section>
         <section id="final-review-view" aria-labelledby="final-review-title" hidden>
           <h2 id="final-review-title">Changed files</h2>
-          <p class="rounded-2xl border bg-muted text-foreground final-review-status" id="final-review-status"></p>
+          <p class="muted final-review-status" id="final-review-status"></p>
           <div id="final-review-files"></div>
           <details class="propagation-history" id="final-unchanged"><summary id="final-unchanged-title">No content change</summary><ul id="final-unchanged-files"></ul></details>
           <div class="dialog-actions"><button type="button" class="primary-action" id="complete-change">Approve</button></div>
@@ -467,7 +415,7 @@
         <section id="refresh-view" aria-labelledby="refresh-title" hidden>
           <div class="refresh-layout">
             <section class="refresh-document" aria-label="Entity content and changes">
-              <header class="heading refresh-heading"><button type="button" class="icon-button" id="refresh-back" aria-label="View entity" title="View entity"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-arrow-left"/></svg></button><h2 id="refresh-title">Refresh</h2><select id="refresh-iteration" aria-label="Iteration"></select><button type="button" id="refresh-latest" hidden>Latest</button></header>
+              <header class="heading refresh-heading"><button type="button" class="icon-button" id="refresh-back" aria-label="View entity" title="View entity">←</button><h2 id="refresh-title">Refresh</h2><select id="refresh-iteration" aria-label="Iteration"></select><button type="button" id="refresh-latest" hidden>Latest</button></header>
               <div class="refresh-document-body">
                 <div class="content-skeleton" id="refresh-skeleton" role="img" aria-label="Entity content placeholder"><span class="skeleton-title"></span><div class="skeleton-paragraph"><span></span><span></span><span></span></div><div class="skeleton-paragraph"><span></span><span></span><span></span></div><div class="skeleton-paragraph"><span></span><span></span><span></span></div></div>
                 <div id="refresh-diff"></div>
@@ -530,7 +478,7 @@
     </form>
   </div>
   <dialog class="mock-configuration" id="mock-configuration" aria-labelledby="mock-configuration-title">
-    <div class="heading"><h2 id="mock-configuration-title">Mock configuration</h2><button type="button" class="icon-button" id="close-mock-configuration" aria-label="Close mock configuration"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-close"/></svg></button></div>
+    <div class="heading"><h2 id="mock-configuration-title">Mock configuration</h2><button type="button" class="icon-button" id="close-mock-configuration" aria-label="Close mock configuration">×</button></div>
     <div id="preview-controls"><p class="muted">Illustrative change with simulated agent responses. Scope examples: “Update product documentation”, “Update design”, or “Update product documentation and design”. Other scopes are saved without simulated file proposals.</p><label for="response-state">Plan response</label><select id="response-state"><option value="questions">Questions only</option><option value="draft" selected>Draft + questions</option><option value="ready">Ready plan</option></select></div>
     <div id="mock-refresh-controls" hidden><label for="refresh-response">Next agent response</label><select id="refresh-response"><option value="ready">Ready for review</option><option value="context">Needs context</option><option value="error">Error</option></select></div>
     <p class="muted" id="mock-configuration-empty">Open a change or start an agent chat to configure responses.</p>
@@ -542,13 +490,13 @@
     <button type="button" role="menuitem" data-command="checkout">Checkout to…</button>
     <button type="button" role="menuitem" data-command="fetch">Fetch</button>
     <div role="separator"></div>
-    <button type="button" role="menuitem" data-submenu="commit" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-commit">Commit<span class="menu-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-chevron-right"/></svg></span></button>
-    <button type="button" role="menuitem" data-submenu="changes" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-changes">Changes<span class="menu-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-chevron-right"/></svg></span></button>
-    <button type="button" role="menuitem" data-submenu="sync" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-sync">Pull, Push<span class="menu-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-chevron-right"/></svg></span></button>
-    <button type="button" role="menuitem" data-submenu="branch" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-branch">Branch<span class="menu-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-chevron-right"/></svg></span></button>
-    <button type="button" role="menuitem" data-submenu="remote" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-remote">Remote<span class="menu-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-chevron-right"/></svg></span></button>
-    <button type="button" role="menuitem" data-submenu="stash" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-stash">Stash<span class="menu-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-chevron-right"/></svg></span></button>
-    <button type="button" role="menuitem" data-submenu="tags" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-tags">Tags<span class="menu-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ui-icon-chevron-right"/></svg></span></button>
+    <button type="button" role="menuitem" data-submenu="commit" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-commit">Commit<span class="menu-arrow" aria-hidden="true">›</span></button>
+    <button type="button" role="menuitem" data-submenu="changes" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-changes">Changes<span class="menu-arrow" aria-hidden="true">›</span></button>
+    <button type="button" role="menuitem" data-submenu="sync" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-sync">Pull, Push<span class="menu-arrow" aria-hidden="true">›</span></button>
+    <button type="button" role="menuitem" data-submenu="branch" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-branch">Branch<span class="menu-arrow" aria-hidden="true">›</span></button>
+    <button type="button" role="menuitem" data-submenu="remote" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-remote">Remote<span class="menu-arrow" aria-hidden="true">›</span></button>
+    <button type="button" role="menuitem" data-submenu="stash" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-stash">Stash<span class="menu-arrow" aria-hidden="true">›</span></button>
+    <button type="button" role="menuitem" data-submenu="tags" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-tags">Tags<span class="menu-arrow" aria-hidden="true">›</span></button>
   </div>
   <div class="branch-context-menu" id="branch-context-menu" role="menu" aria-label="Branch actions" hidden><button type="button" role="menuitem" id="make-branch-active">Make branch active</button></div>
   <dialog id="git-command-dialog" aria-labelledby="git-command-title">
@@ -584,18 +532,6 @@
   </dialog>
   <div class="dependency-tooltip" id="dependency-tooltip" role="tooltip" hidden></div>
   <script>
-    function uiIcon(name) {
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'ui-icon');
-      svg.setAttribute('viewBox', '0 0 24 24');
-      svg.setAttribute('aria-hidden', 'true');
-      svg.setAttribute('focusable', 'false');
-      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-      use.setAttribute('href', '#ui-icon-' + name);
-      svg.append(use);
-      return svg;
-    }
-
     (() => {
       const schemas = {
         'Type 1': { tree: 'structured', brief: [], content: ['Field 1'], children: {
@@ -706,13 +642,11 @@
             details.dataset.node = id;
             details.open = opened.has(id);
             const summary = el('summary');
-            summary.setAttribute('aria-label', 'Toggle children of ' + label(id));
-            li.className = 'tree-branch';
-            button.className = 'tree-branch-label';
+            summary.append(button);
             const list = el('ul');
             entries.forEach(child => list.append(branch(child.entity)));
             details.append(summary, list);
-            li.append(button, details);
+            li.append(details);
           } else {
             button.className = 'leaf';
             li.append(button);
@@ -1628,7 +1562,7 @@
           toggle.setAttribute('aria-controls', files.id);
           function updateExpansion() {
             files.hidden = !expansion.open;
-            toggle.replaceChildren(uiIcon(expansion.open ? 'chevron-down' : 'chevron-right'));
+            toggle.textContent = expansion.open ? '▾' : '▸';
             toggle.setAttribute('aria-expanded', String(expansion.open));
             toggle.setAttribute('aria-label', (expansion.open ? 'Collapse ' : 'Expand ') + 'propagation ' + title.toLowerCase());
           }
@@ -1708,8 +1642,10 @@
             link.addEventListener('blur', hideDependencyTooltip);
             link.append(label);
             if (outdated) {
-              const warning = uiIcon('alert');
-              warning.classList.add('dependency-warning');
+              const warning = document.createElement('span');
+              warning.className = 'dependency-warning';
+              warning.textContent = '\u26a0\ufe0e';
+              warning.setAttribute('aria-hidden', 'true');
               link.append(warning);
             }
             link.addEventListener('click', event => {
@@ -2127,7 +2063,7 @@
           function updatePreview() {
             const expanded = !!triageContentExpanded.get(previewKey);
             content.hidden = !expanded;
-            chevron.replaceChildren(uiIcon(expanded ? 'chevron-down' : 'chevron-right'));
+            chevron.textContent = expanded ? '▾' : '▸';
             toggle.setAttribute('aria-expanded', String(expanded));
           }
           updatePreview();
@@ -2391,7 +2327,7 @@
           const close = document.createElement('button');
           close.type = 'button';
           close.className = 'tab-close';
-          close.append(uiIcon('close'));
+          close.textContent = '×';
           close.setAttribute('aria-label', 'Close ' + item.scope + ' / ' + label);
           close.addEventListener('click', () => {
             const index = openTabs.findIndex(open => keyFor(open) === key);
@@ -2763,8 +2699,7 @@
           const label = el('button', commentTargetLabel(comment.anchor.target, comment.anchor.side) + ' · “' + comment.anchor.quote + '” — ' + comment.text, 'attachment-label');
           label.type = 'button';
           label.addEventListener('click', () => openComment(comment.anchor, comment.id));
-          const remove = el('button', undefined, 'attachment-remove');
-          remove.append(uiIcon('close'));
+          const remove = el('button', '×', 'attachment-remove');
           remove.type = 'button';
           remove.setAttribute('aria-label', 'Remove comment ' + id + ' from response');
           remove.addEventListener('click', () => {
