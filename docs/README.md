@@ -1,7 +1,6 @@
 # Documentation
 
 - [Product](product/): app vision and product concepts by domain.
-- [Specification](specification/): feature requirements and acceptance scenarios by product domain.
 - [Design](design/): mockups, visual design, pages, and user interactions.
 - [System design](system-design/): internal models and behavior that implement the product specifications.
 - [Architecture](architecture/): component responsibilities, code structure, interfaces, storage, and coding rules.
