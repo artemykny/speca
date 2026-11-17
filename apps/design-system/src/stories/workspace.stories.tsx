@@ -508,7 +508,7 @@ function WorkspaceReview() {
           onView={setView}
         />
         <SidebarInset className="min-w-0">
-          <header className="flex h-14 shrink-0 items-center gap-3 border-b px-4 md:px-6">
+          <header className="flex h-14 shrink-0 items-center gap-3 px-4 md:px-6">
             <Tooltip>
               <TooltipTrigger render={<SidebarTrigger />} />
               <TooltipContent>Toggle navigation</TooltipContent>
@@ -545,7 +545,7 @@ function WorkspaceReview() {
                     Plan and approved refreshes
                   </span>
                 </div>
-                <h1 className="text-2xl font-semibold tracking-tight">
+                <h1 className="text-[clamp(1.75rem,3vw,2.5rem)] leading-tight font-medium tracking-[-0.045em]">
                   Improve workspace navigation
                 </h1>
                 <p className="max-w-2xl text-sm leading-6 text-muted-foreground">

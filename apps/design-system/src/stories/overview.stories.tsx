@@ -1,9 +1,15 @@
+import { storyUrl } from "../../.storybook/theme"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { useId, useState, type ReactNode } from "react"
-import { FileTextIcon, FolderIcon, PlusIcon } from "@phosphor-icons/react"
+import { ArrowUpRightIcon, FileTextIcon, FolderIcon, GitDiffIcon, PlusIcon } from "@phosphor-icons/react"
 import {
   Badge,
   Button,
+  Checkbox,
+  Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -170,9 +176,9 @@ function Specimen({ name, children }: { name: string; children: ReactNode }) {
     <article
       aria-labelledby={id}
       data-component={name}
-      className="min-w-0 border-t pt-4"
+      className="min-w-0"
     >
-      <h3 id={id} className="mb-5 text-xs font-medium text-muted-foreground">
+      <h3 id={id} className="mb-4 text-sm font-medium">
         {name}
       </h3>
       <div className="min-w-0 [&>*]:max-w-full">{children}</div>
@@ -180,24 +186,66 @@ function Specimen({ name, children }: { name: string; children: ReactNode }) {
   )
 }
 
-function Overview() {
+function ReviewPreview() {
+  const files = ["navigation.tsx", "branch-switcher.tsx", "navigation.test.tsx"]
+  const [reviewed, setReviewed] = useState<string[]>([files[0]])
+
+  return (
+    <div className="review-stage">
+      <div className="review-sheet">
+        <div className="mb-4 flex items-center gap-2.5 text-sm font-medium">
+          <GitDiffIcon size={18} aria-hidden="true" />
+          Change review
+          <span className="ml-auto text-xs font-normal tabular-nums text-muted-foreground" aria-live="polite">
+            {reviewed.length} / {files.length} reviewed
+          </span>
+        </div>
+        <fieldset className="border-t pt-2">
+          <legend className="sr-only">Mark files as reviewed</legend>
+          {files.map((file) => (
+            <Label key={file} className="flex cursor-pointer items-center gap-3 py-2 text-[13px] font-normal">
+              <Checkbox
+                checked={reviewed.includes(file)}
+                onCheckedChange={(checked) => setReviewed((current) =>
+                  checked ? [...current, file] : current.filter((name) => name !== file)
+                )}
+              />
+              {file}
+            </Label>
+          ))}
+        </fieldset>
+      </div>
+    </div>
+  )
+}
+
+function Overview({ reviewUrl }: { reviewUrl: string }) {
   return (
     <TooltipProvider>
-      <main className="mx-auto max-w-7xl space-y-14 p-4 sm:p-8 lg:p-10">
-        <header className="max-w-2xl space-y-3">
-          <h1 className="text-3xl font-medium tracking-tight">
-            Component overview
-          </h1>
-          <p className="text-sm/relaxed text-muted-foreground">
-            Controls, surfaces, and conversation building blocks, shown
-            together.
-          </p>
+      <main className="mx-auto max-w-[76rem] px-5 pb-20 sm:px-10 lg:px-14">
+        <header className="catalog-header">
+          <div>
+            <h1 className="text-[clamp(2.75rem,5.5vw,5rem)] leading-[0.98] font-medium tracking-[-0.065em]">
+              Design system
+            </h1>
+            <p className="mt-5 max-w-[34ch] text-base/relaxed text-muted-foreground sm:text-lg/relaxed">
+              Shared styles, components, and interaction patterns for the Speca app.
+            </p>
+            <a
+              className="mt-6 inline-flex items-center gap-1.5 rounded-sm text-sm font-medium decoration-border underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+              href={reviewUrl}
+              target="_top"
+            >
+              Open change review <ArrowUpRightIcon aria-hidden="true" />
+            </a>
+          </div>
+          <ReviewPreview />
         </header>
-        <section aria-labelledby="overview-button" className="space-y-6">
+        <section aria-labelledby="overview-button" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
             <h2
               id="overview-button"
-              className="text-xl font-medium tracking-tight"
+              className="text-2xl font-medium tracking-[-0.04em] sm:text-3xl"
             >
               Actions and feedback
             </h2>
@@ -205,7 +253,7 @@ function Overview() {
               Buttons, selection states, and progress.
             </p>
           </header>
-          <div className="grid items-start gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid items-start gap-x-10 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             <Specimen name="Button">
               <ButtonExamples />
             </Specimen>
@@ -244,11 +292,11 @@ function Overview() {
             </Specimen>
           </div>
         </section>
-        <section aria-labelledby="overview-input" className="space-y-6">
+        <section aria-labelledby="overview-input" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
             <h2
               id="overview-input"
-              className="text-xl font-medium tracking-tight"
+              className="text-2xl font-medium tracking-[-0.04em] sm:text-3xl"
             >
               Inputs and forms
             </h2>
@@ -256,7 +304,7 @@ function Overview() {
               Text entry, choices, dates, and guided questions.
             </p>
           </header>
-          <div className="grid items-start gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid items-start gap-x-10 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             <Specimen name={inputMeta.title.slice("Components/".length)}>
               <inputMeta.component {...inputMeta.args} />
             </Specimen>
@@ -306,11 +354,11 @@ function Overview() {
             </Specimen>
           </div>
         </section>
-        <section aria-labelledby="overview-breadcrumb" className="space-y-6">
+        <section aria-labelledby="overview-breadcrumb" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
             <h2
               id="overview-breadcrumb"
-              className="text-xl font-medium tracking-tight"
+              className="text-2xl font-medium tracking-[-0.04em] sm:text-3xl"
             >
               Navigation
             </h2>
@@ -318,7 +366,7 @@ function Overview() {
               Ways to move through a workspace and act on its contents.
             </p>
           </header>
-          <div className="grid items-start gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid items-start gap-x-10 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             <Specimen name={breadcrumbMeta.title.slice("Components/".length)}>
               <breadcrumbMeta.component />
             </Specimen>
@@ -337,7 +385,12 @@ function Overview() {
               <contextMenuMeta.component />
             </Specimen>
             <Specimen name={commandMeta.title.slice("Components/".length)}>
-              <commandMeta.component />
+              <Popover>
+                <PopoverTrigger render={<Button variant="outline" />}>Search actions</PopoverTrigger>
+                <PopoverContent className="w-auto max-w-[calc(100vw-2rem)] p-3">
+                  <commandMeta.component />
+                </PopoverContent>
+              </Popover>
             </Specimen>
             <Specimen name={paginationMeta.title.slice("Components/".length)}>
               <paginationMeta.component />
@@ -350,11 +403,11 @@ function Overview() {
             </Specimen>
           </div>
         </section>
-        <section aria-labelledby="overview-card" className="space-y-6">
+        <section aria-labelledby="overview-card" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
             <h2
               id="overview-card"
-              className="text-xl font-medium tracking-tight"
+              className="text-2xl font-medium tracking-[-0.04em] sm:text-3xl"
             >
               Content and data
             </h2>
@@ -362,7 +415,7 @@ function Overview() {
               Containers, identity, structured information, and code.
             </p>
           </header>
-          <div className="grid items-start gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid items-start gap-x-10 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             <Specimen name={cardMeta.title.slice("Components/".length)}>
               <cardMeta.render />
             </Specimen>
@@ -386,11 +439,11 @@ function Overview() {
             </Specimen>
           </div>
         </section>
-        <section aria-labelledby="overview-accordion" className="space-y-6">
+        <section aria-labelledby="overview-accordion" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
             <h2
               id="overview-accordion"
-              className="text-xl font-medium tracking-tight"
+              className="text-2xl font-medium tracking-[-0.04em] sm:text-3xl"
             >
               Layout
             </h2>
@@ -398,7 +451,7 @@ function Overview() {
               Grouping, disclosure, scrolling, and flexible space.
             </p>
           </header>
-          <div className="grid items-start gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid items-start gap-x-10 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             <Specimen name={accordionMeta.title.slice("Components/".length)}>
               <accordionMeta.component />
             </Specimen>
@@ -422,11 +475,11 @@ function Overview() {
             </Specimen>
           </div>
         </section>
-        <section aria-labelledby="overview-dialog" className="space-y-6">
+        <section aria-labelledby="overview-dialog" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
             <h2
               id="overview-dialog"
-              className="text-xl font-medium tracking-tight"
+              className="text-2xl font-medium tracking-[-0.04em] sm:text-3xl"
             >
               Overlays
             </h2>
@@ -434,7 +487,7 @@ function Overview() {
               Open a trigger to try its dialog, panel, or contextual detail.
             </p>
           </header>
-          <div className="grid items-start gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid items-start gap-x-10 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             <Specimen name={dialogMeta.title.slice("Components/".length)}>
               <dialogMeta.component />
             </Specimen>
@@ -458,11 +511,11 @@ function Overview() {
             </Specimen>
           </div>
         </section>
-        <section aria-labelledby="overview-attachment" className="space-y-6">
+        <section aria-labelledby="overview-attachment" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
             <h2
               id="overview-attachment"
-              className="text-xl font-medium tracking-tight"
+              className="text-2xl font-medium tracking-[-0.04em] sm:text-3xl"
             >
               Conversation
             </h2>
@@ -470,7 +523,7 @@ function Overview() {
               Messages, attachments, milestones, and agent activity.
             </p>
           </header>
-          <div className="grid items-start gap-x-8 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid items-start gap-x-10 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             <Specimen name={attachmentMeta.title.slice("Components/".length)}>
               <attachmentMeta.component />
             </Specimen>
@@ -500,8 +553,8 @@ function Overview() {
 
 const meta = {
   title: "Foundations/Overview",
-  component: Overview,
+  render: (_, { globals }) => <Overview reviewUrl={storyUrl("patterns-change-review--default", globals)} />,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Overview>
+} satisfies Meta
 export default meta
 export const Default: StoryObj<typeof meta> = {}

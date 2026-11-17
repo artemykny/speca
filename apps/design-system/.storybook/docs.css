@@ -2,3 +2,55 @@
   max-width: none;
   min-width: 0;
 }
+
+.catalog-header {
+  display: grid;
+  align-items: center;
+  gap: 2rem;
+  padding-block: clamp(2.5rem, 6vw, 5.5rem);
+}
+
+.review-stage {
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  padding: 2.75rem 1.75rem;
+  border-radius: 1.5rem;
+  background: #eeeeee;
+}
+
+.review-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 19rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.875rem;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: 0 8px 24px -12px rgb(0 0 0 / 20%);
+}
+
+.review-sheet::before,
+.review-sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: #cccccc;
+  transform: rotate(-7deg);
+}
+
+.review-sheet::after {
+  background: #dddddd;
+  transform: rotate(-3.5deg);
+}
+
+.dark .review-stage { background: #171717; }
+.dark .review-sheet::before { background: #353535; }
+.dark .review-sheet::after { background: #2a2a2a; }
+
+@media (min-width: 48rem) {
+  .catalog-header { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .review-stage { min-height: 17rem; }
+}

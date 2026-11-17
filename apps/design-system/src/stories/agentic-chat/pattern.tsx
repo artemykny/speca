@@ -336,7 +336,7 @@ function CodePreview({ diff = false }: { diff?: boolean }) {
 
 function ToolActivity({ run }: { run: Run }) {
   return (
-    <Trace className="rounded-xl border p-4">
+    <Trace className="rounded-xl bg-muted/65 p-4">
       {run.tools.map((tool, index) => {
         const done = index < run.step
         const failed = run.phase === "error" && index === run.step
@@ -479,7 +479,7 @@ function RunView({
           </MessageHeader>
           {run.phase === "clarification" ? (
             <Questionnaire
-              className="rounded-xl border p-4"
+              className="rounded-xl bg-muted/65 p-4"
               onSubmit={(event) => {
                 event.preventDefault()
                 const scope = new FormData(event.currentTarget).get("scope")
@@ -548,7 +548,7 @@ function RunView({
           {run.approval && (
             <div
               className={cn(
-                "rounded-xl border p-4",
+                "rounded-xl bg-muted/65 p-4",
                 run.approval === "pending" && "border-primary/30 bg-primary/5"
               )}
             >
@@ -1148,7 +1148,7 @@ function ChatWorkspace({
 
   return (
     <div className="grid h-dvh min-h-[36rem] grid-cols-[minmax(0,1fr)] overflow-hidden bg-background text-foreground lg:grid-cols-[15rem_minmax(0,1fr)]">
-      <aside className="hidden min-h-0 border-r lg:block">{historyPanel}</aside>
+      <aside className="hidden min-h-0 bg-sidebar lg:block">{historyPanel}</aside>
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="w-72 gap-0 p-0">
           <SheetHeader className="sr-only">
@@ -1161,7 +1161,7 @@ function ChatWorkspace({
         </SheetContent>
       </Sheet>
       <main className="flex min-h-0 min-w-0 flex-col">
-        <header className="flex min-h-16 shrink-0 items-center justify-between gap-3 border-b px-4 sm:px-6">
+        <header className="flex min-h-16 shrink-0 items-center justify-between gap-3 px-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Button
               variant="ghost"
@@ -1381,7 +1381,7 @@ function ChatWorkspace({
             <Label htmlFor={`${id}-composer`} className="sr-only">
               Message the agent
             </Label>
-            <InputGroup className="rounded-2xl border-border bg-background shadow-sm">
+            <InputGroup className="rounded-3xl border-transparent bg-muted">
               <InputGroupTextarea
                 ref={composer}
                 id={`${id}-composer`}
