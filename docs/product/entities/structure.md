@@ -13,6 +13,8 @@ Every entity has:
 
 Every field in an entity's brief or content also has its own version ID.
 
+Speca extracts entity revisions from Git commits (But revision's version ID differs from the commit hash). Entity changes that have yet to be committed appear as a new, uncommitted version with new version ID.
+
 ## Brief
 
 A brief describes what the parent expects the entity to cover. It can contain multiple fields. The entity and its parent can read the brief; only the parent can edit it.
