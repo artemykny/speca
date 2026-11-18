@@ -1,4 +1,4 @@
 # Workspace
 
-- [Configuration](configuration.md): workspace contents and installed type configuration.
+- [Configuration](configuration.md) covers workspace contents and package configuration.
 - [Navigation](navigation.md): entity browsing, tabs, and dependency references.
