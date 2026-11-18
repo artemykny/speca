@@ -1,12 +1,9 @@
-import { storyUrl } from "../../.storybook/theme"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { useId, useState, type ReactNode } from "react"
-import { ArrowUpRightIcon, FileTextIcon, FolderIcon, GitDiffIcon, PlusIcon } from "@phosphor-icons/react"
+import { FileTextIcon, FolderIcon, PlusIcon } from "@phosphor-icons/react"
 import {
   Badge,
   Button,
-  Checkbox,
-  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -186,60 +183,17 @@ function Specimen({ name, children }: { name: string; children: ReactNode }) {
   )
 }
 
-function ReviewPreview() {
-  const files = ["navigation.tsx", "branch-switcher.tsx", "navigation.test.tsx"]
-  const [reviewed, setReviewed] = useState<string[]>([files[0]])
-
-  return (
-    <div className="review-stage">
-      <div className="review-sheet">
-        <div className="mb-4 flex items-center gap-2.5 text-sm font-medium">
-          <GitDiffIcon size={18} aria-hidden="true" />
-          Change review
-          <span className="ml-auto text-xs font-normal tabular-nums text-muted-foreground" aria-live="polite">
-            {reviewed.length} / {files.length} reviewed
-          </span>
-        </div>
-        <fieldset className="border-t pt-2">
-          <legend className="sr-only">Mark files as reviewed</legend>
-          {files.map((file) => (
-            <Label key={file} className="flex cursor-pointer items-center gap-3 py-2 text-[13px] font-normal">
-              <Checkbox
-                checked={reviewed.includes(file)}
-                onCheckedChange={(checked) => setReviewed((current) =>
-                  checked ? [...current, file] : current.filter((name) => name !== file)
-                )}
-              />
-              {file}
-            </Label>
-          ))}
-        </fieldset>
-      </div>
-    </div>
-  )
-}
-
-function Overview({ reviewUrl }: { reviewUrl: string }) {
+function Overview() {
   return (
     <TooltipProvider>
       <main className="mx-auto max-w-[76rem] px-5 pb-20 sm:px-10 lg:px-14">
         <header className="catalog-header">
-          <div>
-            <h1 className="text-[clamp(2.75rem,5.5vw,5rem)] leading-[0.98] font-medium tracking-[-0.065em]">
-              Design system
-            </h1>
-            <p className="mt-5 max-w-[34ch] text-base/relaxed text-muted-foreground sm:text-lg/relaxed">
-              Shared styles, components, and interaction patterns for the Speca app.
-            </p>
-            <a
-              className="mt-6 inline-flex items-center gap-1.5 rounded-sm text-sm font-medium decoration-border underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-              href={reviewUrl}
-              target="_top"
-            >
-              Open change review <ArrowUpRightIcon aria-hidden="true" />
-            </a>
-          </div>
-          <ReviewPreview />
+          <h1 className="text-[clamp(2.75rem,5.5vw,5rem)] leading-[0.98] font-medium tracking-[-0.065em]">
+            Design system
+          </h1>
+          <p className="mt-5 max-w-[34ch] text-base/relaxed text-muted-foreground sm:text-lg/relaxed">
+            Shared styles, components, and interaction patterns for the Speca app.
+          </p>
         </header>
         <section aria-labelledby="overview-button" className="space-y-8 border-t py-10 sm:py-12">
           <header className="space-y-1">
@@ -553,7 +507,7 @@ function Overview({ reviewUrl }: { reviewUrl: string }) {
 
 const meta = {
   title: "Foundations/Overview",
-  render: (_, { globals }) => <Overview reviewUrl={storyUrl("patterns-change-review--default", globals)} />,
+  render: () => <Overview />,
   parameters: { layout: "fullscreen" },
 } satisfies Meta
 export default meta

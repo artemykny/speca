@@ -5,7 +5,7 @@ Starting a planned change opens a form with two inputs:
 - **Entities to plan** — the scope, such as “Update product documentation and design.”
 - **Message** — what the user wants to change.
 
-The user fills in both inputs and submits the form to start the first planning iteration. Other affected entities are handled through [change propagation](propagation.md).
+The user fills in both inputs and submits the form to start the first planning iteration.
 
 The plan is a Markdown file containing:
 
@@ -22,7 +22,7 @@ The user can comment on selected text in the plan or in either the original or p
 
 The user can request revisions to the plan or proposed file changes. The agent incorporates the user's feedback, answers, and scope changes into the next plan iteration.
 
-The user can approve a ready plan when no feedback remains unsent. Approval applies its proposed file changes and starts propagation.
+The user can approve a ready plan when no feedback remains unsent. If any entity in the plan has a different version from the one used to prepare it, Speca blocks the entire plan. Otherwise, approval applies the proposed file changes and completes the planned change.
 
 ## Iteration history
 
