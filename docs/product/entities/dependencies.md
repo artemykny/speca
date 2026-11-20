@@ -4,6 +4,8 @@ An entity's dependencies reference other entities or specific content fields of 
 
 For example, a spec can depend on the parent feature's `limitations` content field.
 
+Both the entity and its parents can specify the entity's dependencies.
+
 ## Graph constraints
 
 The entity graph must remain valid and acyclic: every reference must resolve to an existing entity or field, and no entity may depend on itself, directly or indirectly.

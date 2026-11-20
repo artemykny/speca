@@ -9,6 +9,7 @@ Refresh uses an agent to update an [entity](../entities/structure.md) from its c
 - Generic agent instructions.
 - Parent.
 - Brief.
+- Comments on the entity.
 - Dependencies.
 - Current content of the whole entity.
 - Children, including:
