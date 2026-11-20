@@ -5,4 +5,4 @@
 - [Entities](entities/): entity structure, dependencies, and operations.
 - [Entity types](entity-types/) covers type definitions, package creation, and installation.
 - [Version control](version-control/): branches, worktrees, and Git operations.
-- [Changes](changes/): change lifecycle, planning, propagation, and entity refresh.
+- [Changes](changes/) covers planning edits, propagating changes, and refreshing entities.

@@ -24,6 +24,8 @@ The user can request revisions to the plan or proposed file changes. The agent i
 
 The user can approve a ready plan when no feedback remains unsent. If any entity in the plan has a different version from the one used to prepare it, Speca blocks the entire plan. Otherwise, approval applies the proposed file changes and completes the planned change.
 
-## Iteration history
+## Plan history
 
 The user can inspect earlier plans, proposed file content, questions, and submitted responses, including attached comments. Earlier iterations are read-only. The user returns to the latest iteration to continue reviewing or responding.
+
+After completion, the full plan remains available for review in a temporary local archive.
