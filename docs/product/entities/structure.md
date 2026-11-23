@@ -17,7 +17,9 @@ Speca extracts entity revisions from Git commits. Revision IDs are distinct from
 
 ## Brief
 
-A brief describes what the parent expects the entity to cover. It can contain multiple fields. The entity and its parent can read the brief. Only the parent entity exposes an operation to edit it.
+A brief describes what the parent expects the entity to cover. It can contain multiple fields. The entity and its parent can read the brief.
+
+The user and the parent entity's agent can edit a child's brief. The user and the root agent can edit the workspace's root brief.
 
 For example, a spec's brief might have an `intent` field: “Check what happens when the invitee already belongs to the group.”
 

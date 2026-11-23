@@ -48,6 +48,6 @@ Error details include any changes already made and validation left incomplete.
 
 ## Refresh flow
 
-During review, the user can give feedback and request another pass on the entity. For a standalone refresh, the user approves the result to finish.
+During review, the user can discard an edit the agent proposed or give feedback. Approving the result completes the refresh.
 
 When the refresh is complete, Speca records the dependency versions the agent used. For example, if the agent used version 2 of a dependency and version 3 arrives during review, the user can approve the result based on version 2. The entity stays [outdated](../entities/dependencies.md#freshness) until a refresh checks it against version 3.

@@ -8,7 +8,15 @@ Both the entity and its parents can specify the entity's dependencies.
 
 ## Graph constraints
 
-The entity graph must remain valid and acyclic: every reference must resolve to an existing entity or field, and no entity may depend on itself, directly or indirectly.
+Speca checks each dependency against these constraints. If any dependency violates a constraint, the entity is invalid.
+
+- Every reference must resolve to an existing entity or field.
+- No entity may depend on itself, directly or indirectly.
+- A parent cannot depend on its children or their content fields.
+
+## Deleting an entity or content field
+
+Deleting an entity or a content field requires user confirmation. By default, Speca removes references to the deleted entity and its content fields, or just to the deleted field when the entity remains. When confirming deletion, the user can tell Speca to skip reference removal, leaving those references unresolved.
 
 ## Freshness
 
