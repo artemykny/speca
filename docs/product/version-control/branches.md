@@ -8,9 +8,9 @@ Active branches persist across Speca restarts. Tabs and work sessions follow the
 
 Creating a branch uses the Git branch name entered by the user and creates its worktree. A name conflict requires a different name before creation.
 
-## Activate an existing Git branch
+## Select or activate an existing Git branch
 
-An inactive Git branch can be inspected temporarily without creating a worktree or changing the current working branch. Inspection provides access to its history and ends when another branch is selected.
+Selecting an inactive Git branch checks it out in the main repository’s working directory and shows its history until another branch is selected. The selected branch remains inactive.
 
 Making a branch active requires an explicit user action that creates its isolated worktree and opens its context.
 
