@@ -7,3 +7,4 @@
 - [Entity types](entity-types/) covers type definitions, package creation, and installation.
 - [Version control](version-control/): branches, worktrees, and Git operations.
 - [Changes](changes/) covers planning edits, propagating changes, and refreshing entities.
+- [Examples](examples.md) illustrate how Speca works.
