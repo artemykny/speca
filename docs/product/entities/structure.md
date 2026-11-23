@@ -6,14 +6,14 @@ An entity represents something in a workspace, such as a feature or a spec. It h
 
 Every entity has:
 
-- **Version** — the ID of its current revision.
+- **Version** — the ID of its current revision. Any change to the entity gives it a new version ID.
 - **Version history** — a record of all its revisions, retaining at least their IDs.
 - [Dependencies](dependencies.md).
 - **Agent autonomy** — **Ask first** or **Act independently**, inherited from the parent unless the user chooses a setting for the entity.
 
-Every field in an entity's brief or content also has its own version ID.
+Each brief or content field has its own version ID, which changes only when that field changes.
 
-Speca extracts entity revisions from Git commits (But revision's version ID differs from the commit hash). Entity changes that have yet to be committed appear as a new, uncommitted version with new version ID.
+Speca extracts entity revisions from Git commits. Revision IDs are distinct from commit hashes. Pending edits appear as an uncommitted revision.
 
 ## Brief
 
