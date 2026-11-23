@@ -12,4 +12,4 @@ The entity graph must remain valid and acyclic: every reference must resolve to 
 
 ## Freshness
 
-If a dependency changes, the entity's generated content becomes outdated. It becomes fresh again when a process refreshes it using the current dependency versions. [Propagation](../changes/propagation.md) determines which affected files need content changes.
+If a dependency changes, the entity's generated content becomes outdated. It becomes fresh again when a process refreshes it using the current dependency versions.

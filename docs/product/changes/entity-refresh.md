@@ -18,7 +18,7 @@ Refresh uses an agent to update an [entity](../entities/structure.md) from its c
 
 ## Changes
 
-The agent edits entities directly during refresh:
+The agent checks the current content against its context and makes any necessary edits directly:
 
 - Modify content.
 - Modify children:
@@ -34,9 +34,7 @@ The agent ends each iteration with one of two calls.
 
 ### Success
 
-`success(summary)` reports the completed changes, validation results, and any differences between the intended result and what the agent produced. The user can request another iteration or approve the result to finish the refresh. Approval is required at every agent autonomy setting. On approval, the system records the dependency versions used during the refresh.
-
-Changes to dependencies during review do not block approval. If their current versions differ from the recorded versions, the entity remains outdated.
+The agent calls `success(summary)` only when it verifies that the entity meets all requirements in its brief, dependencies, and user feedback. The summary reports the validation results and explains what changed or why no edit was needed.
 
 ### Error
 
@@ -47,3 +45,9 @@ Changes to dependencies during review do not block approval. If their current ve
 - **Generic error** — a description of another failure, such as being unable to check correctness because tests cannot run.
 
 Error details include any changes already made and validation left incomplete.
+
+## Refresh flow
+
+During review, the user can give feedback and request another pass on the entity. For a standalone refresh, the user approves the result to finish.
+
+When the refresh is complete, Speca records the dependency versions the agent used. For example, if the agent used version 2 of a dependency and version 3 arrives during review, the user can approve the result based on version 2. The entity stays [outdated](../entities/dependencies.md#freshness) until a refresh checks it against version 3.

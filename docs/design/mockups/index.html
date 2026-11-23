@@ -263,18 +263,12 @@
     .propagation-document { flex: 1; min-height: 0; }
     .propagation-file { padding: 16px 0; border-bottom: 1px solid #ddd; }
     .propagation-file-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .propagation-file input[type="checkbox"] { margin: 0; flex: 0 0 auto; }
-    .triage-content-toggle { display: inline-flex; align-items: baseline; gap: 6px; flex: 1; min-width: 0; padding: 0; border: 0; text-align: left; background: transparent; }
-    .triage-content-toggle span:last-child { overflow-wrap: anywhere; }
-    .triage-content { margin: 24px 0 0 24px; }
-    .triage-content > .entity-section { margin-bottom: 0; }
+    .propagation-content-toggle { display: inline-flex; align-items: baseline; gap: 6px; flex: 1; min-width: 0; padding: 0; border: 0; text-align: left; background: transparent; }
+    .propagation-content-toggle span:last-child { overflow-wrap: anywhere; }
+    .propagation-content { margin: 24px 0 0 24px; }
+    .propagation-content > .entity-section { margin-bottom: 0; }
     .propagation-file select { font-size: 12px; max-width: 100%; }
-    .triage-reason { margin: 8px 0 0 24px; max-width: 85ch; color: #555; }
-    .triage-status { display: inline-flex; align-items: center; gap: 6px; min-width: 100px; justify-content: flex-end; }
-    .triage-spinner { width: 12px; height: 12px; border: 1.5px solid #ddd; border-top-color: #555; border-radius: 50%; animation: triage-spin 0.8s linear infinite; }
-    @keyframes triage-spin { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) { .triage-spinner { animation: none; } }
-    @media (max-width: 620px) { .triage-status { min-width: 0; } }
+    .refresh-summary { margin: 8px 0 0 24px; max-width: 85ch; color: #555; }
     #propagation-status { margin-bottom: 12px; }
     @media (max-width: 1000px) { .refresh-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 1fr); } }
     @media (max-width: 760px) { .workspace.refresh-open { grid-template-columns: 36px minmax(0, 1fr); } .refresh-open > .sidebar { display: none; } .refresh-document-body { padding: 16px; } }
@@ -395,13 +389,13 @@
           </form>
         </section>
         <section id="propagation-view" aria-labelledby="propagation-current-title" hidden>
-          <section class="refresh-document propagation-document" aria-label="Triage results">
+          <section class="refresh-document propagation-document" aria-label="Refresh results">
             <header class="refresh-toolbar"><h2 id="propagation-current-title">Files</h2><button type="button" id="propagation-latest" hidden>Current iteration</button></header>
             <div class="refresh-document-body">
               <p class="muted" id="propagation-status" role="status"></p>
               <div id="propagation-files"></div>
             </div>
-            <footer class="refresh-footer"><small id="propagation-selection-count"></small><div class="row"><button type="button" class="primary-action" id="approve-triage-selection" hidden>Approve selection</button></div></footer>
+            <footer class="refresh-footer"><button type="button" class="primary-action" id="approve-propagation" hidden>Approve iteration</button></footer>
           </section>
         </section>
         <section id="entity-view" aria-labelledby="entity-title" hidden>
@@ -761,7 +755,7 @@
         }
         activeSection?.scrollIntoView({ block: 'start' });
       }
-      window.entityModel = { entities, schemas, label, renderTree, renderView, renderContent };
+      window.entityModel = { entities, schemas, label, parentOf, renderTree, renderView, renderContent };
     })();
 
     (() => {
@@ -1532,24 +1526,22 @@
         rounds.forEach((round, index) => {
           const pending = index === propagation.iterations.length;
           const title = 'Iteration ' + (index + 1);
-          const status = pending ? 'Not started' : round.complete ? 'Complete' : round.files.some(file => file.status === 'analyzing') ? 'Triaging'
-            : round.files.some(file => !file.confirmed) ? 'Review' : 'Refreshing';
+          const status = pending ? 'Not started' : round.complete ? 'Complete' : roundReady(round) ? 'Awaiting approval' : 'Needs attention';
           const openRound = () => { propagation.selected = index; openItem(propagationPage); };
           const { li, row, spacer } = entry(history, title, status,
             activeKey === 'propagation' && index === propagation.selected, openRound);
           const files = el('ol', undefined, 'history-list history-files');
           files.id = 'history-propagation-files-' + index;
           round.files.forEach(file => {
-            const status = file.session?.approved ? 'Approved' : file.status === 'unchanged' ? 'No change'
-              : file.status === 'analyzing' ? 'Triaging' : file.session ? refreshLabels[file.session.iterations.at(-1)?.state] : 'Pending';
+            const status = file.session ? refreshResultLabel(file.session) : 'Pending';
             entry(files, entityModel.label(file.id), status,
               !!active?.refresh && active.session === file.session,
               () => {
                 propagation.selected = index;
                 if (file.session) { openPropagationFile(file); return; }
-                triageContentExpanded.set(JSON.stringify([currentBranchId, index, file.id]), true);
+                propagationContentExpanded.set(JSON.stringify([currentBranchId, index, file.id]), true);
                 openRound();
-                get('triage-content-' + file.id).scrollIntoView({ block: 'nearest' });
+                get('propagation-content-' + file.id).scrollIntoView({ block: 'nearest' });
               });
           });
           const expansionKey = pending ? propagation : round;
@@ -1726,83 +1718,52 @@
         const last = propagation.iterations.at(-1);
         return currentBranch() && (!last || last.complete) ? eligibleFiles() : [];
       }
-      function triageFile(id) {
-        // Illustrative agent analysis: the last leaf already satisfies the changed requirement.
-        const noChange = id === 'entity-9' && !onboardingIncludesExistingMembers();
-        const policy = policies.get(keyFor(entityItem(id))) || 'Ask first';
-        return { id, policy, decision: noChange ? 'unchanged' : 'change', confirmed: policy !== 'Ask first',
-          reason: noChange ? 'Existing-member behavior is unchanged.' : id === 'entity-10' ? 'Update the welcome text and action labels to match the onboarding flow.' : id === 'entity-8' ? 'Apply the updated onboarding flow.' : id === 'entity-9' ? 'Update the guidance for existing members.' : 'Align this file with its updated requirements.',
-          dependencies: dependencyVersions(id), status: 'triage', session: null };
+      function entityPolicy(id) {
+        const parent = entityModel.parentOf(id)?.parent;
+        return policies.get(keyFor(entityItem(id))) || (parent ? entityPolicy(parent) : 'Ask first');
       }
-      function resolveTriageApproval(round) {
-        if (round.files.some(file => file.status === 'analyzing')) return;
-        round.triageResolved = true;
-        const requiresApproval = round.files.some(file => file.policy === 'Ask first');
-        round.files.filter(file => !file.session && !['approved', 'unchanged'].includes(file.status)).forEach(file => {
-          file.confirmed = !requiresApproval;
-          file.approvedBy = requiresApproval ? null : 'agent';
-        });
+      function newRefreshSession(id, manual, propagation = false) {
+        const session = { entity: id, manual, propagation, before: structuredClone(entities[id].content),
+          iterations: [], messages: [], selected: 0, draft: '', response: 'ready', approved: false,
+          revision: refreshSessions.get(id)?.revision || 0 };
+        refreshSessions.set(id, session);
+        return session;
       }
-      function queueFileTriage(round, file, index = 0) {
-        const owner = propagation;
-        const result = triageFile(file.id);
-        const request = (file.triageRequest || 0) + 1;
-        Object.assign(file, { policy: result.policy, status: 'analyzing', decision: null, reason: '', confirmed: false,
-          dependencies: result.dependencies, triageRequest: request, triageContent: structuredClone(entities[file.id].content) });
-        round.triageResolved = false;
-        // Independent mock responses arrive at different times.
-        setTimeout(() => {
-          if (file.triageRequest !== request) return;
-          Object.assign(file, result, { triageRequest: request, confirmed: false });
-          if (!round.files.some(entry => entry.status === 'analyzing')) resolveTriageApproval(round);
-          if (propagation !== owner) return;
-          const follow = activeKey === 'propagation' && propagation.selected === propagation.iterations.length - 1;
-          advancePropagation();
-          if (follow) continueChange();
-          else render();
-        }, 1800 + index * 2200);
+      function finishRefresh(session) {
+        const dependencies = session.iterations.at(-1).dependencies;
+        if (JSON.stringify(entities[session.entity].dependencies) !== JSON.stringify(dependencies)) currentBranch().dirty = true;
+        entities[session.entity].dependencies = structuredClone(dependencies);
+        session.approved = true;
+      }
+      function roundReady(round) {
+        return round.files.every(file => file.session.iterations.at(-1).state === 'ready');
+      }
+      function finishRound(round) {
+        round.files.forEach(file => finishRefresh(file.session));
+        round.complete = true;
       }
       function advancePropagation() {
-        if (!propagation.running) return;
-        const round = propagation.iterations.at(-1);
-        if (round && !round.complete) {
-          if (round.files.some(file => file.status === 'analyzing')) return;
-          if (!round.triageResolved) resolveTriageApproval(round);
-          if (round.files.some(file => !file.confirmed)) return;
-          for (const file of round.files) {
-            if (file.status === 'approved' || file.status === 'unchanged') continue;
-            if (file.session) {
-              if (!file.session.approved) return;
-              file.status = 'approved';
-              continue;
-            }
-            if (!dependenciesMatch(file.id, file.dependencies)
-              || !entities[file.id].dependencies.every(dependency => freshForPropagation(dependency.entity))) {
-              file.confirmed = false;
-              file.status = 'stale';
-              return;
-            }
-            if (file.decision === 'unchanged') {
-              entities[file.id].dependencies = structuredClone(file.dependencies);
-              currentBranch().dirty = true;
-              file.status = 'unchanged';
-              continue;
-            }
-            const previous = refreshSessions.get(file.id);
-            file.session = previous && !previous.approved ? previous : {
-              entity: file.id, manual: false, before: structuredClone(entities[file.id].content),
-              iterations: [], messages: [], selected: 0, draft: '', response: 'ready', approved: false,
-              revision: previous?.revision || 0, propagation: true
-            };
-            file.session.propagation = true;
-            refreshSessions.set(file.id, file.session);
-            if (!file.session.iterations.length) addRefreshIteration(file.session, 'ready');
-            file.status = 'review';
+        while (propagation.running) {
+          const previous = propagation.iterations.at(-1);
+          if (previous && !previous.complete) return;
+          const ready = eligibleFiles();
+          if (!ready.length) {
+            propagation.running = Object.keys(entities).some(isOutdated);
             return;
           }
-          round.complete = true;
+          propagation.error = entityGraphError();
+          if (propagation.error) { propagation.running = false; return; }
+          const files = ready.map(id => {
+            const session = newRefreshSession(id, false, true);
+            addRefreshIteration(session, 'ready');
+            return { id, policy: entityPolicy(id), session };
+          });
+          const round = { files, complete: false };
+          propagation.selected = propagation.iterations.length;
+          propagation.iterations.push(round);
+          if (files.some(file => file.policy === 'Ask first') || !roundReady(round)) return;
+          finishRound(round);
         }
-        if (!Object.keys(entities).some(isOutdated)) propagation.running = false;
       }
       function propagationButton(text, action) {
         const button = el('button', text);
@@ -1909,24 +1870,10 @@
         render();
       }
       function startPropagationIteration() {
-        const ready = pendingPropagationFiles();
-        if (!ready.length) return;
-        propagation.selected = propagation.iterations.length;
-        const graphError = entityGraphError();
-        propagation.error = graphError;
-        if (!graphError) {
-          const round = { files: ready.map(id => ({ id, session: null })), complete: false, triageResolved: false };
-          propagation.iterations.push(round);
-          propagation.running = true;
-          round.files.forEach((file, index) => queueFileTriage(round, file, index));
-        }
+        if (!pendingPropagationFiles().length) return;
+        propagation.running = true;
         openItem(propagationPage);
         get('propagation-history').querySelector('[aria-current="page"]')?.focus();
-      }
-      function continueChange() {
-        const next = propagation.iterations.at(-1)?.files.find(file => file.session && !file.session.approved);
-        if (next) openPropagationFile(next);
-        else openItem(propagationPage);
       }
       function renderEntityDiff(target, before, after) {
         target.replaceChildren();
@@ -1950,80 +1897,51 @@
         if (!file.session) return;
         openItem({ ...entityItem(file.id), page: 'refresh:' + file.id, refresh: true, change: 'propagation', session: file.session });
       }
-      const triageContentExpanded = new Map();
+      const propagationContentExpanded = new Map();
       function renderPropagation() {
         const current = propagation.iterations.at(-1);
         const round = propagation.iterations[propagation.selected];
-        const historic = !!round && (round !== current || round.complete);
-        const loading = !!round?.files.some(file => file.status === 'analyzing');
-        const awaitingApproval = !!round && !historic && !loading && round.files.some(file => !file.confirmed);
-        const ready = eligibleFiles();
-        const files = round?.files || ready.map(id => ({ id }));
-        get('approve-triage-selection').hidden = !awaitingApproval;
-        get('approve-triage-selection').disabled = loading || !!round?.files.some(file => file.status === 'stale');
-        get('propagation-status').textContent = historic ? 'Completed' : loading ? 'Triaging files…' : awaitingApproval ? 'Review triage results.' : round ? 'Refresh in progress' : ready.length ? ready.length + ' files to analyze' : 'All files are fresh.';
-        get('propagation-current-title').textContent = (round || ready.length) ? 'Iteration ' + (propagation.selected + 1) : 'Files';
+        const files = round?.files || pendingPropagationFiles().map(id => ({ id }));
+        const review = round && !round.complete && roundReady(round);
+        get('approve-propagation').hidden = !review;
+        get('propagation-status').textContent = round?.complete ? 'Completed' : review ? 'Review the refresh results and approve this iteration.' : round ? 'A refresh needs attention.' : files.length ? 'Ready to refresh' : 'No files ready.';
+        get('propagation-current-title').textContent = files.length ? 'Iteration ' + (propagation.selected + 1) : 'Files';
         get('propagation-latest').hidden = !round || (round === current && !pendingPropagationFiles().length);
-        get('propagation-selection-count').textContent = loading ? files.filter(file => file.status !== 'analyzing').length + ' of ' + files.length + ' analyzed' : round ? files.filter(file => file.decision === 'change').length + ' of ' + files.length + ' selected' : '';
         const target = get('propagation-files'); target.replaceChildren();
         files.forEach(file => {
           const article = el('article', undefined, 'propagation-file');
           const row = el('div', undefined, 'propagation-file-heading');
           article.append(row);
           if (round) {
-            const analyzing = file.status === 'analyzing';
-            article.setAttribute('aria-busy', String(analyzing));
-            const checkbox = el('input');
-            checkbox.type = 'checkbox';
-            checkbox.dataset.triageFile = file.id;
-            checkbox.checked = file.decision === 'change';
-            checkbox.disabled = !awaitingApproval || !!file.session || ['approved', 'unchanged', 'stale'].includes(file.status);
-            checkbox.setAttribute('aria-label', 'Refresh ' + entityModel.label(file.id));
-            checkbox.addEventListener('change', () => {
-              file.decision = checkbox.checked ? 'change' : 'unchanged'; render();
-              get('propagation-files').querySelector('[data-triage-file="' + file.id + '"]')?.focus();
-            });
-            row.append(checkbox);
-            row.append(el('small', file.policy));
-            const status = el('small', undefined, 'triage-status');
-            status.setAttribute('role', 'status');
-            if (analyzing) {
-              const spinner = el('span', undefined, 'triage-spinner'); spinner.setAttribute('aria-hidden', 'true');
-              status.append(spinner, document.createTextNode('Triaging…'));
-            } else status.textContent = file.status === 'stale' ? 'Triage again' : file.session ? (file.session.approved ? 'Approved' : refreshLabels[file.session.iterations.at(-1)?.state]) : '';
-            if (analyzing || status.textContent) row.append(status);
-            if (!analyzing) article.append(el('p', file.reason, 'triage-reason'));
-            if (!historic && file.status === 'stale') row.append(propagationButton('Retry triage', () => {
-              if (!entities[file.id].dependencies.every(dependency => freshForPropagation(dependency.entity))) return;
-              queueFileTriage(round, file); render();
-            }));
+            row.append(el('small', file.policy), el('small', refreshResultLabel(file.session)));
+            article.append(el('p', file.session.messages.at(-1).text, 'refresh-summary'));
           } else {
             const policy = el('select'); policy.setAttribute('aria-label', 'Agent autonomy for ' + entityModel.label(file.id));
             ['Ask first', 'Act independently'].forEach(value => policy.append(el('option', value)));
-            policy.value = policies.get(keyFor(entityItem(file.id))) || 'Ask first';
+            policy.value = entityPolicy(file.id);
             policy.addEventListener('change', () => policies.set(keyFor(entityItem(file.id)), policy.value));
             row.append(policy);
           }
           const previewKey = JSON.stringify([currentBranchId, propagation.selected, file.id]);
-          const content = el('div', undefined, 'triage-content');
-          content.id = 'triage-content-' + file.id;
-          entityModel.renderContent(content, file.triageContent || entities[file.id].content);
+          const content = el('div', undefined, 'propagation-content');
+          content.id = 'propagation-content-' + file.id;
+          entityModel.renderContent(content, file.session?.iterations.at(-1).content || entities[file.id].content);
           const toggle = propagationButton('', () => {
-            triageContentExpanded.set(previewKey, !triageContentExpanded.get(previewKey));
+            propagationContentExpanded.set(previewKey, !propagationContentExpanded.get(previewKey));
             updatePreview();
           });
-          toggle.className = 'triage-content-toggle';
+          toggle.className = 'propagation-content-toggle';
           toggle.setAttribute('aria-controls', content.id);
           const chevron = el('span'); chevron.setAttribute('aria-hidden', 'true');
           toggle.append(chevron, el('span', entityModel.label(file.id)));
           function updatePreview() {
-            const expanded = !!triageContentExpanded.get(previewKey);
+            const expanded = !!propagationContentExpanded.get(previewKey);
             content.hidden = !expanded;
             chevron.textContent = expanded ? '▾' : '▸';
             toggle.setAttribute('aria-expanded', String(expanded));
           }
           updatePreview();
-          row.insertBefore(toggle, round ? row.children[1] : row.firstChild);
+          row.insertBefore(toggle, row.firstChild);
           if (file.session) row.append(propagationButton('Open refresh', () => openPropagationFile(file)));
           article.append(content);
           target.append(article);
@@ -2031,16 +1949,11 @@
         if (!files.length) target.append(el('p', 'No files to refresh.', 'muted'));
 
       }
-      get('approve-triage-selection').addEventListener('click', () => {
-        const round = propagation.iterations.at(-1);
-        if (!propagation.running || !round || round.complete || propagation.selected !== propagation.iterations.length - 1
-          || !round.files.some(file => !file.confirmed) || round.files.some(file => ['stale', 'analyzing'].includes(file.status))) return;
-        round.files.filter(file => !file.session && !['approved', 'unchanged'].includes(file.status)).forEach(file => {
-          file.confirmed = true;
-          file.approvedBy = 'you';
-        });
-        advancePropagation();
-        continueChange();
+      get('approve-propagation').addEventListener('click', () => {
+        const round = propagation.iterations[propagation.selected];
+        if (!round || round.complete || !roundReady(round)) return;
+        finishRound(round);
+        render();
       });
       get('propagation-latest').addEventListener('click', () => {
         propagation.selected = pendingPropagationFiles().length ? propagation.iterations.length : propagation.iterations.length - 1;
@@ -2067,6 +1980,11 @@
         get('start-refresh').textContent = unfinished ? (session.manual ? 'Continue chat' : 'Continue refresh') : outdated ? 'Refresh' : 'Start chat';
       }
       const refreshLabels = { waiting: 'What would you like to change?', context: 'Needs context', error: 'Error', ready: 'Ready for review' };
+      function refreshResultLabel(session) {
+        const latest = session.iterations.at(-1);
+        if (latest.state !== 'ready') return refreshLabels[latest.state];
+        return JSON.stringify(session.before) === JSON.stringify(latest.content) ? 'No content change' : 'Content updated';
+      }
       function onboardingIncludesExistingMembers() {
         return /## Audience\s+(All members|Show onboarding to every workspace member)/.test(entities['entity-2'].content['Field 1']);
       }
@@ -2095,7 +2013,9 @@
           const guidance = current.filePath?.endsWith('.tsx') ? message.split('\n').map(line => '// Guidance: ' + line).join('\n') : (session.manual ? 'Edit request: ' : 'Refresh guidance: ') + message;
           current.content[field] = [current.content[field], guidance].filter(Boolean).join('\n');
         }
-        const reply = state === 'context' ? (session.manual ? 'I started the requested edit. Should this change also apply to existing items?' : 'I updated the content using the current context. Should existing items keep their current behavior or follow the updated requirements?') : state === 'error' ? 'I could not run the validation check because the check service was unavailable. Changes made so far are shown on the left. Retry the check, or send more context.' : 'I included your guidance in the content. Validation passed. You can request another change or approve this result.';
+        const reply = state === 'context' ? (session.manual ? 'I started the requested edit. Should this change also apply to existing items?' : 'I updated the content using the current context. Should existing items keep their current behavior or follow the updated requirements?') : state === 'error' ? 'I could not run the validation check because the check service was unavailable. Changes made so far are shown on the left. Retry the check, or send more context.' : JSON.stringify(session.before) === JSON.stringify(current.content)
+          ? 'The current content already meets the updated requirements. No edit was needed.'
+          : 'Updated the content and validated the changes.';
         if (first && !session.manual) session.messages.push({ role: 'You', text: 'Refresh ' + entityModel.label(session.entity) + '.' });
         if (message) session.messages.push({ role: 'You', text: message });
         session.messages.push({ role: 'Agent', text: reply });
@@ -2122,7 +2042,7 @@
         session.iterations.forEach((entry, index) => {
           const option = document.createElement('option');
           option.value = index;
-          option.textContent = 'Iteration ' + (index + 1) + ' · ' + (session.approved && index === session.iterations.length - 1 ? 'Approved' : refreshLabels[entry.state]);
+          option.textContent = 'Iteration ' + (index + 1) + ' · ' + (session.approved && index === session.iterations.length - 1 ? (session.propagation ? 'Completed' : 'Approved') : refreshLabels[entry.state]);
           select.append(option);
         });
         select.disabled = waiting;
@@ -2137,10 +2057,10 @@
         get('refresh-diff').hidden = waiting;
         get('refresh-latest').hidden = latest;
         renderEntityDiff(get('refresh-diff'), session.before, iteration.content);
-        get('refresh-approval-note').textContent = !latest ? 'Viewing a previous iteration' : stale
-          ? (session.approved ? 'Approved · Dependencies changed; entity remains outdated.' : 'Dependencies changed. You can approve; the entity will remain outdated.')
-          : session.approved ? 'Approved by you' : '';
-        get('approve-refresh').hidden = session.approved;
+        get('refresh-approval-note').textContent = !latest ? 'Viewing a previous iteration' : session.propagation
+          ? (stale ? 'Dependencies changed since this refresh.' : session.approved ? 'Iteration complete' : 'Request changes here or return to the iteration to review all results.')
+          : stale ? 'Dependencies changed. The entity will remain outdated.' : session.approved ? 'Approved by you' : '';
+        get('approve-refresh').hidden = session.approved || session.propagation;
         get('approve-refresh').disabled = !latest || iteration.state !== 'ready';
         get('refresh-messages').replaceChildren();
         iteration.messages.forEach(message => {
@@ -2178,8 +2098,7 @@
         const active = activeTab();
         let session = refreshSessions.get(active.entity);
         if (!session || session.approved) {
-          session = { entity: active.entity, manual: !isOutdated(active.entity), before: structuredClone(entities[active.entity].content), iterations: [], messages: [], selected: 0, draft: '', response: 'ready', approved: false, revision: session?.revision || 0 };
-          refreshSessions.set(active.entity, session);
+          session = newRefreshSession(active.entity, !isOutdated(active.entity));
           if (session.manual) {
             session.selected = -1;
             session.messages.push({ role: 'Agent', text: 'What would you like to change in this entity?' });
@@ -2226,14 +2145,8 @@
       get('approve-refresh').addEventListener('click', () => {
         const session = activeRefresh();
         const latest = session.iterations.at(-1);
-        if (session.approved || session.selected !== session.iterations.length - 1 || latest?.state !== 'ready') return;
-        session.approved = true;
-        entities[session.entity].dependencies = structuredClone(latest.dependencies);
-        if (session.propagation) {
-          advancePropagation();
-          continueChange();
-          return;
-        }
+        if (session.propagation || session.approved || session.selected !== session.iterations.length - 1 || latest?.state !== 'ready') return;
+        finishRefresh(session);
         render();
         get('refresh-back').focus();
       });
@@ -2341,7 +2254,7 @@
         get('entity-kind').textContent = active.scope === 'Workspace' ? entities[active.entity]?.type : active.kind;
         get('field-label').textContent = (active.field || active.kind) + ' view';
         get('context-title').textContent = entityLabel(active);
-        get('autonomy').value = policies.get(activeKey) || 'Ask first';
+        get('autonomy').value = policies.get(activeKey) || (entities[active.entity] ? entityPolicy(active.entity) : 'Ask first');
         renderFreshness(active);
         entityModel.renderView(active);
         renderDependencies(active);
