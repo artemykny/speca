@@ -6,9 +6,11 @@ Propagation brings affected entities up to date in dependency order. A change to
 
 In each iteration, Speca refreshes every affected entity whose dependencies are all [fresh](../entities/dependencies.md#freshness). The user can see which entities are ready before starting propagation.
 
-Refreshes within an iteration are independent. If one fails, edits from the other refreshes stay in the worktree.
+Refreshes within an iteration are independent. If one fails, Speca preserves the other refreshes’ pending edits and any edits already applied to the worktree.
 
-After all refreshes succeed, Speca checks the [agent autonomy](../entities/structure.md#identity-and-metadata) of every entity in the iteration, including those that needed no edits. If any uses **Ask first**, Speca waits for the user to approve the iteration. If all use **Act independently**, the iteration completes automatically.
+After all refreshes succeed, Speca checks the [agent autonomy](../entities/structure.md#identity-and-metadata) of every entity in the iteration, including those that needed no edits. If all use **Act independently**, the iteration completes automatically.
+
+If any entity uses **Ask first**, the user can approve all pending changes at once, approve them one by one, or give feedback and request a revision. Each approval applies the selected changes to the branch’s worktree. The iteration completes once all changes are approved. If there are no changes, the user approves the iteration itself.
 
 Once the iteration completes, Speca starts the next one if any entities are ready. Propagation finishes when all affected entities are fresh and all edits requested in comments are complete. If a problem blocks propagation, the agent explains it so the user can resolve it and resume.
 

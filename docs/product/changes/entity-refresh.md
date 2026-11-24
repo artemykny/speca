@@ -18,7 +18,7 @@ Refresh uses an agent to update an [entity](../entities/structure.md) from its c
 
 ## Changes
 
-The agent checks the current content against its context and makes any necessary edits directly:
+The agent checks the current content against its context. It can perform these tasks during refresh:
 
 - Modify content.
 - Modify children:
@@ -30,7 +30,7 @@ The agent checks the current content against its context and makes any necessary
 
 ## Result
 
-The agent ends each iteration with one of two calls.
+The agent reports the refresh result with one of two calls.
 
 ### Success
 
@@ -46,8 +46,6 @@ The agent calls `success(summary)` only when it verifies that the entity meets a
 
 Error details include any changes already made and validation left incomplete.
 
-## Refresh flow
+## Dependency versions
 
-During review, the user can discard an edit the agent proposed or give feedback. Approving the result completes the refresh.
-
-When the refresh is complete, Speca records the dependency versions the agent used. For example, if the agent used version 2 of a dependency and version 3 arrives during review, the user can approve the result based on version 2. The entity stays [outdated](../entities/dependencies.md#freshness) until a refresh checks it against version 3.
+When the refresh is complete, Speca records the dependency versions the agent used. If the agent used version 2 and version 3 arrived before completion, the entity stays [outdated](../entities/dependencies.md#freshness) until a refresh checks it against version 3.

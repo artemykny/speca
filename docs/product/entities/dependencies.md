@@ -4,13 +4,14 @@ An entity's dependencies reference other entities or specific content fields of 
 
 For example, a spec can depend on the parent feature's `limitations` content field.
 
-Both the entity and its parents can specify the entity's dependencies.
+Entities can edit their own and their children's dependencies (add or remove references).
 
 ## Graph constraints
 
 Speca checks each dependency against these constraints. If any dependency violates a constraint, the entity is invalid.
 
 - Every reference must resolve to an existing entity or field.
+- An entity's dependencies cannot include both a whole entity and a content field of that same entity.
 - No entity may depend on itself, directly or indirectly.
 - A parent cannot depend on its children or their content fields.
 
